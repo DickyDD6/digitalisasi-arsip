@@ -1,0 +1,26 @@
+{
+  "name": "digitalisasi-arsip",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "dev:api": "pnpm dev --filter=api",
+    "dev:web": "pnpm dev --filter=web",
+    "setup": "turbo run setup",
+    "setup:api": "pnpm setup --filter=api",
+    "setup:web": "pnpm setup --filter=web",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "check-types": "turbo run check-types",
+    "add:component": "pnpm dlx shadcn add -c packages/ui"
+  },
+  "devDependencies": {
+    "prettier": "^3.7.4",
+    "turbo": "^2.7.2",
+    "typescript": "5.9.2"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=18"
+  }
+}
