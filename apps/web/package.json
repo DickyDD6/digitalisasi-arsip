@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "setup": "pnpm store prune && pnpm install",
     "build": "next build",
     "start": "next start",
     "lint": "eslint --max-warnings 0",

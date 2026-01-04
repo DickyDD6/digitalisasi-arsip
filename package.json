@@ -4,6 +4,11 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "dev:api": "pnpm dev --filter=api",
+    "dev:web": "pnpm dev --filter=web",
+    "setup": "turbo run setup",
+    "setup:api": "pnpm setup --filter=api",
+    "setup:web": "pnpm setup --filter=web",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"
