@@ -17,8 +17,12 @@
       "cache": false,
       "persistent": true
     },
-    "setup": {
-      "dependsOn": ["^setup"]
+    "test": {
+      "dependsOn": ["^test"]
+    },
+    "test:watch": {
+      "cache": false,
+      "persistent": true
     }
   }
 }
