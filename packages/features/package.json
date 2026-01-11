@@ -1,19 +1,19 @@
 {
-	"name": "@repo/domain",
-	"version": "0.0.0",
+	"name": "features",
+	"version": "1.0.0",
+	"license": "ISC",
 	"exports": {
-		"./*": "./src/*.ts"
+		".": "./src/*"
 	},
 	"scripts": {
 		"test": "vitest run",
 		"test:watch": "vitest --watch"
 	},
+	"packageManager": "pnpm@10.27.0",
 	"devDependencies": {
+		"@repo/domain": "workspace:*",
 		"@repo/typescript-config": "workspace:*",
 		"@repo/vitest-config": "workspace:*",
-		"typescript": "^5.9.3",
-		"vitest": "^4.0.16"
-	},
-	"license": "ISC",
-	"packageManager": "pnpm@10.27.0"
+		"zod": "^4.3.5"
+	}
 }
