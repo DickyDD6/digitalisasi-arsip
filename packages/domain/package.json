@@ -1,0 +1,21 @@
+{
+	"name": "@repo/domain",
+	"version": "0.0.0",
+	"license": "ISC",
+	"packageManager": "pnpm@10.27.0",
+	"scripts": {
+		"test": "vitest run",
+		"test:watch": "vitest --watch"
+	},
+	"dependencies": {
+		"@repo/typescript-config": "workspace:*",
+		"@repo/eslint-config": "workspace:*",
+		"@repo/vitest-config": "workspace:*"
+	},
+	"devDependencies": {
+		"vitest": "^4.0.16"
+	},
+	"exports": {
+		"./*": "./*/src/index.ts"
+	}
+}
