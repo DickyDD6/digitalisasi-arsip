@@ -123,6 +123,34 @@ class DocumentController extends Controller
     }
 
     /**
+     * Update the specified document.
+     */
+    public function update(
+        \App\Http\Requests\UpdateDocumentRequest $request,
+        Document $document
+    ): JsonResponse {
+        $this->authorize('update', $document);
+
+        try {
+            $updated = $this->documentService->updateDocument(
+                $document,
+                $request->validated(),
+                auth()->id()
+            );
+
+            return response()->json([
+                'message' => 'Dokumen berhasil diperbarui. Status direset ke menunggu verifikasi.',
+                'data' => new DocumentResource($updated),
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+                'errors' => $e->errors(),
+            ], 422);
+        }
+    }
+
+    /**
      * Display pending documents awaiting verification.
      */
     public function pending(Request $request): JsonResponse

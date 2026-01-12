@@ -265,4 +265,102 @@ class DocumentService
             modelId: $document->id
         );
     }
+
+    /**
+     * Update document metadata.
+     *
+     * @param Document $document
+     * @param array $data
+     * @param int $userId
+     * @return Document
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function updateDocument(
+        Document $document,
+        array $data,
+        int $userId
+    ): Document {
+        // Generate new duplicate key with updated data
+        $updatedData = array_merge([
+            'document_type' => $document->document_type,
+            'prodi' => $document->prodi,
+            'tahun_ajaran' => $document->tahun_ajaran,
+            'mata_kuliah' => $document->mata_kuliah,
+            'kelas' => $document->kelas,
+            'tahun_lulus' => $document->tahun_lulus,
+            'npm' => $document->npm,
+        ], $data);
+
+        $newDuplicateKey = Document::generateDuplicateKey($updatedData);
+
+        // Check for duplicates (excluding current document)
+        if ($newDuplicateKey !== $document->duplicate_key) {
+            $exists = Document::where('duplicate_key', $newDuplicateKey)
+                ->where('id', '!=', $document->id)
+                ->exists();
+
+            if ($exists) {
+                $documentType = $document->document_type;
+                $message = $documentType === 'nilai'
+                    ? 'Dokumen nilai dengan kombinasi tahun ajaran, prodi, mata kuliah, dan kelas yang sama sudah ada.'
+                    : "Dokumen {$documentType} dengan kombinasi prodi, tahun lulus, dan NPM yang sama sudah ada.";
+
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'duplicate' => [$message],
+                ]);
+            }
+        }
+
+        DB::beginTransaction();
+
+        try {
+            // Update document metadata and reset verification status
+            $updatePayload = array_merge($data, [
+                'duplicate_key' => $newDuplicateKey,
+                'status' => 'menunggu_verifikasi',
+                'verified_by' => null,
+                'verified_at' => null,
+                'verification_note' => null,
+            ]);
+
+            $document->update($updatePayload);
+
+            // Log update activity
+            $this->logUpdate($document, $userId, $data);
+
+            DB::commit();
+
+            return $document->fresh(['uploader', 'verifier']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Log document update activity.
+     *
+     * @param Document $document
+     * @param int $userId
+     * @param array $updatedFields
+     * @return void
+     */
+    protected function logUpdate(Document $document, int $userId, array $updatedFields): void
+    {
+        $fieldNames = implode(', ', array_keys($updatedFields));
+
+        AuditLog::log(
+            action: 'update_document',
+            description: "Dokumen '{$document->file_name}' diperbarui. Field yang diubah: {$fieldNames}",
+            metadata: [
+                'document_id' => $document->id,
+                'document_type' => $document->document_type,
+                'updated_by' => $userId,
+                'updated_fields' => $updatedFields,
+                'status_reset' => 'menunggu_verifikasi',
+            ],
+            modelType: Document::class,
+            modelId: $document->id
+        );
+    }
 }

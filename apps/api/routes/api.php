@@ -20,8 +20,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/documents/pending', [DocumentController::class, 'pending']);
     Route::patch('/documents/{document}/verify', [DocumentController::class, 'verify']);
 
-    // Document Management (UC-04) - Upload accessible by manager & uploader
-    Route::apiResource('documents', DocumentController::class)->except(['update']);
+    // Document Management (UC-04, UC-06) - CRUD operations
+    Route::apiResource('documents', DocumentController::class);
 });
 
 // Legacy route (can be removed later)
