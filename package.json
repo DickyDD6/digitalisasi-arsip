@@ -1,26 +1,23 @@
 {
-  "name": "digitalisasi-arsip",
-  "private": true,
-  "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "test": "turbo run test",
-    "test:watch": "turbo run test:watch",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types",
-    "add:component": "pnpm dlx shadcn add -c packages/ui"
-  },
-  "devDependencies": {
-    "@repo/vitest-config": "workspace:*",
-    "jsdom": "^27.4.0",
-    "prettier": "^3.7.4",
-    "turbo": "^2.7.3",
-    "typescript": "5.9.2",
-    "vitest": "^4.0.16"
-  },
-  "packageManager": "pnpm@10.27.0",
-  "engines": {
-    "node": ">=24"
-  }
+	"name": "digitalisasi-arsip",
+	"private": true,
+	"scripts": {
+		"build": "turbo run build",
+		"dev": "turbo run dev",
+		"lint": "turbo run lint",
+		"test": "turbo run test",
+		"test:watch": "turbo run test:watch",
+		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
+		"check-types": "turbo run check-types",
+		"add:component": "pnpm dlx shadcn add -c packages/ui"
+	},
+	"devDependencies": {
+		"prettier": "^3.7.4",
+		"turbo": "^2.7.3",
+		"typescript": "5.9.2"
+	},
+	"packageManager": "pnpm@10.27.0",
+	"engines": {
+		"node": ">=24"
+	}
 }
