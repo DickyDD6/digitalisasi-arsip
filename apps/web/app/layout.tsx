@@ -1,7 +1,9 @@
-import type { Metadata } from "next";
+import { Toaster } from "@repo/ui/components/sonner";
 import "@repo/ui/globals.css";
+import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
+import { TanstackQueryProvider } from "./providers";
 
 export const metadata: Metadata = {
 	title: "Digital Archive",
@@ -10,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 const poppins = Poppins({
-	weight: ["100", "300", "500", "700", "900"],
+	weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
 export default function RootLayout({
@@ -22,7 +24,8 @@ export default function RootLayout({
 		<html lang="en">
 			<body className={poppins.className}>
 				<NextTopLoader />
-				{children}
+				<TanstackQueryProvider>{children}</TanstackQueryProvider>
+				<Toaster richColors theme="light" position="top-right" />
 			</body>
 		</html>
 	);
