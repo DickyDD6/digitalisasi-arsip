@@ -8,6 +8,7 @@ use App\Models\Document;
 use App\Services\DocumentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class DocumentController extends Controller
@@ -106,6 +107,28 @@ class DocumentController extends Controller
             'message' => 'Detail dokumen berhasil diambil.',
             'data' => new DocumentResource($document),
         ], 200);
+    }
+
+    /**
+     * Download the specified document.
+     */
+    public function download(Document $document)
+    {
+        $this->authorize('download', $document);
+
+        // Check if file exists
+        if (!Storage::exists($document->file_path)) {
+            abort(404, 'File tidak ditemukan.');
+        }
+
+        // Stream file with proper headers
+        return Storage::download(
+            $document->file_path,
+            $document->file_name,
+            [
+                'Content-Type' => 'application/pdf',
+            ]
+        );
     }
 
     /**

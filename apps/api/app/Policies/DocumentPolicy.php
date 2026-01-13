@@ -36,6 +36,10 @@ class DocumentPolicy
 
     /**
      * Determine whether the user can update the document.
+     * 
+     * Note: This only checks ROLE and OWNERSHIP.
+     * Business logic (document status) is checked in DocumentService
+     * to return proper 422 error instead of 403.
      */
     public function update(User $user, Document $document): bool
     {
@@ -44,12 +48,10 @@ class DocumentPolicy
             return true;
         }
 
-        // Uploader can only update if:
-        // 1. Status is tidak_terverifikasi (rejected)
-        // 2. They own the document
+        // Uploader can only update documents they own
+        // Status check is done in DocumentService for proper 422 response
         if ($user->hasRole('uploader')) {
-            return $document->status === 'tidak_terverifikasi'
-                && $document->uploaded_by === $user->id;
+            return $document->uploaded_by === $user->id;
         }
 
         return false;
@@ -81,16 +83,15 @@ class DocumentPolicy
 
     /**
      * Determine whether the user can verify a specific document.
+     * 
+     * Note: This only checks if user has the ROLE to verify.
+     * Business logic (document status) is checked in DocumentService
+     * to return proper 422 error instead of 403.
      */
     public function verify(User $user, Document $document): bool
     {
-        // Only manager and qc can verify
-        if (!$user->hasAnyRole(['manager', 'qc'])) {
-            return false;
-        }
-
-        // Document must be pending verification
-        return $document->status === 'menunggu_verifikasi';
+        // Only manager and qc can verify documents
+        return $user->hasAnyRole(['manager', 'qc']);
     }
 
     /**

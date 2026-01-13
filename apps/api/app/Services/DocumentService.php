@@ -280,6 +280,19 @@ class DocumentService
         array $data,
         int $userId
     ): Document {
+        // Check if document can be updated (only rejected documents can be updated by uploader)
+        // Manager can update any document, so we check the user role
+        $user = \App\Models\User::find($userId);
+        if ($user && $user->hasRole('uploader') && $document->status !== 'tidak_terverifikasi') {
+            $statusMessage = $document->status === 'terverifikasi'
+                ? 'Dokumen yang sudah terverifikasi tidak dapat diperbarui.'
+                : 'Dokumen yang sedang menunggu verifikasi tidak dapat diperbarui.';
+
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'document' => [$statusMessage],
+            ]);
+        }
+
         // Generate new duplicate key with updated data
         $updatedData = array_merge([
             'document_type' => $document->document_type,

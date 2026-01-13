@@ -21,15 +21,22 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if (!Auth::attempt($credentials)) {
+        // Use web guard explicitly for session-based authentication
+        if (!Auth::guard('web')->attempt($credentials)) {
             throw ValidationException::withMessages([
                 'email' => ['Kredensial yang diberikan tidak cocok dengan data kami.'],
             ]);
         }
 
-        $request->session()->regenerate();
+        // Get the authenticated user
+        $user = Auth::guard('web')->user();
 
-        $user = Auth::user();
+        // For API auth via Sanctum, we need to explicitly login and save session
+        // Don't regenerate session for API context - causes data loss
+        Auth::guard('web')->login($user);
+
+        // Explicitly save the session to ensure user data is persisted
+        $request->session()->save();
 
         return response()->json([
             'message' => 'Login berhasil.',
@@ -72,14 +79,19 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
+        if (!$user) {
+            return response()->json([
+                'message' => 'Unauthenticated.',
+            ], 401);
+        }
+
         return response()->json([
+            'message' => 'User data retrieved successfully.',
             'data' => [
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role' => $user->role,
-                ],
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role,
             ],
         ], 200);
     }
