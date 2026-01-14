@@ -175,9 +175,11 @@ export const NotificationsDropdown = () => {
 				</DropdownMenuGroup>
 				{mockNotification.length > 5 && (
 					<DropdownMenuGroup className="flex justify-center py-2 border-t">
-						<Link href={"/dashboard/notifications"}>
-							<Button variant={"link"}>View all notifications</Button>
-						</Link>
+						<DropdownMenuItem className="hover:bg-transparent!" asChild>
+							<Link href={"/dashboard/notifications"}>
+								<Button variant={"link"}>View all notifications</Button>
+							</Link>
+						</DropdownMenuItem>
 					</DropdownMenuGroup>
 				)}
 			</DropdownMenuContent>

@@ -23,11 +23,15 @@ import {
 	UserCircle2,
 	UserRound,
 } from "@repo/ui/index";
+import Link from "next/link";
 
 export const UserDropdown = () => {
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger className="cursor-pointer group-data-[collapsible=icon]:p-0!" asChild>
+			<DropdownMenuTrigger
+				className="cursor-pointer group-data-[collapsible=icon]:p-0!"
+				asChild
+			>
 				<SidebarMenuButton className="h-full" asChild>
 					<Item className="group-data-[collapsible=icon]:justify-center">
 						<ItemMedia className="group-data-[collapsible=icon]:self-center group-data-[collapsible=icon]:translate-y-0!">
@@ -58,19 +62,25 @@ export const UserDropdown = () => {
 					</Item>
 				</DropdownMenuGroup>
 				<DropdownMenuGroup className="px-2">
-					<DropdownMenuItem className="cursor-pointer">
-						<UserRound />
-						My Profile
+					<DropdownMenuItem className="cursor-pointer" asChild>
+						<Link href={"/dashboard/profile/me"}>
+							<UserRound />
+							My Profile
+						</Link>
 					</DropdownMenuItem>
-					<DropdownMenuItem className="cursor-pointer">
-						<KeyRound />
-						Change Password
+					<DropdownMenuItem className="cursor-pointer" asChild>
+						<Link href="/dashboard/profile/change-password">
+							<KeyRound />
+							Change Password
+						</Link>
 					</DropdownMenuItem>
-					<DropdownMenuItem className="cursor-pointer">
-						<CircleQuestionMarkIcon />
-						Help
+					<DropdownMenuItem className="cursor-pointer" asChild>
+						<Link href="/dashboard/help">
+							<CircleQuestionMarkIcon />
+							Help
+						</Link>
 					</DropdownMenuItem>
-					<Button variant={"destructive"} className="w-full">
+					<Button variant={"destructive"} className="w-full mt-2">
 						<LogOut className="text-white" />
 						LogOut
 					</Button>
