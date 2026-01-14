@@ -23,7 +23,7 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={poppins.className}>
-				<NextTopLoader />
+				<NextTopLoader showSpinner={false} color="var(--primary)" />
 				<TanstackQueryProvider>{children}</TanstackQueryProvider>
 				<Toaster richColors theme="light" position="top-right" />
 			</body>
