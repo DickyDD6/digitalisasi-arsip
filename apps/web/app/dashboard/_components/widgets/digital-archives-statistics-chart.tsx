@@ -52,8 +52,8 @@ export const DigitalArchivesStatisticsChart = () => {
 					Annual distribution of documents that have been digitized
 				</CardDescription>
 			</CardHeader>
-			<CardContent className="space-y-5">
-				<div className="grid grid-cols-3 gap-4">
+			<CardContent className="flex flex-col gap-5">
+				<div className="grid order-2 gap-4 md:grid-cols-3 md:order-1">
 					<Card className="bg-primary text-primary-foreground">
 						<CardContent>
 							<CardTitle>Total Digitalized Documents</CardTitle>
@@ -83,7 +83,7 @@ export const DigitalArchivesStatisticsChart = () => {
 					</Card>
 				</div>
 
-				<ChartContainer config={chartConfig}>
+				<ChartContainer config={chartConfig} className="order-1 md:order-2">
 					<BarChart accessibilityLayer data={chartData}>
 						<CartesianGrid strokeDasharray={"3 3"} />
 						<YAxis

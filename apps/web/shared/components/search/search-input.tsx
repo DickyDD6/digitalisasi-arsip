@@ -1,5 +1,7 @@
 "use client";
 
+import { Badge } from "@repo/ui/components/badge";
+import { Button } from "@repo/ui/components/button";
 import {
 	CommandDialog,
 	CommandEmpty,
@@ -14,9 +16,15 @@ import {
 	InputGroupInput,
 } from "@repo/ui/components/input-group";
 import { Kbd, KbdGroup } from "@repo/ui/components/kbd";
-import { FileText, Search } from "@repo/ui/index";
+import { ChevronRight, Funnel, Search, X } from "@repo/ui/index";
 import { useEffect } from "react";
 import { useSearchCommandStore } from "./search-store";
+import {
+	Item,
+	ItemContent,
+	ItemMedia,
+	ItemTitle,
+} from "@repo/ui/components/item";
 
 export const SearchCommandShortcut = () => {
 	const openSearchCommand = useSearchCommandStore((s) => s.openSearchCommand);
@@ -56,7 +64,7 @@ export const SearchInput = ({
 					readOnly
 				/>
 				{withCommand && (
-					<InputGroupAddon align={"inline-end"}>
+					<InputGroupAddon align={"inline-end"} className="hidden md:block">
 						<KbdGroup>
 							<Kbd>CTRL</Kbd>
 							<span>+</span>
@@ -66,17 +74,139 @@ export const SearchInput = ({
 				)}
 			</InputGroup>
 			{withCommand && (
-				<CommandDialog open={open} onOpenChange={closeSearchCommand}>
-					<CommandInput placeholder="Search Documents..." />
+				<CommandDialog
+					showCloseButton={false}
+					open={open}
+					onOpenChange={closeSearchCommand}
+					className="min-w-4/5 min-h-4/5"
+				>
+					<div className="flex items-center justify-between p-2 bg-primary">
+						<div className="flex items-center gap-2">
+							<Badge className="p-2 bg-muted/30 text-primary-foreground rounded-md!">
+								<Search className="size-4 md:size-6!" />
+							</Badge>
+							<div className="grid gap-px text-primary-foreground">
+								<span className="text-sm font-semibold md:text-xl">Advanced Search</span>
+								<span className="text-xs md:text-sm">
+									Search Documents with detail filter.
+								</span>
+							</div>
+						</div>
+
+						<Button
+							variant={"ghost"}
+							size={"icon"}
+							onClick={closeSearchCommand}
+							className="text-primary-foreground bg-accent/30 hover:bg-accent/40 hover:text-primary-foreground"
+						>
+							<X className="size-4 md:size-6" />
+						</Button>
+					</div>
+					<div className="relative p-4">
+						<CommandInput
+							placeholder="Search by NIM, Name, Courses, or other keywords..."
+							className="pr-24 md:pr-28"
+						/>
+						<Button
+							variant={"ghost"}
+							className="absolute -translate-y-1/2 top-1/2 right-6"
+						>
+							<Funnel />
+							Filter
+						</Button>
+					</div>
+					<div className="flex gap-4 px-4 mb-4 overflow-x-auto">
+						<Button variant={"outline"}>Waiting for Verification</Button>
+						<Button variant={"outline"}>Rejected</Button>
+						<Button variant={"outline"}>Year 2025</Button>
+						<Button variant={"outline"}>Even semester</Button>
+						<Button variant={"outline"}>Final score</Button>
+					</div>
 					<CommandList>
 						<CommandEmpty>No Result found.</CommandEmpty>
-						<CommandGroup heading="suggestions">
-							<CommandItem>
-								<FileText />
-								Nilai_223040166_2022_Pemrograman-Web.pdf
-							</CommandItem>
+						<CommandGroup heading="Last Search">
+							<div className="grid gap-2">
+								<CommandItem asChild>
+									<Item variant={"outline"}>
+										<ItemMedia>
+											<Search />
+										</ItemMedia>
+										<ItemContent>
+											<ItemTitle>NIM 123456789</ItemTitle>
+										</ItemContent>
+										<ItemMedia>
+											<ChevronRight />
+										</ItemMedia>
+									</Item>
+								</CommandItem>
+								<CommandItem asChild>
+									<Item variant={"outline"}>
+										<ItemMedia>
+											<Search />
+										</ItemMedia>
+										<ItemContent>
+											<ItemTitle>Kalkulus 1</ItemTitle>
+										</ItemContent>
+										<ItemMedia>
+											<ChevronRight />
+										</ItemMedia>
+									</Item>
+								</CommandItem>
+								<CommandItem asChild>
+									<Item variant={"outline"}>
+										<ItemMedia>
+											<Search />
+										</ItemMedia>
+										<ItemContent>
+											<ItemTitle>Class of 2005 student</ItemTitle>
+										</ItemContent>
+										<ItemMedia>
+											<ChevronRight />
+										</ItemMedia>
+									</Item>
+								</CommandItem>
+								<CommandItem asChild>
+									<Item variant={"outline"}>
+										<ItemMedia>
+											<Search />
+										</ItemMedia>
+										<ItemContent>
+											<ItemTitle>Document Rejected</ItemTitle>
+										</ItemContent>
+										<ItemMedia>
+											<ChevronRight />
+										</ItemMedia>
+									</Item>
+								</CommandItem>
+								<CommandItem asChild>
+									<Item variant={"outline"}>
+										<ItemMedia>
+											<Search />
+										</ItemMedia>
+										<ItemContent>
+											<ItemTitle>Even Semester 2008</ItemTitle>
+										</ItemContent>
+										<ItemMedia>
+											<ChevronRight />
+										</ItemMedia>
+									</Item>
+								</CommandItem>
+							</div>
 						</CommandGroup>
 					</CommandList>
+
+					<div className="hidden gap-4 p-4 md:flex">
+						<KbdGroup>
+							<Kbd>CTRL</Kbd>
+							<span>+</span>
+							<Kbd>K</Kbd>
+							Open Advance Search
+						</KbdGroup>
+						<KbdGroup>
+							<Kbd>ESC</Kbd>
+							Close Advance Search
+						</KbdGroup>
+					</div>
 				</CommandDialog>
 			)}
 		</>

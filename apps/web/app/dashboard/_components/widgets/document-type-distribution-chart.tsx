@@ -92,7 +92,7 @@ export const DocumentTypeDistributionChart = () => {
 							nameKey={"label"}
 						/>
 						<ChartLegend
-							className="grid grid-cols-2 gap-2"
+							className="grid grid-cols-2 gap-2 mt-4"
 							content={<ChartLegendContent withValue />}
 						/>
 					</PieChart>

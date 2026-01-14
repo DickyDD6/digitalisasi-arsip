@@ -114,15 +114,21 @@ export const NotificationsDropdown = () => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant={"ghost"} size={"icon"}>
+				<Button variant={"ghost"} size={"icon"} className="relative">
 					<Bell />
+					{mockNotification.filter((i) => i.isRead === false).length > 0 && (
+						<Badge
+							variant={"destructive"}
+							className="absolute p-0.5 top-3 right-3"
+						/>
+					)}
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className="p-0 mr-2 min-w-100">
 				<DropdownMenuGroup className="flex items-center justify-between px-2 border-b">
 					<div className="flex items-center">
 						<DropdownMenuLabel>Notifications</DropdownMenuLabel>
-						<Badge>3</Badge>
+						<Badge>{mockNotification.filter((i) => i.isRead === false).length}</Badge>
 					</div>
 					<Button variant={"link"}>Mark All Read</Button>
 				</DropdownMenuGroup>

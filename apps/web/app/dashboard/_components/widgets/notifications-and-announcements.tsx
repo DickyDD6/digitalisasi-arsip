@@ -26,12 +26,12 @@ export const NotificationsAndAnnouncements = () => {
 			<CardHeader>
 				<div className="flex justify-between">
 					<div className="grid grid-rows-2 gap-1">
-						<CardTitle>Notifications And Announcements</CardTitle>
-						<CardDescription>Latest System Update</CardDescription>
+						<CardTitle className="text-sm md:text-base">Notifications And Announcements</CardTitle>
+						<CardDescription className="text-xs md:text-sm">Latest System Update</CardDescription>
 					</div>
 
 					<Link href={"/dashboard/notifications"}>
-						<Button variant={"link"}>See All Notifications</Button>
+						<Button variant={"link"} className="text-xs md:text-sm">See All Notifications</Button>
 					</Link>
 				</div>
 			</CardHeader>

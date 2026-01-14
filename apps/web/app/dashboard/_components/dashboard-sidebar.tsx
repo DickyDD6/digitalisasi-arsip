@@ -16,6 +16,7 @@ import { sidebarItems } from "../lib/dashboard-sidebar-items";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { UserDropdown } from "./user-dropdown";
+import { SearchInput } from "@/shared/components/search/search-input";
 
 export const DashboardSidebar = () => {
 	const pathname = usePathname();
@@ -41,6 +42,9 @@ export const DashboardSidebar = () => {
 				<SidebarGroup>
 					<SidebarGroupContent>
 						<SidebarMenu>
+							<SidebarMenuItem className="block mb-4 border md:hidden">
+								<SearchInput withCommand />
+							</SidebarMenuItem>
 							{sidebarItems.map((item, i) => (
 								<SidebarMenuItem key={i}>
 									<SidebarMenuButton isActive={pathname === item.link} asChild>

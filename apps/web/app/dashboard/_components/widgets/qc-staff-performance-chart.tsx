@@ -1,5 +1,6 @@
 "use client";
 
+import { Badge } from "@repo/ui/components/badge";
 import {
 	Card,
 	CardContent,
@@ -15,8 +16,11 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@repo/ui/components/chart";
-import React from "react";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { Item, ItemContent, ItemMedia } from "@repo/ui/components/item";
+import {
+	NativeSelect,
+	NativeSelectOption,
+} from "@repo/ui/components/native-select";
 import {
 	Table,
 	TableBody,
@@ -25,13 +29,8 @@ import {
 	TableHeader,
 	TableRow,
 } from "@repo/ui/components/table";
-import { Badge } from "@repo/ui/components/badge";
-import {
-	NativeSelect,
-	NativeSelectOption,
-} from "@repo/ui/components/native-select";
-import { Item, ItemContent, ItemMedia } from "@repo/ui/components/item";
 import { Funnel } from "@repo/ui/index";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 const chartData = [
 	{
@@ -76,19 +75,19 @@ export const QCStaffPerformanceStaff = () => {
 	return (
 		<Card>
 			<CardHeader>
-				<div className="flex items-center justify-between">
-					<div className="grid grid-rows-2 gap-1">
-						<CardTitle>QC Staff Performance (Today)</CardTitle>
-						<CardDescription>
+				<div className="flex items-start justify-between md:items-center">
+					<div className="grid w-full grid-rows-2 gap-1">
+						<CardTitle className="text-sm md:text-base">QC Staff Performance (Today)</CardTitle>
+						<CardDescription className="text-xs md:text-sm">
 							Verification team productivity comparison
 						</CardDescription>
 					</div>
 
-					<Item>
-						<ItemMedia>
+					<Item className="p-0">
+						<ItemMedia className="size-4 md:size-8">
 							<Funnel />
 						</ItemMedia>
-						<ItemContent>
+						<ItemContent className="w-40">
 							<NativeSelect>
 								<NativeSelectOption>Select Staff</NativeSelectOption>
 								<NativeSelectOption value="QC-01">QC-01</NativeSelectOption>
@@ -101,7 +100,7 @@ export const QCStaffPerformanceStaff = () => {
 					</Item>
 				</div>
 			</CardHeader>
-			<CardContent className="space-y-5">
+			<CardContent className="flex flex-col items-center w-full gap-5">
 				<ChartContainer config={chartConfig}>
 					<BarChart data={chartData}>
 						<CartesianGrid strokeDasharray={"3 3"} />
@@ -114,35 +113,37 @@ export const QCStaffPerformanceStaff = () => {
 					</BarChart>
 				</ChartContainer>
 
-				<Table>
-					<TableHeader>
-						<TableRow>
-							<TableHead>Staff</TableHead>
-							<TableHead>Verified</TableHead>
-							<TableHead>Rejected</TableHead>
-							<TableHead>Average Time</TableHead>
-							<TableHead>Success Rate</TableHead>
-						</TableRow>
-					</TableHeader>
-					<TableBody>
-						{chartData.map((item, i) => (
-							<TableRow key={i}>
-								<TableCell>{item.user}</TableCell>
-								<TableCell>{item.verified}</TableCell>
-								<TableCell>{item.rejected}</TableCell>
-								<TableCell>1.8 Day</TableCell>
-								<TableCell>
-									<Badge className="text-green-600 bg-green-100">
-										{Math.round(
-											(item.verified / (item.verified + item.rejected)) * 1000,
-										) / 10}
-										%
-									</Badge>
-								</TableCell>
+				<div className="w-68 md:w-full">
+					<Table>
+						<TableHeader>
+							<TableRow>
+								<TableHead>Staff</TableHead>
+								<TableHead>Verified</TableHead>
+								<TableHead>Rejected</TableHead>
+								<TableHead>Average Time</TableHead>
+								<TableHead>Success Rate</TableHead>
 							</TableRow>
-						))}
-					</TableBody>
-				</Table>
+						</TableHeader>
+						<TableBody>
+							{chartData.map((item, i) => (
+								<TableRow key={i}>
+									<TableCell>{item.user}</TableCell>
+									<TableCell>{item.verified}</TableCell>
+									<TableCell>{item.rejected}</TableCell>
+									<TableCell>1.8 Day</TableCell>
+									<TableCell>
+										<Badge className="text-green-600 bg-green-100">
+											{Math.round(
+												(item.verified / (item.verified + item.rejected)) * 1000,
+											) / 10}
+											%
+										</Badge>
+									</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
+				</div>
 			</CardContent>
 		</Card>
 	);
