@@ -36,18 +36,18 @@ export const DeleteArchiveModal = ({ id }: { id: string }) => {
 					<Trash2 />
 				</Button>
 			</DialogTrigger>
-			<DialogContent>
+			<DialogContent className="h-150 md:h-max">
 				<DialogHeader>
 					<Item className="p-0">
 						<ItemMedia className="bg-red-100 text-destructive rounded-md p-2">
 							<Trash2 />
 						</ItemMedia>
-						<ItemContent>
+						<ItemContent className="items-start">
 							<DialogTitle asChild>
-								<ItemTitle>Confirm Delete Document</ItemTitle>
+								<ItemTitle className="text-sm">Confirm Delete Document</ItemTitle>
 							</DialogTitle>
 							<DialogDescription asChild>
-								<ItemDescription>
+								<ItemDescription className="text-xs">
 									This Action Can&apos;t Be Undone
 								</ItemDescription>
 							</DialogDescription>

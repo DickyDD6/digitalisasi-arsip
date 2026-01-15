@@ -42,7 +42,7 @@ export const ViewArchiveModal = ({ id }: { id: string }) => {
 					<Eye />
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="sm:max-w-4xl">
+			<DialogContent className="sm:max-w-4xl h-150 md:h-max overflow-y-auto">
 				<DialogHeader>
 					<Item className="p-0">
 						<ItemMedia className="bg-blue-100 text-blue-600 rounded-md p-2">
@@ -50,7 +50,7 @@ export const ViewArchiveModal = ({ id }: { id: string }) => {
 						</ItemMedia>
 						<ItemContent>
 							<DialogTitle asChild>
-								<ItemTitle>Name Document {id}</ItemTitle>
+								<ItemTitle className="text-sm">Name Document {id}</ItemTitle>
 							</DialogTitle>
 							<DialogDescription asChild>
 								<ItemDescription className="flex items-center gap-2">
@@ -67,7 +67,7 @@ export const ViewArchiveModal = ({ id }: { id: string }) => {
 					</Item>
 				</DialogHeader>
 
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
 					<div className="md:min-w-100 grid gap-5 order-2 md:order-1">
 						<Item className="p-0">
 							<ItemHeader className="justify-start">
@@ -131,7 +131,7 @@ export const ViewArchiveModal = ({ id }: { id: string }) => {
 						</Item>
 					</div>
 
-					<div className="md:min-w-100 min-h-60 md:min-h-125 order-1 md:order-2">
+					<div className="md:min-w-100 min-h-80 md:min-h-125 order-1 md:order-2">
 						<div className="flex flex-col items-start h-full gap-4">
 							<div className="flex items-center">
 								<FileText className="size-4 md:size-6" />
