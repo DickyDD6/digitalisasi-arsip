@@ -31,9 +31,11 @@ import {
 	TableHeader,
 	TableRow,
 } from "@repo/ui/components/table";
-import { Download, Eye, FileText, Funnel, Trash2 } from "@repo/ui/index";
+import { Download, FileText, Funnel } from "@repo/ui/index";
 import { cn } from "@repo/ui/lib/utils";
 import { Metadata } from "next";
+import { DeleteArchiveModal } from "./_components/delete-archive-modal";
+import { ViewArchiveModal } from "./_components/view-archive-modal";
 
 const mockData = [
 	{
@@ -262,13 +264,7 @@ const ManageArchivePage = () => {
 											</Badge>
 										</TableCell>
 										<TableCell>
-											<Button
-												variant={"ghost"}
-												size={"icon"}
-												className="text-blue-600 hover:bg-blue-100"
-											>
-												<Eye />
-											</Button>
+											<ViewArchiveModal id={data.id} />
 											<Button
 												variant={"ghost"}
 												size={"icon"}
@@ -276,13 +272,7 @@ const ManageArchivePage = () => {
 											>
 												<Download />
 											</Button>
-											<Button
-												variant={"ghost"}
-												size={"icon"}
-												className="text-destructive hover:bg-red-100"
-											>
-												<Trash2 />
-											</Button>
+											<DeleteArchiveModal id={data.id} />
 										</TableCell>
 									</TableRow>
 								))}
