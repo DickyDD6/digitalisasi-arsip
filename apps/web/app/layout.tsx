@@ -6,9 +6,12 @@ import NextTopLoader from "nextjs-toploader";
 import { TanstackQueryProvider } from "./providers";
 
 export const metadata: Metadata = {
-	title: "Digital Archive",
+	title: {
+		default: "Digital Archive",
+		template: "%s | Digital Archive",
+	},
 	description:
-		"Sistem dashboard digitalisasi arsip yang dikembangkan untuk mendukung pengelolaan dokumen akademik di lingkungan Fakultas Teknik Universitas Pasundan. Sistem ini menyediakan pengelolaan arsip terpusat, terstruktur, dan aman untuk transkrip nilai, nilai mata kuliah, ijazah, serta berita acara sidang, sebagai bagian dari pengembangan Tugas Akhir.",
+		"Archive digitization dashboard system developed to support academic document management within the Faculty of Engineering, Pasundan University. This system provides centralized, structured, and secure archive management for transcripts, course grades, diplomas, and trial minutes, as part of the development of the Final Project.",
 };
 
 const poppins = Poppins({
@@ -23,7 +26,7 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={poppins.className}>
-				<NextTopLoader />
+				<NextTopLoader showSpinner={false} color="var(--primary)" />
 				<TanstackQueryProvider>{children}</TanstackQueryProvider>
 				<Toaster richColors theme="light" position="top-right" />
 			</body>
