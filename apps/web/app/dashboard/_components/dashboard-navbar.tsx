@@ -5,7 +5,7 @@ import { NotificationsDropdown } from "./notifications-dropdown";
 
 export const DashboardNavbar = () => {
 	return (
-		<nav className="z-10 flex items-center justify-between w-full p-2 shadow-sm bg-card">
+		<nav className="z-10 flex items-center justify-between w-full p-2 shadow-sm bg-card absolute top-0 inset-x-0">
 			<div className="flex items-center gap-4">
 				<SidebarTrigger />
 				<div className="flex items-center gap-2">

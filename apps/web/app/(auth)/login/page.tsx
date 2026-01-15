@@ -1,4 +1,9 @@
 import { LoginCard } from "@/features/auth";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "LogIn",
+};
 
 const LoginPage = () => {
 	return (

@@ -77,7 +77,9 @@ export const QCStaffPerformanceStaff = () => {
 			<CardHeader>
 				<div className="flex items-start justify-between md:items-center">
 					<div className="grid w-full grid-rows-2 gap-1">
-						<CardTitle className="text-sm md:text-base">QC Staff Performance (Today)</CardTitle>
+						<CardTitle className="text-sm md:text-base">
+							QC Staff Performance (Today)
+						</CardTitle>
 						<CardDescription className="text-xs md:text-sm">
 							Verification team productivity comparison
 						</CardDescription>
@@ -100,8 +102,8 @@ export const QCStaffPerformanceStaff = () => {
 					</Item>
 				</div>
 			</CardHeader>
-			<CardContent className="flex flex-col items-center w-full gap-5">
-				<ChartContainer config={chartConfig}>
+			<CardContent className="flex flex-col items-center w-full gap-5 px-0">
+				<ChartContainer config={chartConfig} className="w-full h-full px-6">
 					<BarChart data={chartData}>
 						<CartesianGrid strokeDasharray={"3 3"} />
 						<YAxis tickMargin={10} />
@@ -113,7 +115,7 @@ export const QCStaffPerformanceStaff = () => {
 					</BarChart>
 				</ChartContainer>
 
-				<div className="w-68 md:w-full">
+				<div className="w-80 md:w-full">
 					<Table>
 						<TableHeader>
 							<TableRow>
@@ -134,7 +136,8 @@ export const QCStaffPerformanceStaff = () => {
 									<TableCell>
 										<Badge className="text-green-600 bg-green-100">
 											{Math.round(
-												(item.verified / (item.verified + item.rejected)) * 1000,
+												(item.verified / (item.verified + item.rejected)) *
+													1000,
 											) / 10}
 											%
 										</Badge>

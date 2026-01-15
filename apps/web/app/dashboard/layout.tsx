@@ -4,16 +4,28 @@ import { SidebarProvider } from "@repo/ui/components/sidebar";
 import { ReactNode } from "react";
 import { DashboardNavbar } from "./_components/dashboard-navbar";
 import { DashboardSidebar } from "./_components/dashboard-sidebar";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: {
+		default: "Dashboard",
+		template: "Dashboard - %s | Digital Archive",
+	},
+	description:
+		"Archive digitization dashboard system developed to support academic document management within the Faculty of Engineering, Pasundan University. This system provides centralized, structured, and secure archive management for transcripts, course grades, diplomas, and trial minutes, as part of the development of the Final Project.",
+};
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
 	return (
 		<>
 			<SidebarProvider>
 				<DashboardSidebar />
-				<div className="flex flex-col w-screen h-screen">
+				<div className="w-screen h-screen relative">
 					<DashboardNavbar />
-					<ScrollArea className="flex-1 overflow-y-auto">
-						<main className="flex flex-col gap-5 px-4 py-2">{children}</main>
+					<ScrollArea className="h-full min-h-0">
+						<main className="flex flex-col gap-5 px-4 py-20 pb-2">
+							{children}
+						</main>
 					</ScrollArea>
 				</div>
 			</SidebarProvider>
