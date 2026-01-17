@@ -25,7 +25,7 @@ import {
 	Eye,
 	FileText,
 	UserRound,
-} from "@repo/ui/index";
+} from "@repo/ui/icons";
 import { useState } from "react";
 
 export const ViewArchiveModal = ({ id }: { id: string }) => {

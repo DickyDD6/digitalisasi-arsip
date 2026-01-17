@@ -1,7 +1,7 @@
 import { SearchInput } from "@/shared/components/search/search-input";
 import { SidebarTrigger } from "@repo/ui/components/sidebar";
 import Image from "next/image";
-import { NotificationsDropdown } from "./notifications-dropdown";
+import { NotificationsDropdown } from "../../../features/notification/components/notifications-dropdown";
 
 export const DashboardNavbar = () => {
 	return (
@@ -24,7 +24,9 @@ export const DashboardNavbar = () => {
 						className="size-6 md:size-8"
 					/>
 					<div className="flex flex-col justify-center">
-						<h1 className="text-lg font-semibold md:text-xl">Digital Archive</h1>
+						<h1 className="text-lg font-semibold md:text-xl">
+							Digital Archive
+						</h1>
 						<p className="text-xs text-muted-foreground">
 							Fakultas Teknik Universitas Pasundan
 						</p>

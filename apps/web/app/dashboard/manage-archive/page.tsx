@@ -1,5 +1,7 @@
+import { PageHeader } from "@/shared/components/page-header";
 import { SearchInput } from "@/shared/components/search/search-input";
-import { Badge } from "@repo/ui/components/badge";
+import { StatusBadge } from "@/shared/components/status-badge";
+import { DocumentStatus, DocumentType } from "@/shared/constants";
 import { Button } from "@repo/ui/components/button";
 import {
 	Card,
@@ -31,102 +33,109 @@ import {
 	TableHeader,
 	TableRow,
 } from "@repo/ui/components/table";
-import { Download, FileText, Funnel } from "@repo/ui/index";
-import { cn } from "@repo/ui/lib/utils";
+import { Download, FileText, Funnel } from "@repo/ui/icons";
 import { Metadata } from "next";
-import { DeleteArchiveModal } from "./_components/delete-archive-modal";
-import { ViewArchiveModal } from "./_components/view-archive-modal";
+import { DeleteArchiveModal } from "../../../features/archive/components/delete-archive-modal";
+import { ViewArchiveModal } from "../../../features/archive/components/view-archive-modal";
 
-const mockData = [
+const mockData: {
+	id: string;
+	npm: string;
+	student_name: string;
+	type: DocumentType;
+	subject: string;
+	year: string;
+	status: DocumentStatus;
+}[] = [
 	{
 		id: "DOC-001",
 		npm: "0230400001",
 		student_name: "Brooklyn Simmons",
-		type: "Transcript",
+		type: "TRANSCRIPT",
 		subject: "Pemrograman Web",
 		year: "2002",
-		status: "Verified",
+		status: "VERIFIED",
 	},
 	{
 		id: "DOC-002",
 		npm: "0230400002",
 		student_name: "Darlene Robertson",
-		type: "Mark",
+		type: "MARK",
 		subject: "Matematika Diskrit",
 		year: "2002",
-		status: "Verified",
+		status: "VERIFIED",
 	},
 	{
 		id: "DOC-003",
 		npm: "0330400003",
 		student_name: "Cody Fisher",
-		type: "Transcript",
+		type: "TRANSCRIPT",
 		subject: "Struktur Data",
 		year: "2003",
-		status: "Pending",
+		status: "PENDING",
 	},
 	{
 		id: "DOC-004",
 		npm: "0330400004",
 		student_name: "Esther Howard",
-		type: "Transcript",
+		type: "TRANSCRIPT",
 		subject: "Basis Data",
 		year: "2003",
-		status: "Rejected",
+		status: "REJECTED",
 	},
 	{
 		id: "DOC-005",
 		npm: "0430400005",
 		student_name: "Jenny Wilson",
-		type: "Transcript",
+		type: "TRANSCRIPT",
 		subject: "Jaringan Komputer",
 		year: "2004",
-		status: "Verified",
+		status: "VERIFIED",
 	},
 	{
 		id: "DOC-006",
 		npm: "0430400006",
 		student_name: "Kristin Watson",
-		type: "Transcript",
+		type: "TRANSCRIPT",
 		subject: "Algoritma",
 		year: "2004",
-		status: "Pending",
+		status: "PENDING",
 	},
 	{
 		id: "DOC-007",
 		npm: "0530400007",
 		student_name: "Guy Hawkins",
-		type: "Mark",
+		type: "MARK",
 		subject: "Sistem Operasi",
 		year: "2005",
-		status: "Rejected",
+		status: "REJECTED",
 	},
 	{
 		id: "DOC-008",
 		npm: "0530400008",
 		student_name: "Kathryn Murphy",
-		type: "Mark",
+		type: "MARK",
 		subject: "Pemrograman Lanjut",
 		year: "2005",
-		status: "Verified",
+		status: "VERIFIED",
 	},
 	{
 		id: "DOC-009",
 		npm: "0630400009",
 		student_name: "Ronald Richards",
-		type: "Mark",
+		type: "MARK",
 		subject: "Kecerdasan Buatan",
 		year: "2006",
-		status: "Pending",
+		status: "PENDING",
 	},
 	{
 		id: "DOC-010",
 		npm: "0630400010",
 		student_name: "Savannah Nguyen",
-		type: "Transcript",
+		type: "TRANSCRIPT",
 		subject: "Rekayasa Perangkat Lunak",
 		year: "2006",
-		status: "Verified",
+		status: "VERIFIED",
 	},
 ];
 
@@ -139,14 +148,10 @@ export const metadata: Metadata = {
 const ManageArchivePage = () => {
 	return (
 		<>
-			<Card>
-				<CardContent className="space-y-1">
-					<CardTitle>Manage Archive</CardTitle>
-					<CardDescription>
-						View, download, and delete student grade documents and transcripts.
-					</CardDescription>
-				</CardContent>
-			</Card>
+			<PageHeader
+				title="Manage Archive"
+				description="View, download, and delete student grade documents and transcripts."
+			/>
 
 			<Card>
 				<CardHeader>
@@ -236,32 +241,14 @@ const ManageArchivePage = () => {
 										<TableCell>{data.npm}</TableCell>
 										<TableCell>{data.student_name}</TableCell>
 										<TableCell>
-											<Badge
-												className={cn(
-													"shadow-xs",
-													data.type === "Mark"
-														? "bg-blue-100 text-blue-600"
-														: "text-primary bg-orange-100",
-												)}
-											>
-												{data.type}
-											</Badge>
+											<StatusBadge variant={data.type}>{data.type}</StatusBadge>
 										</TableCell>
 										<TableCell>{data.subject}</TableCell>
 										<TableCell>{data.year}</TableCell>
 										<TableCell>
-											<Badge
-												className={cn(
-													"shadow-xs",
-													data.status === "Verified"
-														? "bg-green-100 text-green-600"
-														: data.status === "Pending"
-															? "bg-yellow-100 text-yellow-600"
-															: "bg-red-100 text-destructive",
-												)}
-											>
+											<StatusBadge variant={data.status}>
 												{data.status}
-											</Badge>
+											</StatusBadge>
 										</TableCell>
 										<TableCell>
 											<ViewArchiveModal id={data.id} />

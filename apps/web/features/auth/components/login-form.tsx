@@ -14,7 +14,7 @@ import {
 	InputGroupInput,
 } from "@repo/ui/components/input-group";
 import { InputPassword } from "@repo/ui/components/password";
-import { Loader2, UserRound } from "@repo/ui/index";
+import { Loader2, UserRound } from "@repo/ui/icons";
 import { useForm } from "@tanstack/react-form";
 import { LoginSchema } from "../auth.schema";
 import { useLogin } from "../hooks/use-auth";

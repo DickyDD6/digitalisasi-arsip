@@ -54,10 +54,10 @@ import {
 	UserRound,
 	UserSquare2,
 	X,
-} from "@repo/ui/index";
+} from "@repo/ui/icons";
 import { useEffect, useState } from "react";
 import { useSearchCommandStore } from "./search-store";
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@repo/ui/lib";
 
 export const SearchCommandShortcut = () => {
 	const openSearchCommand = useSearchCommandStore((s) => s.openSearchCommand);

@@ -1,9 +1,4 @@
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardTitle,
-} from "@repo/ui/components/card";
+import { PageHeader } from "@/shared/components/page-header";
 import { Metadata } from "next";
 import { MonitoringAllUserActivityCard } from "./_components/widgets/monitoring-all-user-activity-card";
 import { MonitoringFilterCard } from "./_components/widgets/monitoring-filter-card";
@@ -17,14 +12,10 @@ export const metadata: Metadata = {
 const LogActivityPage = () => {
 	return (
 		<>
-			<Card>
-				<CardContent className="space-y-1">
-					<CardTitle>System Log Activity</CardTitle>
-					<CardDescription>
-						Monitoring and audit trail of all user activities
-					</CardDescription>
-				</CardContent>
-			</Card>
+			<PageHeader
+				title="System Log Activity"
+				description="Monitoring and audit trail of all user activities"
+			/>
 			<MonitoringFilterCard />
 			<MonitoringStatsSummaryCard />
 			<MonitoringAllUserActivityCard />

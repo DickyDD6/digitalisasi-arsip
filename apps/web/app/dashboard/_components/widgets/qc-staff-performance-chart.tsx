@@ -29,7 +29,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@repo/ui/components/table";
-import { Funnel } from "@repo/ui/index";
+import { Funnel } from "@repo/ui/icons";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 const chartData = [
@@ -134,7 +134,7 @@ export const QCStaffPerformanceStaff = () => {
 									<TableCell>{item.rejected}</TableCell>
 									<TableCell>1.8 Day</TableCell>
 									<TableCell>
-										<Badge className="text-green-600 bg-green-100">
+										<Badge variant={"success"}>
 											{Math.round(
 												(item.verified / (item.verified + item.rejected)) *
 													1000,

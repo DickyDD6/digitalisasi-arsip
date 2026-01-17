@@ -26,8 +26,8 @@ import {
 	FileText,
 	Trash2,
 	UserRound,
-} from "@repo/ui/index";
-import { cn } from "@repo/ui/lib/utils";
+} from "@repo/ui/icons";
+import { cn } from "@repo/ui/lib";
 import Link from "next/link";
 
 const mockNotification = [

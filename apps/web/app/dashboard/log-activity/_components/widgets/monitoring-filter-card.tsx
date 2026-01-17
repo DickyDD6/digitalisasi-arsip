@@ -18,7 +18,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@repo/ui/components/popover";
-import { Calendar, Funnel } from "@repo/ui/index";
+import { Calendar, Funnel } from "@repo/ui/icons";
 import { useState } from "react";
 
 export const MonitoringFilterCard = () => {

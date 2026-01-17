@@ -4,7 +4,7 @@ import {
 	LayoutDashboard,
 	Logs,
 	UsersRound,
-} from "@repo/ui/index";
+} from "@repo/ui/icons";
 
 export const sidebarItems = [
 	{

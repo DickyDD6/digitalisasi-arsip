@@ -1,3 +1,11 @@
+import {
+	MetricCard,
+	MetricCardContent,
+	MetricCardIcon,
+	MetricCardTitle,
+	MetricCardValue,
+	MetricGrid,
+} from "@/shared/components/metric";
 import { Button } from "@repo/ui/components/button";
 import { Card, CardContent } from "@repo/ui/components/card";
 import {
@@ -7,8 +15,8 @@ import {
 	ItemMedia,
 	ItemTitle,
 } from "@repo/ui/components/item";
-import { Shield, UploadCloud, UsersRound, Workflow } from "@repo/ui/index";
-import { cn } from "@repo/ui/lib/utils";
+import { Shield, UploadCloud, UsersRound, Workflow } from "@repo/ui/icons";
+import { cn } from "@repo/ui/lib";
 
 const mockData = [
 	{
@@ -39,28 +47,20 @@ const mockData = [
 
 export const UsersStatsSummary = () => {
 	return (
-		<div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
+		<MetricGrid>
 			{mockData.map((data, i) => (
-				<Button variant={"ghost"} className="p-0 w-auto h-auto" key={i}>
-					<Card className="w-full h-full hover:scale-105 transition-all hover:shadow-lg hover:border-primary">
-						<CardContent>
-							<Item className="p-0">
-								<ItemContent className="items-start">
-									<ItemDescription className="line-clamp-2">
-										{data.title}
-									</ItemDescription>
-									<ItemTitle className={cn("text-xl", data.color)}>
-										{data.count}
-									</ItemTitle>
-								</ItemContent>
-								<ItemMedia>
-									<data.icon className={cn("size-4 md:size-6", data.color)} />
-								</ItemMedia>
-							</Item>
-						</CardContent>
-					</Card>
-				</Button>
+				<MetricCard key={i}>
+					<MetricCardContent>
+						<MetricCardTitle>{data.title}</MetricCardTitle>
+						<MetricCardValue className={cn(data.color)}>
+							{data.count}
+						</MetricCardValue>
+					</MetricCardContent>
+					<MetricCardIcon className={cn(data.color)}>
+						<data.icon />
+					</MetricCardIcon>
+				</MetricCard>
 			))}
-		</div>
+		</MetricGrid>
 	);
 };

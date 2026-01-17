@@ -1,8 +1,9 @@
 "use client";
 
+import { RoleBadge } from "@/shared/components/role-badge";
+import { StatusBadge } from "@/shared/components/status-badge";
+import { Role, UserStatus } from "@/shared/constants";
 import { useTimeAgo } from "@/shared/hooks/use-time-ago";
-import { Badge } from "@repo/ui/components/badge";
-import { Button } from "@repo/ui/components/button";
 import {
 	Card,
 	CardContent,
@@ -23,90 +24,86 @@ import {
 	TableHeader,
 	TableRow,
 } from "@repo/ui/components/table";
-import { Pencil, Shield, Trash2 } from "@repo/ui/index";
-import { AddUserModal } from "../add-user-modal";
-import { EditUserModal } from "../edit-user-modal";
-import { DeleteUserModal } from "../delete-user-modal";
+import { Shield } from "@repo/ui/icons";
+import { AddUserModal } from "../../../../../features/user/components/add-user-modal";
+import { DeleteUserModal } from "../../../../../features/user/components/delete-user-modal";
+import { EditUserModal } from "../../../../../features/user/components/edit-user-modal";
 
-const mockData = [
+const mockData: {
+	name: string;
+	email: string;
+	role: Role;
+	user_status: UserStatus;
+	last_active: string;
+}[] = [
 	{
 		name: "Ronald Richarts",
 		email: "ronald@example.com",
-		role: "Tim QC",
-		color: "bg-green-600",
-		isActive: true,
+		role: "QC",
+		user_status: "ACTIVE",
 		last_active: "2026-01-16T14:00:00+07:00",
 	},
 	{
 		name: "Kristin Watson",
 		email: "kenzi.lawson@example.com",
-		role: "Tim Uploader",
-		color: "bg-blue-600",
-		isActive: true,
+		role: "UPLOADER",
+		user_status: "ACTIVE",
 		last_active: "2026-01-16T13:55:00+07:00",
 	},
 	{
 		name: "Jenny Wilson",
 		email: "jackson.graham@example.com",
-		role: "Tim QC",
-		color: "bg-green-600",
-		isActive: true,
+		role: "QC",
+		user_status: "ACTIVE",
 		last_active: "2026-01-16T14:05:00+07:00",
 	},
 	{
 		name: "Esther Howard",
 		email: "debra.holt@example.com",
-		role: "Tim Uploader",
-		color: "bg-blue-600",
-		isActive: false,
+		role: "UPLOADER",
+		user_status: "NON-ACTIVE",
 		last_active: "2026-01-14T09:00:00+07:00",
 	},
 	{
 		name: "Dianne Russell",
 		email: "michael.mitc@example.com",
-		role: "Pegawai SBAP",
-		color: "bg-purple-600",
-		isActive: true,
+		role: "SBAP",
+		user_status: "ACTIVE",
 		last_active: "2026-01-16T13:58:00+07:00",
 	},
 	{
 		name: "Darlene Robertson",
 		email: "debbie.baker@example.com",
-		role: "Pegawai SBAP",
-		color: "bg-purple-600",
-		isActive: false,
+		role: "SBAP",
+		user_status: "NON-ACTIVE",
 		last_active: "2026-01-14T08:45:00+07:00",
 	},
 	{
 		name: "Marvin McKinney",
 		email: "jessica.hanson@example.com",
-		role: "Tim QC",
-		color: "bg-green-600",
-		isActive: true,
+		role: "QC",
+		user_status: "ACTIVE",
 		last_active: "2026-01-16T13:59:00+07:00",
 	},
 	{
 		name: "Guy Hawkins",
 		email: "felicia.reid@example.com",
-		role: "Pegawai SBAP",
-		color: "bg-purple-600",
-		isActive: true,
+		role: "SBAP",
+		user_status: "ACTIVE",
 		last_active: "2026-01-16T13:57:00+07:00",
 	},
 	{
 		name: "Kathryn Murphy",
 		email: "michelle.rivera@example.com",
-		role: "Tim Uploader",
-		color: "bg-blue-600",
-		isActive: false,
+		role: "UPLOADER",
+		user_status: "NON-ACTIVE",
 		last_active: "2026-01-14T09:10:00+07:00",
 	},
 	{
 		name: "Floyd Miles",
 		email: "sara.cruz@example.com",
-		role: "Tim QC",
-		color: "bg-green-600",
-		isActive: true,
+		role: "QC",
+		user_status: "ACTIVE",
 		last_active: "2026-01-16T13:56:00+07:00",
 	},
 ];
@@ -153,18 +150,14 @@ export const UsersTableCard = () => {
 									<TableCell>{data.name}</TableCell>
 									<TableCell>{data.email}</TableCell>
 									<TableCell>
-										<Badge className={data.color}>{data.role}</Badge>
+										<RoleBadge variant={data.role} asTeam>
+											{data.role}
+										</RoleBadge>
 									</TableCell>
 									<TableCell>
-										<Badge
-											className={
-												data.isActive
-													? "bg-green-100 text-green-600"
-													: "text-destructive bg-red-100"
-											}
-										>
-											{data.isActive ? "Aktive" : "Non-Active"}
-										</Badge>
+										<StatusBadge variant={data.user_status}>
+											{data.user_status}
+										</StatusBadge>
 									</TableCell>
 									<TableCell className="text-muted-foreground">
 										{timeAgo(data.last_active)}

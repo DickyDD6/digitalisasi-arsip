@@ -1,6 +1,7 @@
 "use client";
 
 import { Alert, AlertDescription, AlertTitle } from "@repo/ui/components/alert";
+import { Badge } from "@repo/ui/components/badge";
 import { Button } from "@repo/ui/components/button";
 import { Card, CardContent } from "@repo/ui/components/card";
 import {
@@ -19,10 +20,10 @@ import {
 	ItemMedia,
 	ItemTitle,
 } from "@repo/ui/components/item";
-import { Trash2 } from "@repo/ui/index";
+import { Trash2 } from "@repo/ui/icons";
 import { useState } from "react";
 
-export const DeleteArchiveModal = ({ id }: { id: string }) => {
+export const DeleteUserModal = ({ id }: { id: string }) => {
 	const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
 
 	return (
@@ -44,7 +45,7 @@ export const DeleteArchiveModal = ({ id }: { id: string }) => {
 						</ItemMedia>
 						<ItemContent className="items-start">
 							<DialogTitle asChild>
-								<ItemTitle className="text-sm">Confirm Delete Document</ItemTitle>
+								<ItemTitle className="text-sm">Confirm Delete User</ItemTitle>
 							</DialogTitle>
 							<DialogDescription asChild>
 								<ItemDescription className="text-xs">
@@ -56,29 +57,29 @@ export const DeleteArchiveModal = ({ id }: { id: string }) => {
 				</DialogHeader>
 
 				<p className="text-muted-foreground text-sm">
-					Are you sure you want to delete the following documents?:
+					Are you sure you want to delete the following users from the System?:
 				</p>
 				<Card className="bg-muted border-border">
 					<CardContent className="space-y-2">
 						<div className="justify-between flex items-center">
-							<span className="text-muted-foreground">ID Document</span>
-							<span className="font-bold">{id}</span>
-						</div>
-						<div className="justify-between flex items-center">
 							<span className="text-muted-foreground">Student Name</span>
-							<span className="font-bold">John Doe</span>
+							<span className="font-bold">{id}</span>
 						</div>
 						<div className="justify-between flex items-center">
 							<span className="text-muted-foreground">NPM</span>
 							<span className="font-bold">0230400001</span>
 						</div>
 						<div className="justify-between flex items-center">
-							<span className="text-muted-foreground">Type</span>
-							<span className="font-bold">Transcript</span>
+							<span className="text-muted-foreground">Email</span>
+							<span className="font-bold">example@example.com</span>
 						</div>
 						<div className="justify-between flex items-center">
-							<span className="text-muted-foreground">Year</span>
-							<span className="font-bold">2002</span>
+							<span className="text-muted-foreground">Role</span>
+							<Badge className="bg-green-600">Tim QC</Badge>
+						</div>
+						<div className="justify-between flex items-center">
+							<span className="text-muted-foreground">Status</span>
+							<Badge className="text-green-600 bg-green-100">Active</Badge>
 						</div>
 					</CardContent>
 				</Card>
@@ -87,8 +88,8 @@ export const DeleteArchiveModal = ({ id }: { id: string }) => {
 					<Trash2 />
 					<AlertTitle>Attention!</AlertTitle>
 					<AlertDescription>
-						Documents that have been deleted cannot be restored. Make sure you
-						have verified this document before deleting.
+						Deleted users will lose all access to the system. Data associated
+						with these users will remain stored for audit purposes.
 					</AlertDescription>
 				</Alert>
 
@@ -97,7 +98,7 @@ export const DeleteArchiveModal = ({ id }: { id: string }) => {
 						Cancel
 					</Button>
 					<Button variant={"destructive"}>
-						<Trash2 /> Yes, Delete Document
+						<Trash2 /> Yes, Delete User
 					</Button>
 				</DialogFooter>
 			</DialogContent>
