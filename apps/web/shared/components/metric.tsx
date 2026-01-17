@@ -49,7 +49,7 @@ const MetricCardValue = ({ className, ...props }: ComponentProps<"div">) => (
 );
 
 const MetricCardIcon = ({ className, ...props }: ComponentProps<"span">) => (
-	<Badge className={cn("rounded-md size-10", className)} {...props} />
+	<Badge className={cn("rounded-md size-10 bg-transparent", className)} {...props} />
 );
 
 export {

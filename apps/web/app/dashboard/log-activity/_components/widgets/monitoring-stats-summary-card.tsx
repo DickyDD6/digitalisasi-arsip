@@ -1,3 +1,10 @@
+import {
+	MetricCard,
+	MetricCardContent,
+	MetricCardTitle,
+	MetricCardValue,
+	MetricGrid,
+} from "@/shared/components/metric";
 import { Button } from "@repo/ui/components/button";
 import { Card, CardContent } from "@repo/ui/components/card";
 import {
@@ -33,25 +40,17 @@ const mockData = [
 
 export const MonitoringStatsSummaryCard = () => {
 	return (
-		<div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
+		<MetricGrid>
 			{mockData.map((data, i) => (
-				<Button key={i} className="p-0 h-auto w-auto" variant={"ghost"}>
-					<Card className="w-full h-full hover:scale-105 transition-all hover:shadow-lg hover:border-primary">
-						<CardContent>
-							<Item className="p-0">
-								<ItemContent className="items-start">
-									<ItemDescription className="line-clamp-2">
-										{data.title}
-									</ItemDescription>
-									<ItemTitle className={cn("text-xl", data.color)}>
-										{data.count}
-									</ItemTitle>
-								</ItemContent>
-							</Item>
-						</CardContent>
-					</Card>
-				</Button>
+				<MetricCard key={i}>
+					<MetricCardContent>
+						<MetricCardTitle>{data.title}</MetricCardTitle>
+						<MetricCardValue className={cn(data.color)}>
+							{data.count}
+						</MetricCardValue>
+					</MetricCardContent>
+				</MetricCard>
 			))}
-		</div>
+		</MetricGrid>
 	);
 };
