@@ -8,7 +8,7 @@ import {
 	ItemTitle,
 } from "@repo/ui/components/item";
 import { Shield, UploadCloud, UsersRound, Workflow } from "@repo/ui/icons";
-import { cn } from "@repo/ui";
+import { cn } from "@repo/ui/lib";
 
 const mockData = [
 	{

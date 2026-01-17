@@ -3,12 +3,13 @@
 	"version": "0.0.0",
 	"private": true,
 	"exports": {
+		"./lib": "./src/lib/utils.ts",
 		"./components/*": "./src/components/*.tsx",
 		"./globals.css": "./src/styles/globals.css",
 		"./hooks/*": "./src/hooks/*.ts",
 		"./postcss.config": "./postcss.config.mjs",
-		"./icons": "./src/icons/index.ts",
-		".": "./src/index.ts"
+		"./icons": "./src/index.ts",
+		"./radix": "./src/radix/index.ts"
 	},
 	"scripts": {
 		"lint": "eslint . --max-warnings 0",
