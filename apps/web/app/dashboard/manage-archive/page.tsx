@@ -31,7 +31,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@repo/ui/components/table";
-import { Download, FileText, Funnel } from "@repo/ui/index";
+import { Download, FileText, Funnel } from "@repo/ui/icons";
 import { cn } from "@repo/ui/lib/utils";
 import { Metadata } from "next";
 import { DeleteArchiveModal } from "./_components/delete-archive-modal";

@@ -44,7 +44,7 @@ import {
 	UserRound,
 	UserRoundCog,
 	X,
-} from "@repo/ui/index";
+} from "@repo/ui/icons";
 import { useState } from "react";
 import { FieldGeneratePassword } from "./field-generate-password";
 import { Alert, AlertDescription, AlertTitle } from "@repo/ui/components/alert";

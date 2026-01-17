@@ -17,7 +17,7 @@ import {
 	AlertTriangle,
 	CheckCircle2,
 	InfoIcon,
-} from "@repo/ui/index";
+} from "@repo/ui/icons";
 import Link from "next/link";
 
 export const NotificationsAndAnnouncements = () => {

@@ -5,7 +5,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@repo/ui/components/card";
-import { AlertCircle, InfoIcon, XCircle } from "@repo/ui/index";
+import { AlertCircle, InfoIcon, XCircle } from "@repo/ui/icons";
 
 export const VerificationProcessStatus = () => {
 	return (

@@ -11,7 +11,7 @@ import {
 	NativeSelect,
 	NativeSelectOption,
 } from "@repo/ui/components/native-select";
-import { Calendar, Funnel } from "@repo/ui/index";
+import { Calendar, Funnel } from "@repo/ui/icons";
 
 export const PeriodFilterCard = () => {
 	return (

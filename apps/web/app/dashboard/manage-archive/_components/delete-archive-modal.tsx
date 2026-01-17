@@ -19,7 +19,7 @@ import {
 	ItemMedia,
 	ItemTitle,
 } from "@repo/ui/components/item";
-import { Trash2 } from "@repo/ui/index";
+import { Trash2 } from "@repo/ui/icons";
 import { useState } from "react";
 
 export const DeleteArchiveModal = ({ id }: { id: string }) => {

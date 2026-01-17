@@ -35,7 +35,7 @@ import {
 	UserRound,
 	UserRoundCog,
 	UserRoundPlus,
-} from "@repo/ui/index";
+} from "@repo/ui/icons";
 import { useState } from "react";
 import { FieldGeneratePassword } from "./field-generate-password";
 import {

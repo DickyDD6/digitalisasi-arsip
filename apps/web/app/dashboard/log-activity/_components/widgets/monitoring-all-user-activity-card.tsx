@@ -22,7 +22,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@repo/ui/components/table";
-import { Logs } from "@repo/ui/index";
+import { Logs } from "@repo/ui/icons";
 
 const mockDataTable = [
 	{

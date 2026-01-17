@@ -26,7 +26,7 @@ import {
 	FileText,
 	Trash2,
 	UserRound,
-} from "@repo/ui/index";
+} from "@repo/ui/icons";
 import { cn } from "@repo/ui/lib/utils";
 import Link from "next/link";
 

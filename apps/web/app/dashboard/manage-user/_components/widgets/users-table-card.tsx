@@ -23,7 +23,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@repo/ui/components/table";
-import { Pencil, Shield, Trash2 } from "@repo/ui/index";
+import { Pencil, Shield, Trash2 } from "@repo/ui/icons";
 import { AddUserModal } from "../add-user-modal";
 import { EditUserModal } from "../edit-user-modal";
 import { DeleteUserModal } from "../delete-user-modal";

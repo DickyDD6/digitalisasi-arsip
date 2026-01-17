@@ -9,7 +9,7 @@ import {
 	Copy,
 	PencilLine,
 	RefreshCw
-} from "@repo/ui/index";
+} from "@repo/ui/icons";
 import generator from "generate-password";
 import { useState } from "react";
 

@@ -29,7 +29,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@repo/ui/components/table";
-import { Funnel } from "@repo/ui/index";
+import { Funnel } from "@repo/ui/icons";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 const chartData = [

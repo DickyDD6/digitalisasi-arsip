@@ -11,7 +11,7 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "@repo/ui/components/sidebar";
-import { FolderArchive, Settings } from "@repo/ui/index";
+import { FolderArchive, Settings } from "@repo/ui/icons";
 import { sidebarItems } from "../lib/dashboard-sidebar-items";
 import { usePathname } from "next/navigation";
 import Link from "next/link";

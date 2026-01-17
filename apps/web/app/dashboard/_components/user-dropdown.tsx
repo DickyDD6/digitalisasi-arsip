@@ -22,7 +22,7 @@ import {
 	LogOut,
 	UserCircle2,
 	UserRound,
-} from "@repo/ui/index";
+} from "@repo/ui/icons";
 import Link from "next/link";
 
 export const UserDropdown = () => {
