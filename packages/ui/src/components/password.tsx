@@ -5,7 +5,11 @@ import * as React from "react";
 import { Button } from "./button";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "./input-group";
 
-export const InputPassword = (props: React.ComponentProps<"input">) => {
+export const InputPassword = (
+	props: React.ComponentProps<"input"> & {
+		addon?: React.ReactNode;
+	},
+) => {
 	const [showPassword, setShowPassword] = React.useState<boolean>(false);
 
 	return (
@@ -24,6 +28,7 @@ export const InputPassword = (props: React.ComponentProps<"input">) => {
 					{showPassword ? <Eye /> : <EyeClosed />}
 				</Button>
 			</InputGroupAddon>
+			{props.addon}
 		</InputGroup>
 	);
 };
