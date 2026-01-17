@@ -37,7 +37,7 @@ import {
 	UserRoundPlus,
 } from "@repo/ui/icons";
 import { useState } from "react";
-import { FieldGeneratePassword } from "./field-generate-password";
+import { FieldGeneratePassword } from "../../archive/components/field-generate-password";
 import {
 	NativeSelect,
 	NativeSelectOption,

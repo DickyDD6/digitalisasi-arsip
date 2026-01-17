@@ -46,7 +46,7 @@ import {
 	X,
 } from "@repo/ui/icons";
 import { useState } from "react";
-import { FieldGeneratePassword } from "./field-generate-password";
+import { FieldGeneratePassword } from "../../archive/components/field-generate-password";
 import { Alert, AlertDescription, AlertTitle } from "@repo/ui/components/alert";
 import { RadioGroup, RadioGroupItem } from "@repo/ui/components/radio-group";
 import { Label } from "@repo/ui/components/label";

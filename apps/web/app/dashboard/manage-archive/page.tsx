@@ -1,3 +1,4 @@
+import { PageHeader } from "@/shared/components/page-header";
 import { SearchInput } from "@/shared/components/search/search-input";
 import { StatusBadge } from "@/shared/components/status-badge";
 import { DocumentStatus, DocumentType } from "@/shared/constants";
@@ -34,8 +35,8 @@ import {
 } from "@repo/ui/components/table";
 import { Download, FileText, Funnel } from "@repo/ui/icons";
 import { Metadata } from "next";
-import { DeleteArchiveModal } from "./_components/delete-archive-modal";
-import { ViewArchiveModal } from "./_components/view-archive-modal";
+import { DeleteArchiveModal } from "../../../features/archive/components/delete-archive-modal";
+import { ViewArchiveModal } from "../../../features/archive/components/view-archive-modal";
 
 const mockData: {
 	id: string;
@@ -147,14 +148,10 @@ export const metadata: Metadata = {
 const ManageArchivePage = () => {
 	return (
 		<>
-			<Card>
-				<CardContent className="space-y-1">
-					<CardTitle>Manage Archive</CardTitle>
-					<CardDescription>
-						View, download, and delete student grade documents and transcripts.
-					</CardDescription>
-				</CardContent>
-			</Card>
+			<PageHeader
+				title="Manage Archive"
+				description="View, download, and delete student grade documents and transcripts."
+			/>
 
 			<Card>
 				<CardHeader>
