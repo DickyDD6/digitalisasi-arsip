@@ -32,7 +32,7 @@ import {
 	TableRow,
 } from "@repo/ui/components/table";
 import { Download, FileText, Funnel } from "@repo/ui/icons";
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@repo/ui";
 import { Metadata } from "next";
 import { DeleteArchiveModal } from "./_components/delete-archive-modal";
 import { ViewArchiveModal } from "./_components/view-archive-modal";

@@ -18,7 +18,7 @@ import {
 	FileX,
 	UserRoundCheck,
 } from "@repo/ui/icons";
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@repo/ui";
 
 const mockData = [
 	{

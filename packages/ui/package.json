@@ -3,7 +3,6 @@
 	"version": "0.0.0",
 	"private": true,
 	"exports": {
-		"./lib/*": "./src/lib/*.ts",
 		"./components/*": "./src/components/*.tsx",
 		"./globals.css": "./src/styles/globals.css",
 		"./hooks/*": "./src/hooks/*.ts",

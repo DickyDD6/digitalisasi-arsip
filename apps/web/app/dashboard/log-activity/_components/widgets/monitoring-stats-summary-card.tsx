@@ -6,7 +6,7 @@ import {
 	ItemDescription,
 	ItemTitle,
 } from "@repo/ui/components/item";
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@repo/ui";
 
 const mockData = [
 	{

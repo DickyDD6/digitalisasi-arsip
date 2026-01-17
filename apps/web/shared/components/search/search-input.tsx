@@ -57,7 +57,7 @@ import {
 } from "@repo/ui/icons";
 import { useEffect, useState } from "react";
 import { useSearchCommandStore } from "./search-store";
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@repo/ui";
 
 export const SearchCommandShortcut = () => {
 	const openSearchCommand = useSearchCommandStore((s) => s.openSearchCommand);
