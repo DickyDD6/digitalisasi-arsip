@@ -1,0 +1,1257 @@
+openapi: 3.0.3
+info:
+  title: API Digitalisasi Arsip
+  description: |
+    REST API untuk sistem digitalisasi arsip akademik.
+    
+    ## Autentikasi
+    API ini menggunakan Laravel Sanctum dengan session-based authentication.
+    
+    **Langkah autentikasi:**
+    1. GET `/sanctum/csrf-cookie` untuk mendapatkan CSRF token
+    2. POST `/api/auth/login` dengan credentials
+    3. Sertakan cookie dan X-XSRF-TOKEN header pada setiap request
+    
+    ## Roles
+    - **Manager**: Full access ke semua fitur
+    - **Uploader**: Upload, update & delete dokumen sendiri
+    - **QC**: Verifikasi dokumen
+    - **SBAP**: Download dokumen terverifikasi
+  version: 1.0.0
+  contact:
+    name: API Support
+
+servers:
+  - url: http://localhost:8000
+    description: Local Development Server
+
+tags:
+  - name: Authentication
+    description: Endpoints untuk autentikasi
+  - name: Users
+    description: User Management (UC-01) - Manager only
+  - name: Documents
+    description: Document Management (UC-04, UC-06, UC-07, UC-08, UC-10)
+  - name: Audit Logs
+    description: Activity Monitoring (UC-03) - Manager only
+
+paths:
+  /sanctum/csrf-cookie:
+    get:
+      tags:
+        - Authentication
+      summary: Get CSRF Cookie
+      description: |
+        Mengambil CSRF cookie yang diperlukan untuk autentikasi.
+        Cookie `XSRF-TOKEN` akan otomatis tersimpan.
+      operationId: getCsrfCookie
+      responses:
+        '204':
+          description: No Content - CSRF cookie berhasil disimpan
+
+  /api/auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login
+      description: Login dengan email dan password
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login berhasil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /api/auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Logout
+      description: Logout dan invalidate session
+      operationId: logout
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Logout berhasil
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Logout berhasil.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/auth/me:
+    get:
+      tags:
+        - Authentication
+      summary: Get Current User
+      description: Mengambil data user yang sedang login
+      operationId: getCurrentUser
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Data user berhasil diambil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/users:
+    get:
+      tags:
+        - Users
+      summary: List Users
+      description: Mengambil daftar semua user (Manager only)
+      operationId: listUsers
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: search
+          in: query
+          description: Cari berdasarkan nama atau email
+          schema:
+            type: string
+        - name: role
+          in: query
+          description: Filter berdasarkan role
+          schema:
+            type: string
+            enum: [manager, uploader, qc, sbap]
+        - name: per_page
+          in: query
+          description: Jumlah data per halaman
+          schema:
+            type: integer
+            default: 15
+        - name: page
+          in: query
+          description: Nomor halaman
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Daftar user berhasil diambil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    post:
+      tags:
+        - Users
+      summary: Create User
+      description: Membuat user baru (Manager only)
+      operationId: createUser
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '201':
+          description: User berhasil dibuat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /api/users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get User Detail
+      description: Mengambil detail user berdasarkan ID
+      operationId: getUser
+      security:
+        - cookieAuth: []
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: Detail user berhasil diambil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags:
+        - Users
+      summary: Update User
+      description: Mengupdate data user
+      operationId: updateUser
+      security:
+        - cookieAuth: []
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+      responses:
+        '200':
+          description: User berhasil diupdate
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+    delete:
+      tags:
+        - Users
+      summary: Delete User
+      description: Menghapus user (tidak bisa menghapus akun sendiri)
+      operationId: deleteUser
+      security:
+        - cookieAuth: []
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: User berhasil dihapus
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User berhasil dihapus.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: Tidak dapat menghapus akun sendiri
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /api/documents:
+    get:
+      tags:
+        - Documents
+      summary: List Documents
+      description: Mengambil daftar dokumen
+      operationId: listDocuments
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: document_type
+          in: query
+          description: Filter berdasarkan tipe dokumen
+          schema:
+            type: string
+            enum: [nilai, transkrip, ijazah]
+        - name: status
+          in: query
+          description: Filter berdasarkan status
+          schema:
+            type: string
+            enum: [menunggu_verifikasi, terverifikasi, tidak_terverifikasi]
+        - name: prodi
+          in: query
+          description: Filter berdasarkan program studi
+          schema:
+            type: string
+        - name: search
+          in: query
+          description: Cari berdasarkan nama file
+          schema:
+            type: string
+        - name: per_page
+          in: query
+          description: Jumlah data per halaman
+          schema:
+            type: integer
+            default: 15
+        - name: page
+          in: query
+          description: Nomor halaman
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Daftar dokumen berhasil diambil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    post:
+      tags:
+        - Documents
+      summary: Upload Document (UC-04)
+      description: |
+        Upload dokumen baru (Manager & Uploader only).
+        
+        **Tipe dokumen dan field yang diperlukan:**
+        - `nilai`: prodi, tahun_ajaran, mata_kuliah, kelas
+        - `ijazah` / `transkrip`: prodi, tahun_lulus, npm
+      operationId: uploadDocument
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UploadDocumentRequest'
+      responses:
+        '201':
+          description: Dokumen berhasil diunggah
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: Dokumen duplikat terdeteksi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Dokumen duplikat terdeteksi.
+                  errors:
+                    type: object
+                    properties:
+                      duplicate:
+                        type: array
+                        items:
+                          type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /api/documents/{id}:
+    get:
+      tags:
+        - Documents
+      summary: Get Document Detail
+      description: Mengambil detail dokumen berdasarkan ID
+      operationId: getDocument
+      security:
+        - cookieAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DocumentId'
+      responses:
+        '200':
+          description: Detail dokumen berhasil diambil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags:
+        - Documents
+      summary: Update Document (UC-06)
+      description: |
+        Update metadata dokumen (hanya untuk dokumen dengan status `tidak_terverifikasi`).
+        
+        Setelah update, status akan direset ke `menunggu_verifikasi`.
+        File dan document_type tidak dapat diubah.
+      operationId: updateDocument
+      security:
+        - cookieAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DocumentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDocumentRequest'
+      responses:
+        '200':
+          description: Dokumen berhasil diperbarui
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: Dokumen yang sudah terverifikasi tidak dapat diperbarui
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+    delete:
+      tags:
+        - Documents
+      summary: Delete Document (UC-07)
+      description: |
+        Menghapus dokumen (hanya untuk dokumen dengan status `tidak_terverifikasi`).
+        
+        Manager dapat menghapus semua dokumen rejected.
+        Uploader hanya dapat menghapus dokumen miliknya sendiri.
+      operationId: deleteDocument
+      security:
+        - cookieAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DocumentId'
+      responses:
+        '200':
+          description: Dokumen berhasil dihapus
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Dokumen berhasil dihapus.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Tidak memiliki izin atau dokumen sudah terverifikasi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/documents/{id}/download:
+    get:
+      tags:
+        - Documents
+      summary: Download Document (UC-10)
+      description: |
+        Download file dokumen (Manager & SBAP only).
+        
+        SBAP hanya dapat download dokumen dengan status `terverifikasi`.
+      operationId: downloadDocument
+      security:
+        - cookieAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DocumentId'
+      responses:
+        '200':
+          description: File PDF
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/documents/pending:
+    get:
+      tags:
+        - Documents
+      summary: List Pending Documents (UC-08)
+      description: Mengambil daftar dokumen yang menunggu verifikasi (Manager & QC only)
+      operationId: listPendingDocuments
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: per_page
+          in: query
+          description: Jumlah data per halaman
+          schema:
+            type: integer
+            default: 15
+        - name: page
+          in: query
+          description: Nomor halaman
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Daftar dokumen pending berhasil diambil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /api/documents/{id}/verify:
+    patch:
+      tags:
+        - Documents
+      summary: Verify Document (UC-08)
+      description: |
+        Verifikasi atau tolak dokumen (Manager & QC only).
+        
+        Dokumen yang sudah terverifikasi sebelumnya tidak dapat diverifikasi ulang.
+      operationId: verifyDocument
+      security:
+        - cookieAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DocumentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyDocumentRequest'
+      responses:
+        '200':
+          description: Dokumen berhasil diverifikasi/ditolak
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: Dokumen sudah diverifikasi sebelumnya
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /api/audit-logs:
+    get:
+      tags:
+        - Audit Logs
+      summary: List Audit Logs (UC-03)
+      description: |
+        Mengambil daftar audit log aktivitas sistem (Manager only).
+        
+        Mendukung filtering berdasarkan action, user, model type, dan date range.
+      operationId: listAuditLogs
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: action
+          in: query
+          description: Filter berdasarkan action type
+          schema:
+            type: string
+            example: upload_document
+        - name: user_id
+          in: query
+          description: Filter berdasarkan user ID
+          schema:
+            type: integer
+            example: 2
+        - name: model_type
+          in: query
+          description: Filter berdasarkan model type
+          schema:
+            type: string
+            example: App\Models\Document
+        - name: start_date
+          in: query
+          description: Filter dari tanggal (ISO 8601)
+          schema:
+            type: string
+            format: date-time
+            example: "2026-01-01T00:00:00Z"
+        - name: end_date
+          in: query
+          description: Filter sampai tanggal (ISO 8601)
+          schema:
+            type: string
+            format: date-time
+            example: "2026-01-31T23:59:59Z"
+        - name: search
+          in: query
+          description: Cari berdasarkan description
+          schema:
+            type: string
+        - name: per_page
+          in: query
+          description: Jumlah data per halaman
+          schema:
+            type: integer
+            default: 20
+        - name: page
+          in: query
+          description: Nomor halaman
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Daftar audit log berhasil diambil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLogListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /api/audit-logs/statistics:
+    get:
+      tags:
+        - Audit Logs
+      summary: Get Audit Log Statistics (UC-03)
+      description: |
+        Mengambil statistik aktivitas sistem (Manager only).
+        
+        Termasuk total aktivitas, breakdown by action, by user, dan recent activities.
+      operationId: getAuditLogStatistics
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: start_date
+          in: query
+          description: Filter dari tanggal (default: 30 hari lalu)
+          schema:
+            type: string
+            format: date-time
+        - name: end_date
+          in: query
+          description: Filter sampai tanggal (default: sekarang)
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Statistik berhasil diambil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLogStatisticsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+components:
+
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: digitalisasi_arsip_api_session
+      description: Session cookie dari Laravel Sanctum
+
+  parameters:
+    UserId:
+      name: id
+      in: path
+      required: true
+      description: User ID
+      schema:
+        type: integer
+        example: 1
+
+    DocumentId:
+      name: id
+      in: path
+      required: true
+      description: Document ID
+      schema:
+        type: integer
+        example: 1
+
+  responses:
+    Unauthorized:
+      description: Unauthenticated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Unauthenticated.
+
+    Forbidden:
+      description: Forbidden - Tidak memiliki izin
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: This action is unauthorized.
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Not Found.
+
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: manager@test.com
+        password:
+          type: string
+          format: password
+          example: password
+
+    LoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Login berhasil.
+        data:
+          type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Manager
+        email:
+          type: string
+          format: email
+          example: manager@test.com
+        nip:
+          type: string
+          nullable: true
+          example: "1234567890"
+        role:
+          type: string
+          enum: [manager, uploader, qc, sbap]
+          example: manager
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-01-14T04:00:00.000000Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2026-01-14T04:00:00.000000Z"
+
+    UserResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Detail user berhasil diambil.
+        data:
+          $ref: '#/components/schemas/User'
+
+    UserListResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Daftar user berhasil diambil.
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    CreateUserRequest:
+      type: object
+      required:
+        - name
+        - email
+        - password
+        - role
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          example: Uploader Baru
+        email:
+          type: string
+          format: email
+          example: uploader_baru@test.com
+        nip:
+          type: string
+          maxLength: 50
+          nullable: true
+          example: "1234567890"
+        password:
+          type: string
+          minLength: 8
+          example: password123
+        role:
+          type: string
+          enum: [manager, uploader, qc, sbap]
+          example: uploader
+
+    UpdateUserRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          example: Uploader Baru - Updated
+        email:
+          type: string
+          format: email
+          example: uploader_updated@test.com
+        nip:
+          type: string
+          maxLength: 50
+          nullable: true
+          example: "0987654321"
+        password:
+          type: string
+          minLength: 8
+          example: newpassword123
+        role:
+          type: string
+          enum: [manager, uploader, qc, sbap]
+          example: qc
+
+    Document:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        document_type:
+          type: string
+          enum: [nilai, transkrip, ijazah]
+          example: nilai
+        file_name:
+          type: string
+          example: nilai_pemrograman_web_2024.pdf
+        file_size:
+          type: integer
+          description: Ukuran file dalam bytes
+          example: 102400
+        prodi:
+          type: string
+          example: Teknik Informatika
+        tahun_ajaran:
+          type: string
+          nullable: true
+          description: Wajib untuk dokumen nilai
+          example: "2024/2025"
+        mata_kuliah:
+          type: string
+          nullable: true
+          description: Wajib untuk dokumen nilai
+          example: Pemrograman Web
+        kelas:
+          type: string
+          nullable: true
+          description: Wajib untuk dokumen nilai
+          example: A
+        tahun_lulus:
+          type: string
+          nullable: true
+          description: Wajib untuk dokumen ijazah/transkrip
+          example: "2024"
+        npm:
+          type: string
+          nullable: true
+          description: Wajib untuk dokumen ijazah/transkrip
+          example: "1234567890"
+        status:
+          type: string
+          enum: [menunggu_verifikasi, terverifikasi, tidak_terverifikasi]
+          example: menunggu_verifikasi
+        verification_note:
+          type: string
+          nullable: true
+          example: null
+        uploaded_by:
+          type: integer
+          example: 2
+        verified_by:
+          type: integer
+          nullable: true
+          example: null
+        verified_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: null
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-01-14T04:00:00.000000Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2026-01-14T04:00:00.000000Z"
+        uploader:
+          $ref: '#/components/schemas/User'
+        verifier:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/User'
+
+    DocumentResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Detail dokumen berhasil diambil.
+        data:
+          $ref: '#/components/schemas/Document'
+
+    DocumentListResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Daftar dokumen berhasil diambil.
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Document'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    UploadDocumentRequest:
+      type: object
+      required:
+        - document_type
+        - prodi
+        - file
+      properties:
+        document_type:
+          type: string
+          enum: [nilai, transkrip, ijazah]
+          description: Tipe dokumen
+          example: nilai
+        prodi:
+          type: string
+          maxLength: 255
+          description: Program studi
+          example: Teknik Informatika
+        file:
+          type: string
+          format: binary
+          description: File PDF (max 5MB)
+        tahun_ajaran:
+          type: string
+          maxLength: 255
+          description: Wajib untuk dokumen nilai
+          example: "2024/2025"
+        mata_kuliah:
+          type: string
+          maxLength: 255
+          description: Wajib untuk dokumen nilai
+          example: Pemrograman Web
+        kelas:
+          type: string
+          maxLength: 255
+          description: Wajib untuk dokumen nilai
+          example: A
+        tahun_lulus:
+          type: string
+          maxLength: 255
+          description: Wajib untuk dokumen ijazah/transkrip
+          example: "2024"
+        npm:
+          type: string
+          maxLength: 255
+          description: Wajib untuk dokumen ijazah/transkrip
+          example: "1234567890"
+
+    UpdateDocumentRequest:
+      type: object
+      properties:
+        prodi:
+          type: string
+          maxLength: 255
+          example: Sistem Informasi - Updated
+        tahun_ajaran:
+          type: string
+          maxLength: 255
+          description: Untuk dokumen nilai
+          example: "2025/2026"
+        mata_kuliah:
+          type: string
+          maxLength: 255
+          description: Untuk dokumen nilai
+          example: Algoritma
+        kelas:
+          type: string
+          maxLength: 255
+          description: Untuk dokumen nilai
+          example: B
+        tahun_lulus:
+          type: string
+          maxLength: 255
+          description: Untuk dokumen ijazah/transkrip
+          example: "2025"
+        npm:
+          type: string
+          maxLength: 255
+          description: Untuk dokumen ijazah/transkrip
+          example: "0987654321"
+
+    VerifyDocumentRequest:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum: [terverifikasi, tidak_terverifikasi]
+          description: Status verifikasi
+          example: terverifikasi
+        verification_note:
+          type: string
+          maxLength: 500
+          nullable: true
+          description: Catatan verifikasi (opsional, disarankan jika ditolak)
+          example: Format dokumen tidak sesuai standar.
+
+    AuditLog:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        user:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: integer
+              example: 2
+            name:
+              type: string
+              example: Tim Uploader
+            email:
+              type: string
+              example: uploader@test.com
+        action:
+          type: string
+          example: upload_document
+        description:
+          type: string
+          example: "Dokumen 'Nilai_DB_2024.pdf' diunggah."
+        model_type:
+          type: string
+          nullable: true
+          example: App\Models\Document
+        model_id:
+          type: integer
+          nullable: true
+          example: 1
+        metadata:
+          type: object
+          nullable: true
+        ip_address:
+
+          type: string
+          example: "127.0.0.1"
+        user_agent:
+          type: string
+          example: "PostmanRuntime/7.32.1"
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-01-19T10:30:00.000000Z"
+
+    AuditLogListResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Log aktivitas berhasil diambil.
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditLog'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    AuditLogStatisticsResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Statistik aktivitas berhasil diambil.
+        data:
+          type: object
+          properties:
+            total_activities:
+              type: integer
+              example: 150
+            by_action:
+              type: object
+              example:
+                upload_document: 50
+                verify_document: 30
+                download_document: 20
+            by_user:
+              type: array
+              items:
+                type: object
+                properties:
+                  user:
+                    type: string
+                    example: Tim Uploader
+                  count:
+                    type: integer
+                    example: 25
+            recent_activities:
+              type: array
+              items:
+                $ref: '#/components/schemas/AuditLog'
+        period:
+          type: object
+          properties:
+            start_date:
+              type: string
+              format: date-time
+            end_date:
+              type: string
+              format: date-time
+
+    PaginationMeta:
+
+      type: object
+      properties:
+        current_page:
+          type: integer
+          example: 1
+        last_page:
+          type: integer
+          example: 5
+        per_page:
+          type: integer
+          example: 15
+        total:
+          type: integer
+          example: 72
+
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: The given data was invalid.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            email:
+              - Email wajib diisi.
+              - Format email tidak valid.
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: This action is unauthorized.

@@ -27,10 +27,12 @@ class UpdateUserRequest extends FormRequest
         return [
             'name' => ['sometimes', 'string', 'max:255'],
             'email' => ['sometimes', 'email', Rule::unique('users', 'email')->ignore($userId)],
+            'nip' => ['nullable', 'string', 'max:50'],
             'password' => ['nullable', 'string', 'min:8'],
             'role' => ['sometimes', Rule::in(['manager', 'uploader', 'qc', 'sbap'])],
         ];
     }
+
 
     /**
      * Get custom messages for validator errors.
