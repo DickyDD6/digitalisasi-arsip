@@ -36,9 +36,9 @@ export const LoginForm = () => {
 	return (
 		<form
 			id="login-form"
-			onSubmit={(e) => {
+			onSubmit={async(e) => {
 				e.preventDefault();
-				loginForm.handleSubmit();
+				await loginForm.handleSubmit();
 			}}
 		>
 			<FieldSet>

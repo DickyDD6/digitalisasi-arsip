@@ -27,10 +27,10 @@ export const FieldGeneratePassword = () => {
 	const [randowmPass, setRandowmPass] = useState<string>(generatePassword);
 	const [copied, setCopied] = useState<boolean>(false);
 
-	const handleCopyPassword = () => {
+	const handleCopyPassword = async () => {
 		if (!randowmPass) return;
 
-		navigator.clipboard.writeText(randowmPass);
+		await navigator.clipboard.writeText(randowmPass);
 		setCopied(true);
 
 		setTimeout(() => setCopied(false), 1500);

@@ -35,8 +35,8 @@ import {
 } from "@repo/ui/components/table";
 import { Download, FileText, Funnel } from "@repo/ui/icons";
 import { Metadata } from "next";
-import { DeleteArchiveModal } from "../../../features/archive/components/delete-archive-modal";
-import { ViewArchiveModal } from "../../../features/archive/components/view-archive-modal";
+import { DeleteArchiveModal } from "@/features/archive/components/delete-archive-modal";
+import { ViewArchiveModal } from "@/features/archive/components/view-archive-modal";
 
 const mockData: {
 	id: string;

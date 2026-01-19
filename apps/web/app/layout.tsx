@@ -1,9 +1,10 @@
-import { Toaster } from "@repo/ui/components/sonner";
+import {Toaster} from "@repo/ui/components/sonner";
 import "@repo/ui/globals.css";
-import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import type {Metadata} from "next";
+import {Poppins} from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
-import { TanstackQueryProvider } from "./providers";
+import {TanstackQueryProvider} from "./providers";
+import {ReactNode} from "react";
 
 export const metadata: Metadata = {
 	title: {
@@ -19,17 +20,17 @@ const poppins = Poppins({
 });
 
 export default function RootLayout({
-	children,
-}: Readonly<{
-	children: React.ReactNode;
+																		 children,
+																	 }: Readonly<{
+	children: ReactNode;
 }>) {
 	return (
 		<html lang="en">
-			<body className={poppins.className}>
-				<NextTopLoader showSpinner={false} color="var(--primary)" />
-				<TanstackQueryProvider>{children}</TanstackQueryProvider>
-				<Toaster richColors theme="light" position="top-right" />
-			</body>
+		<body className={poppins.className}>
+		<NextTopLoader showSpinner={false} color="var(--primary)"/>
+		<TanstackQueryProvider>{children}</TanstackQueryProvider>
+		<Toaster richColors theme="light" position="top-right"/>
+		</body>
 		</html>
 	);
 }

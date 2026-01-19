@@ -1,7 +1,7 @@
 import { SearchInput } from "@/shared/components/search/search-input";
 import { SidebarTrigger } from "@repo/ui/components/sidebar";
 import Image from "next/image";
-import { NotificationsDropdown } from "../../../features/notification/components/notifications-dropdown";
+import { NotificationsDropdown } from "@/features/notification/components/notifications-dropdown";
 
 export const DashboardNavbar = () => {
 	return (

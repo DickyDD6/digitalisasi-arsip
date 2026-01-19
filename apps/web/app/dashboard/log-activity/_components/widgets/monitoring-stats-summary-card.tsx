@@ -1,19 +1,5 @@
-import {
-	MetricCard,
-	MetricCardContent,
-	MetricCardTitle,
-	MetricCardValue,
-	MetricGrid,
-} from "@/shared/components/metric";
-import { Button } from "@repo/ui/components/button";
-import { Card, CardContent } from "@repo/ui/components/card";
-import {
-	Item,
-	ItemContent,
-	ItemDescription,
-	ItemTitle,
-} from "@repo/ui/components/item";
-import { cn } from "@repo/ui/lib";
+import {MetricCard, MetricCardContent, MetricCardTitle, MetricCardValue, MetricGrid,} from "@/shared/components/metric";
+import {cn} from "@repo/ui/lib";
 
 const mockData = [
 	{

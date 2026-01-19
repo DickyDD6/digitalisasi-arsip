@@ -14,10 +14,10 @@ export const useLogin = () => {
 	return useMutation({
 		mutationFn: login,
 		mutationKey: ["auth-login"],
-		onSuccess: (data) => {
+		onSuccess: async (data) => {
 			toast.success("LogIn Success!");
 			setSession(data.accessToken);
-			queryClient.invalidateQueries({ queryKey: ["current-user"] });
+			await queryClient.invalidateQueries({ queryKey: ["current-user"] });
 			router.replace("/dashboard");
 		},
 		onError: (error) => {

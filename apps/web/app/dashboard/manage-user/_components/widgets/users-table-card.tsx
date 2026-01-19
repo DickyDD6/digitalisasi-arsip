@@ -25,9 +25,9 @@ import {
 	TableRow,
 } from "@repo/ui/components/table";
 import { Shield } from "@repo/ui/icons";
-import { AddUserModal } from "../../../../../features/user/components/add-user-modal";
-import { DeleteUserModal } from "../../../../../features/user/components/delete-user-modal";
-import { EditUserModal } from "../../../../../features/user/components/edit-user-modal";
+import { AddUserModal } from "@/features/user/components/add-user-modal";
+import { DeleteUserModal } from "@/features/user/components/delete-user-modal";
+import { EditUserModal } from "@/features/user/components/edit-user-modal";
 
 const mockData: {
 	name: string;

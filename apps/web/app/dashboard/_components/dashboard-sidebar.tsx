@@ -15,7 +15,7 @@ import { FolderArchive, Settings } from "@repo/ui/icons";
 import { sidebarItems } from "../_lib/dashboard-sidebar-items";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { UserDropdown } from "../../../features/user/components/user-dropdown";
+import { UserDropdown } from "@/features/user/components/user-dropdown";
 import { SearchInput } from "@/shared/components/search/search-input";
 
 export const DashboardSidebar = () => {
