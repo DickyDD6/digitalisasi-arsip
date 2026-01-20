@@ -121,6 +121,20 @@ class DocumentController extends Controller
             abort(404, 'File tidak ditemukan.');
         }
 
+        // Log download activity
+        \App\Models\AuditLog::log(
+            action: 'download_document',
+            description: "Dokumen '{$document->file_name}' diunduh.",
+            metadata: [
+                'document_id' => $document->id,
+                'document_type' => $document->document_type,
+                'file_name' => $document->file_name,
+                'prodi' => $document->prodi,
+            ],
+            modelType: \App\Models\Document::class,
+            modelId: $document->id
+        );
+
         // Stream file with proper headers
         return Storage::download(
             $document->file_path,
@@ -130,6 +144,7 @@ class DocumentController extends Controller
             ]
         );
     }
+
 
     /**
      * Remove the specified document.

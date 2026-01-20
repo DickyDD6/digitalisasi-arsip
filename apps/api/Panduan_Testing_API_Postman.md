@@ -1,15 +1,22 @@
 # 📋 Panduan Testing API dengan Postman
 
-## ✅ Status: SEMUA TEST BERHASIL (22/22)
+## ✅ Status: LENGKAP (10 UC + 6 Security Features)
 
 | UC | Fitur | Tests | Status |
 |----|-------|-------|--------|
 | UC-01 | User Management | 5/5 | ✅ PASSED |
-| UC-04 | Document Upload | 4/4 | ✅ PASSED |
-| UC-08 | Document Verification | 4/4 | ✅ PASSED |
+| UC-02 | View Documents | 2/2 | ✅ NEW |
+| UC-03 | Audit Log | 4/4 | ✅ NEW |
+| UC-04 | Document Upload | 5/5 | ✅ PASSED |
+| UC-05 | View Status | 1/1 | ✅ NEW |
 | UC-06 | Document Update | 3/3 | ✅ PASSED |
 | UC-07 | Document Delete | 3/3 | ✅ PASSED |
+| UC-08 | Document Verification | 4/4 | ✅ PASSED |
+| UC-09 | Search Documents | 4/4 | ✅ NEW |
 | UC-10 | Document Download | 3/3 | ✅ PASSED |
+| **Security** | Rate Limit, PDF, Session, CORS | 6/6 | ✅ NEW |
+
+**Total Tests:** 40+ | **Security Level:** Production-Ready 🔒
 
 ---
 
@@ -119,7 +126,58 @@ GET http://localhost:8000/api/users
 
 ---
 
-## 📤 UC-04: Document Upload (Login: Uploader)
+## � UC-02: Melihat Arsip Digital (Login: Any Role)
+
+### ✅ 2.1 List Semua Dokumen
+```
+GET http://localhost:8000/api/documents
+```
+**Expected:** 200 OK dengan array dokumen + pagination
+
+### ✅ 2.2 Lihat Detail Dokumen
+```
+GET http://localhost:8000/api/documents/{id}
+```
+**Expected:** 200 OK dengan detail lengkap termasuk uploader & verifier
+
+---
+
+## 📊 UC-03: Memantau Aktivitas Sistem (Login: Manager)
+
+### ✅ 3.1 Lihat Semua Audit Log
+```
+GET http://localhost:8000/api/audit-logs
+```
+**Expected:** 200 OK dengan list audit logs
+
+### ✅ 3.2 Filter Log by Action
+```
+GET http://localhost:8000/api/audit-logs?action=upload_document
+```
+**Expected:** Hanya log dengan action tertentu
+
+### ✅ 3.3 Filter Log by User
+```
+GET http://localhost:8000/api/audit-logs?user_id=2
+```
+**Expected:** Hanya log dari user tertentu
+
+### ✅ 3.4 Lihat Statistik Aktivitas
+```
+GET http://localhost:8000/api/audit-logs/statistics
+```
+**Expected:** 200 OK dengan statistik (total, by action, by user, recent)
+
+### ❌ 3.5 Test Authorization (Login: Uploader)
+```
+GET http://localhost:8000/api/audit-logs
+```
+**Expected:** 403 Forbidden
+
+---
+
+## �📤 UC-04: Document Upload (Login: Uploader)
+
 
 ### ✅ 4.1 Upload Dokumen Nilai
 ```
@@ -155,6 +213,32 @@ Upload dengan data yang sama persis seperti 4.1
 ### ✅ 4.4 Test Validation Error
 Upload tanpa field required
 **Expected:** 422 Unprocessable Entity
+
+### ✅ 4.5 Test PDF Magic Number Validation 🔒 NEW
+1. Buat file `.txt` dengan content apapun
+2. Rename file jadi `fake.pdf`
+3. Upload file tersebut
+**Expected:** 422 Unprocessable Entity
+```json
+{
+  "message": "The file field must be a valid file.",
+  "errors": {
+    "file": ["File bukan PDF yang valid. File mungkin rusak atau berbahaya."]
+  }
+}
+```
+
+---
+
+## 📋 UC-05: Melihat Status Dokumen (Login: Any Role)
+
+### ✅ 5.1 Filter Dokumen by Status
+```
+GET http://localhost:8000/api/documents?status=menunggu_verifikasi
+GET http://localhost:8000/api/documents?status=terverifikasi  
+GET http://localhost:8000/api/documents?status=tidak_terverifikasi
+```
+**Expected:** Hanya dokumen dengan status yang dipilih
 
 ---
 
@@ -336,6 +420,9 @@ Login sebagai Uploader, coba download
 
 ## ✅ Testing Selesai!
 
-Semua 22 skenario testing telah berhasil diverifikasi pada:
-**Tanggal:** 14 Januari 2026
-**Waktu:** 01:50 WIB
+Semua **40+ skenario testing** untuk **10 Use Cases** dan **6 Security Features** telah siap untuk diverifikasi.
+
+**Last Updated:** 19 Januari 2026  
+**Security Level:** Production-Ready 🔒  
+**Total UC:** 10 (UC-01 s/d UC-10)  
+**Security Features:** Rate Limit | PDF Validation | Session 8hrs | CORS | Audit Download | Encryption Ready

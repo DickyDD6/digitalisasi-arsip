@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -29,7 +30,7 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
-            'role' => 'uploader', // Default role for factory
+            'role' => UserRole::UPLOADER, // Default role for factory
         ];
     }
 
@@ -42,4 +43,45 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+
+    /**
+     * Set user as manager.
+     */
+    public function manager(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'role' => UserRole::MANAGER,
+        ]);
+    }
+
+    /**
+     * Set user as uploader.
+     */
+    public function uploader(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'role' => UserRole::UPLOADER,
+        ]);
+    }
+
+    /**
+     * Set user as QC.
+     */
+    public function qc(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'role' => UserRole::QC,
+        ]);
+    }
+
+    /**
+     * Set user as SBAP.
+     */
+    public function sbap(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'role' => UserRole::SBAP,
+        ]);
+    }
 }
+
