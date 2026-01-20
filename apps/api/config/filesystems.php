@@ -41,7 +41,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
@@ -64,6 +64,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Security Options
+    |--------------------------------------------------------------------------
+    |
+    | Configure security features for file handling including encryption
+    | and malware scanning for uploaded PDFs.
+    |
+    */
+
+    'encrypt_documents' => env('ENCRYPT_DOCUMENTS', false),
+    'scan_pdfs' => env('SCAN_PDFS', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Symbolic Links
     |--------------------------------------------------------------------------
     |
@@ -72,6 +85,7 @@ return [
     | the locations of the links and the values should be their targets.
     |
     */
+
 
     'links' => [
         public_path('storage') => storage_path('app/public'),

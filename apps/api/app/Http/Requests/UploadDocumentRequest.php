@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ValidPdfFile;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -24,9 +25,10 @@ class UploadDocumentRequest extends FormRequest
     {
         $rules = [
             'document_type' => ['required', Rule::in(['nilai', 'transkrip', 'ijazah'])],
-            'file' => ['required', 'file', 'mimes:pdf', 'max:5120'], // 5MB = 5120 KB
+            'file' => ['required', 'file', 'mimes:pdf', 'max:5120', new ValidPdfFile()],
             'prodi' => ['required', 'string', 'max:255'],
         ];
+
 
         // Conditional validation based on document_type
         $documentType = $this->input('document_type');

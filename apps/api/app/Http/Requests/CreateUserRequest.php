@@ -25,10 +25,12 @@ class CreateUserRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
+            'nip' => ['nullable', 'string', 'max:50'],
             'password' => ['required', 'string', 'min:8'],
             'role' => ['required', Rule::in(['manager', 'uploader', 'qc', 'sbap'])],
         ];
     }
+
 
     /**
      * Get custom messages for validator errors.
