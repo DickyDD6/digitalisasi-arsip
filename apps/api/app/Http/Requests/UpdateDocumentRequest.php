@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\DocumentType;
+use App\Enums\Prodi;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -27,17 +29,17 @@ class UpdateDocumentRequest extends FormRequest
         $documentType = $document?->document_type;
 
         $rules = [
-            'prodi' => ['sometimes', 'string', 'max:255'],
+            'prodi' => ['sometimes', Rule::enum(Prodi::class)],
         ];
 
         // Conditional validation based on document_type
-        if ($documentType === 'nilai') {
+        if ($documentType === DocumentType::NILAI) {
             // Required fields for nilai documents
             $rules['tahun_ajaran'] = ['sometimes', 'string', 'max:255'];
             $rules['mata_kuliah'] = ['sometimes', 'string', 'max:255'];
             $rules['kelas'] = ['sometimes', 'string', 'max:255'];
-        } elseif (in_array($documentType, ['ijazah', 'transkrip'])) {
-            // Required fields for ijazah/transkrip documents
+        } elseif (in_array($documentType, [DocumentType::IJAZAH, DocumentType::TRANSKRIP, DocumentType::BERITA_ACARA_SIDANG])) {
+            // Required fields for ijazah/transkrip/berita acara sidang documents
             $rules['tahun_lulus'] = ['sometimes', 'string', 'max:255'];
             $rules['npm'] = ['sometimes', 'string', 'max:255'];
         }

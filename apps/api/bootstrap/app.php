@@ -24,6 +24,11 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Session\Middleware\StartSession::class,
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         ]);
+
+        // Register custom middleware aliases
+        $middleware->alias([
+            'throttle.login.attempts' => \App\Http\Middleware\ThrottleLoginAttempts::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Handle unauthenticated requests for API - return JSON instead of redirect

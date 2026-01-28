@@ -25,11 +25,11 @@ class UserService
         // Log activity
         AuditLog::log(
             action: 'create_user',
-            description: "User {$user->name} ({$user->email}) dibuat dengan role {$user->role}.",
+            description: "User {$user->name} ({$user->email}) dibuat dengan role {$user->role->value}.",
             metadata: [
                 'target_user_id' => $user->id,
                 'target_email' => $user->email,
-                'role' => $user->role,
+                'role' => $user->role->value,
             ],
             modelType: User::class,
             modelId: $user->id
@@ -79,8 +79,8 @@ class UserService
         ];
 
         if (in_array('role', $changedFields)) {
-            $metadata['old_role'] = $oldRole;
-            $metadata['new_role'] = $user->role;
+            $metadata['old_role'] = $oldRole->value;
+            $metadata['new_role'] = $user->role->value;
         }
 
         if (!empty($oldValues)) {
@@ -123,11 +123,11 @@ class UserService
             // Log activity
             AuditLog::log(
                 action: 'delete_user',
-                description: "User {$userName} ({$userEmail}) dengan role {$userRole} dihapus.",
+                description: "User {$userName} ({$userEmail}) dengan role {$userRole->value} dihapus.",
                 metadata: [
                     'target_user_id' => $userId,
                     'target_email' => $userEmail,
-                    'role' => $userRole,
+                    'role' => $userRole->value,
                 ],
                 modelType: User::class,
                 modelId: $userId

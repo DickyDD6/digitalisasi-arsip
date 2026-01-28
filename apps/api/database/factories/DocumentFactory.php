@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Enums\DocumentStatus;
+use App\Enums\DocumentType;
+use App\Enums\Prodi;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
 use App\Models\Document;
@@ -18,15 +21,15 @@ class DocumentFactory extends Factory
      */
     public function definition(): array
     {
-        $documentType = fake()->randomElement(['nilai', 'ijazah', 'transkrip']);
+        $documentType = fake()->randomElement(DocumentType::cases())->value;
 
         $data = [
             'document_type' => $documentType,
             'file_path' => 'archives/' . $documentType . '/test.pdf',
             'file_name' => fake()->word() . '.pdf',
             'file_size' => fake()->numberBetween(100000, 5000000),
-            'prodi' => fake()->randomElement(['Teknik Informatika', 'Sistem Informasi', 'Teknik Elektro']),
-            'status' => fake()->randomElement(['menunggu_verifikasi', 'terverifikasi', 'tidak_terverifikasi']),
+            'prodi' => fake()->randomElement(Prodi::cases())->value,
+            'status' => fake()->randomElement(DocumentStatus::cases())->value,
             'uploaded_by' => User::factory(),
         ];
 
@@ -51,7 +54,7 @@ class DocumentFactory extends Factory
     public function verified(): static
     {
         return $this->state(fn(array $attributes) => [
-            'status' => 'terverifikasi',
+            'status' => DocumentStatus::VERIFIED->value,
             'verified_by' => User::factory(),
             'verified_at' => now(),
         ]);
@@ -63,7 +66,7 @@ class DocumentFactory extends Factory
     public function rejected(): static
     {
         return $this->state(fn(array $attributes) => [
-            'status' => 'tidak_terverifikasi',
+            'status' => DocumentStatus::REJECTED->value,
             'verified_by' => User::factory(),
             'verified_at' => now(),
             'verification_note' => 'Dokumen tidak sesuai kriteria.',
@@ -76,7 +79,7 @@ class DocumentFactory extends Factory
     public function pending(): static
     {
         return $this->state(fn(array $attributes) => [
-            'status' => 'menunggu_verifikasi',
+            'status' => DocumentStatus::PENDING->value,
         ]);
     }
 }

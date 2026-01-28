@@ -127,9 +127,9 @@ class DocumentController extends Controller
             description: "Dokumen '{$document->file_name}' diunduh.",
             metadata: [
                 'document_id' => $document->id,
-                'document_type' => $document->document_type,
+                'document_type' => $document->document_type->value,
                 'file_name' => $document->file_name,
-                'prodi' => $document->prodi,
+                'prodi' => $document->prodi->value,
             ],
             modelType: \App\Models\Document::class,
             modelId: $document->id
