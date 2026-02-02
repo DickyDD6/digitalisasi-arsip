@@ -30,7 +30,12 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
-            'role' => UserRole::UPLOADER, // Default role for factory
+            'role' => fake()->randomElement([
+                UserRole::QC,
+                UserRole::MANAGER,
+                UserRole::UPLOADER,
+                UserRole::SBAP,
+            ]),
         ];
     }
 
@@ -84,4 +89,3 @@ class UserFactory extends Factory
         ]);
     }
 }
-

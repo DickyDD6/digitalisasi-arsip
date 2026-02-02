@@ -16,40 +16,39 @@ import {
 import { InputPassword } from "@repo/ui/components/password";
 import { Loader2, UserRound } from "@repo/ui/icons";
 import { useForm } from "@tanstack/react-form";
-import { LoginSchema } from "../auth.schema";
-import { useLogin } from "../hooks/use-auth";
+import { LoginSchema, useLogin } from "@/features/auth";
 
 export const LoginForm = () => {
 	const { mutate, isPending } = useLogin();
 
 	const loginForm = useForm({
 		defaultValues: {
-			username: "",
+			email: "",
 			password: "",
 		},
 		validators: {
 			onSubmit: LoginSchema,
 		},
-		onSubmit: async ({ value }) => mutate(value),
+		onSubmit: ({ value }) => mutate(value),
 	});
 
 	return (
 		<form
 			id="login-form"
-			onSubmit={(e) => {
+			onSubmit={async (e) => {
 				e.preventDefault();
-				loginForm.handleSubmit();
+				await loginForm.handleSubmit();
 			}}
 		>
 			<FieldSet>
-				<loginForm.Field name="username">
+				<loginForm.Field name="email">
 					{(field) => {
 						const isInvalid =
 							field.state.meta.isTouched && !field.state.meta.isValid;
 
 						return (
 							<Field data-invalid={isInvalid}>
-								<FieldLabel htmlFor={field.name}>Username</FieldLabel>
+								<FieldLabel htmlFor={field.name}>Email</FieldLabel>
 								<InputGroup>
 									<InputGroupAddon>
 										<UserRound />
@@ -61,7 +60,7 @@ export const LoginForm = () => {
 										onBlur={field.handleBlur}
 										onChange={(e) => field.handleChange(e.target.value)}
 										aria-invalid={isInvalid}
-										placeholder="Masukkan Username Anda"
+										placeholder="Masukkan Email Anda"
 									/>
 								</InputGroup>
 								{isInvalid && <FieldError errors={field.state.meta.errors} />}

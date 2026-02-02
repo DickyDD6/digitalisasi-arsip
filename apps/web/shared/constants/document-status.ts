@@ -1,4 +1,4 @@
-export const DocumentStatus = {
+export const DOCUMENT_STATUS = {
 	VERIFIED: "VERIFIED",
 	REJECTED: "REJECTED",
 	PENDING: "PENDING",
@@ -8,4 +8,4 @@ export const DocumentStatus = {
 } as const;
 
 export type DocumentStatus =
-	(typeof DocumentStatus)[keyof typeof DocumentStatus];
+	(typeof DOCUMENT_STATUS)[keyof typeof DOCUMENT_STATUS];

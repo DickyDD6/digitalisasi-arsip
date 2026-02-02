@@ -12,6 +12,7 @@
 		"add:component": "pnpm dlx shadcn add -c packages/ui"
 	},
 	"devDependencies": {
+		"eslint": "^9.39.1",
 		"prettier": "^3.7.4",
 		"turbo": "^2.7.4",
 		"typescript": "5.9.3"

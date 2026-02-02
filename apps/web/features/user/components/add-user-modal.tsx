@@ -1,5 +1,6 @@
 "use client";
 
+import { Alert, AlertDescription, AlertTitle } from "@repo/ui/components/alert";
 import { Button } from "@repo/ui/components/button";
 import {
 	Dialog,
@@ -29,6 +30,10 @@ import {
 	ItemTitle,
 } from "@repo/ui/components/item";
 import {
+	NativeSelect,
+	NativeSelectOption,
+} from "@repo/ui/components/native-select";
+import {
 	AlertCircle,
 	Mail,
 	Plus,
@@ -37,12 +42,6 @@ import {
 	UserRoundPlus,
 } from "@repo/ui/icons";
 import { useState } from "react";
-import { FieldGeneratePassword } from "../../archive/components/field-generate-password";
-import {
-	NativeSelect,
-	NativeSelectOption,
-} from "@repo/ui/components/native-select";
-import { Alert, AlertDescription, AlertTitle } from "@repo/ui/components/alert";
 
 export const AddUserModal = () => {
 	const [openModalDialog, setOpenModalDialog] = useState<boolean>(false);
@@ -111,7 +110,7 @@ export const AddUserModal = () => {
 						</Field>
 
 						<Field>
-							<FieldGeneratePassword />
+							{/* <UserTableEditFieldGeneratePassword /> */}
 							<Alert variant={"warning"}>
 								<AlertCircle />
 								<AlertTitle>Important!</AlertTitle>

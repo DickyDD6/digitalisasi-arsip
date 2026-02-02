@@ -15,7 +15,8 @@ export const useTimeAgo = () => {
 	}, []);
 
 	const timeAgo = useCallback(
-		(time: string) =>
+		(time: Date) =>
+			time &&
 			formatDistanceStrict(time, now, {
 				addSuffix: true,
 			}),

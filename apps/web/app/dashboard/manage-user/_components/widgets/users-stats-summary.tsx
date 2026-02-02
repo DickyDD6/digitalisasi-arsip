@@ -1,3 +1,5 @@
+// TODO: PINDAHKAN_KE_FEATURES - Komponen ini harus dipindahkan ke features/user/widgets/
+// Lokasi saat ini melanggar arsitektur berbasis fitur - komponen tidak boleh berada di direktori app/
 import {
 	MetricCard,
 	MetricCardContent,
@@ -6,17 +8,8 @@ import {
 	MetricCardValue,
 	MetricGrid,
 } from "@/shared/components/metric";
-import { Button } from "@repo/ui/components/button";
-import { Card, CardContent } from "@repo/ui/components/card";
-import {
-	Item,
-	ItemContent,
-	ItemDescription,
-	ItemMedia,
-	ItemTitle,
-} from "@repo/ui/components/item";
-import { Shield, UploadCloud, UsersRound, Workflow } from "@repo/ui/icons";
-import { cn } from "@repo/ui/lib";
+import {Shield, UploadCloud, UsersRound, Workflow} from "@repo/ui/icons";
+import {cn} from "@repo/ui/lib";
 
 const mockData = [
 	{
@@ -57,7 +50,7 @@ export const UsersStatsSummary = () => {
 						</MetricCardValue>
 					</MetricCardContent>
 					<MetricCardIcon className={cn(data.color)}>
-						<data.icon />
+						<data.icon/>
 					</MetricCardIcon>
 				</MetricCard>
 			))}

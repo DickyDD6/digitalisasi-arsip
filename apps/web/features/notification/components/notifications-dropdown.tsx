@@ -1,8 +1,8 @@
 "use client";
 
-import { useTimeAgo } from "@/shared/hooks/use-time-ago";
-import { Badge } from "@repo/ui/components/badge";
-import { Button } from "@repo/ui/components/button";
+import {useTimeAgo} from "@/shared/hooks/use-time-ago";
+import {Badge} from "@repo/ui/components/badge";
+import {Button} from "@repo/ui/components/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -27,7 +27,7 @@ import {
 	Trash2,
 	UserRound,
 } from "@repo/ui/icons";
-import { cn } from "@repo/ui/lib";
+import {cn} from "@repo/ui/lib";
 import Link from "next/link";
 
 const mockNotification = [
@@ -109,14 +109,14 @@ const iconNotif = [
 ];
 
 export const NotificationsDropdown = () => {
-	const { timeAgo } = useTimeAgo();
+	const {timeAgo} = useTimeAgo();
 
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button variant={"ghost"} size={"icon"} className="relative">
-					<Bell />
-					{mockNotification.filter((i) => i.isRead === false).length > 0 && (
+					<Bell/>
+					{mockNotification.filter((i) => i?.isRead === false).length > 0 && (
 						<Badge
 							variant={"destructive"}
 							className="absolute p-0.5 top-3 right-3"
@@ -128,7 +128,7 @@ export const NotificationsDropdown = () => {
 				<DropdownMenuGroup className="flex items-center justify-between px-2 border-b">
 					<div className="flex items-center">
 						<DropdownMenuLabel>Notifications</DropdownMenuLabel>
-						<Badge>{mockNotification.filter((i) => i.isRead === false).length}</Badge>
+						<Badge>{mockNotification.filter((i) => i?.isRead === false).length}</Badge>
 					</div>
 					<Button variant={"link"}>Mark All Read</Button>
 				</DropdownMenuGroup>
@@ -152,21 +152,21 @@ export const NotificationsDropdown = () => {
 									<ItemMedia>
 										{iconNotif
 											.filter((i) => i.category === item.category)
-											.map(({ icon: Icon, color }, i) => (
-												<Icon key={i} className={cn("size-6", color)} />
+											.map(({icon: Icon, color}, i) => (
+												<Icon key={i} className={cn("size-6", color)}/>
 											))}
 									</ItemMedia>
 									<ItemContent>
 										<ItemTitle>{item.title}</ItemTitle>
 										<ItemDescription>{item.description}</ItemDescription>
 										<span className="flex items-center gap-1">
-											<Clock />
+											<Clock/>
 											{timeAgo(item.createdAt)}
 										</span>
 									</ItemContent>
 									{!item.isRead && (
 										<ItemMedia>
-											<Badge variant={"destructive"} className="p-1" />
+											<Badge variant={"destructive"} className="p-1"/>
 										</ItemMedia>
 									)}
 								</DropdownMenuItem>

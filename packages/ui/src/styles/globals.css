@@ -65,6 +65,36 @@
 	--shadow-2xl: 0 0.25rem 0.5rem 0 hsl(0 0 0 / 0.25);
 	--tracking-normal: 0;
 	--spacing: 0.25rem;
+
+	--manager: var(--color-orange-600);
+	--manager-foreground: var(--color-orange-100);
+	--uploader: var(--color-blue-600);
+	--uploader-foreground: var(--color-blue-100);
+	--qc: var(--color-green-600);
+	--qc-foreground: var(--color-green-100);
+	--sbap: var(--color-purple-600);
+	--sbap-foreground: var(--color-purple-100);
+
+	--transcript: var(--color-orange-100);
+	--transcript-foreground: var(--color-orange-600);
+	--mark: var(--color-blue-100);
+	--mark-foreground: var(--color-blue-600);
+	--active: var(--color-green-100);
+	--active-foreground: var(--color-green-600);
+	--non-active: var(--color-red-100);
+	--non-active-foreground: var(--color-destructive);
+	--verified: var(--color-green-100);
+	--verified-foreground: var(--color-green-600);
+	--rejected: var(--color-red-100);
+	--rejected-foreground: var(--color-destructive);
+	--pending: var(--color-yellow-100);
+	--pending-foreground: var(--color-yellow-600);
+	--deleted: var(--color-muted);
+	--deleted-foreground: var(--color-muted-foreground);
+	--downloaded: var(--color-purple-100);
+	--downloaded-foreground: var(--color-purple-600);
+	--uploaded: var(--color-blue-100);
+	--uploaded-foreground: var(--color-blue-600);
 }
 
 .dark {
@@ -123,6 +153,36 @@
 	--shadow-xl:
 		0 0.25rem 0.5rem 0 hsl(0 0 0 / 0.5), 0 8px 10px -1px hsl(0 0 0 / 0.5);
 	--shadow-2xl: 0 0.25rem 0.5rem 0 hsl(0 0 0 / 1.25);
+
+	--manager: var(--color-orange-600);
+	--manager-foreground: var(--color-orange-100);
+	--uploader: var(--color-blue-600);
+	--uploader-foreground: var(--color-blue-100);
+	--qc: var(--color-green-600);
+	--qc-foreground: var(--color-green-100);
+	--sbap: var(--color-purple-600);
+	--sbap-foreground: var(--color-purple-100);
+
+	--transcript: var(--color-orange-100);
+	--transcript-foreground: var(--color-orange-600);
+	--mark: var(--color-blue-100);
+	--mark-foreground: var(--color-blue-600);
+	--active: var(--color-green-100);
+	--active-foreground: var(--color-green-600);
+	--non-active: var(--color-red-100);
+	--non-active-foreground: var(--color-destructive);
+	--verified: var(--color-green-100);
+	--verified-foreground: var(--color-green-600);
+	--rejected: var(--color-red-100);
+	--rejected-foreground: var(--color-destructive);
+	--pending: var(--color-yellow-100);
+	--pending-foreground: var(--color-yellow-600);
+	--deleted: var(--color-muted);
+	--deleted-foreground: var(--color-muted-foreground);
+	--downloaded: var(--color-purple-100);
+	--downloaded-foreground: var(--color-purple-600);
+	--uploaded: var(--color-blue-100);
+	--uploaded-foreground: var(--color-blue-600);
 }
 
 @theme inline {
@@ -183,6 +243,38 @@
 	--tracking-wide: calc(var(--tracking-normal) + 0.025em);
 	--tracking-wider: calc(var(--tracking-normal) + 0.05em);
 	--tracking-widest: calc(var(--tracking-normal) + 0.1em);
+
+	--color-manager: var(--manager);
+	--color-manager-foreground: var(--manager-foreground);
+	--color-uploader: var(--uploader);
+	--color-uploader-foreground: var(--uploader-foreground);
+	--color-qc: var(--qc);
+	--color-qc-foreground: var(--qc-foreground);
+	--color-sbap: var(--sbap);
+	--color-sbap-foreground: var(--sbap-foreground);
+
+	--color-transcript: var(--transcript);
+	--color-transcript-foreground: var(--transcript-foreground);
+	--color-mark: var(--mark);
+	--color-mark-foreground: var(--mark-foreground);
+
+	--color-active: var(--active);
+	--color-active-foreground: var(--active-foreground);
+	--color-non-active: var(--non-active);
+	--color-non-active-foreground: var(--non-active-foreground);
+
+	--color-verified: var(--verified);
+	--color-verified-foreground: var(--verified-foreground);
+	--color-rejected: var(--rejected);
+	--color-rejected-foreground: var(--rejected-foreground);
+	--color-pending: var(--pending);
+	--color-pending-foreground: var(--pending-foreground);
+	--color-deleted: var(--deleted);
+	--color-deleted-foreground: var(--deleted-foreground);
+	--color-downloaded: var(--downloaded);
+	--color-downloaded-foreground: var(--downloaded-foreground);
+	--color-uploaded: var(--uploaded);
+	--color-uploaded-foreground: var(--uploaded-foreground);
 }
 
 body {

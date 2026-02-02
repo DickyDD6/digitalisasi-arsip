@@ -6,10 +6,10 @@ import { Badge } from "@repo/ui/components/badge";
 const roleBadgeVariants = cva("uppercase", {
 	variants: {
 		variant: {
-			MANAGER: "",
-			QC: "bg-green-600",
-			UPLOADER: "bg-blue-600",
-			SBAP: "bg-purple-600",
+			MANAGER: "bg-manager text-manager-foreground",
+			QC: "bg-qc text-qc-foreground",
+			UPLOADER: "bg-uploader text-uploader-foreground",
+			SBAP: "bg-sbap text-sbap-foreground",
 		},
 	},
 	defaultVariants: {

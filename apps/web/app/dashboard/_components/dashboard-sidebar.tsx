@@ -1,5 +1,7 @@
 "use client";
 
+// TODO: PINDAHKAN_KE_FEATURES - Komponen ini harus dipindahkan ke features/shared/widgets/
+// Lokasi saat ini melanggar arsitektur berbasis fitur - komponen layout tidak boleh berada di direktori app/
 import {
 	Sidebar,
 	SidebarContent,
@@ -15,7 +17,7 @@ import { FolderArchive, Settings } from "@repo/ui/icons";
 import { sidebarItems } from "../_lib/dashboard-sidebar-items";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { UserDropdown } from "../../../features/user/components/user-dropdown";
+import { UserDropdown } from "@/features/user/components/user-dropdown";
 import { SearchInput } from "@/shared/components/search/search-input";
 
 export const DashboardSidebar = () => {
@@ -66,7 +68,7 @@ export const DashboardSidebar = () => {
 						<SidebarMenuButton asChild>
 							<Link href={"/dashboard/settings"}>
 								<Settings />
-								System Settings
+								Pengaturan Sistem
 							</Link>
 						</SidebarMenuButton>
 					</SidebarMenuItem>

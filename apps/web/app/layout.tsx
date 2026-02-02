@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import { TanstackQueryProvider } from "./providers";
+import { ReactNode } from "react";
 
 export const metadata: Metadata = {
 	title: {
@@ -21,7 +22,7 @@ const poppins = Poppins({
 export default function RootLayout({
 	children,
 }: Readonly<{
-	children: React.ReactNode;
+	children: ReactNode;
 }>) {
 	return (
 		<html lang="en">
