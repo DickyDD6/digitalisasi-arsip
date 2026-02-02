@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
+use App\Models\AuditLog;
+use App\Services\LoginAttemptService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,7 +13,8 @@ use Illuminate\Validation\ValidationException;
 class AuthController extends Controller
 {
     /**
-     * Handle login request.
+     * Handle login request for Sanctum Stateful API.
+     * Uses HTTP-only cookies for authentication.
      *
      * @param LoginRequest $request
      * @return JsonResponse
@@ -21,22 +24,55 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        // Use web guard explicitly for session-based authentication
-        if (!Auth::guard('web')->attempt($credentials)) {
+        if (!Auth::attempt($credentials)) {
+            // Record failed attempt
+            $loginAttemptService = app(LoginAttemptService::class);
+            $loginAttemptService->recordFailedAttempt($request->email, $request);
+
+            $remaining = $loginAttemptService->getRemainingAttempts($request->email);
+
+            // Log failed login attempt for security monitoring
+            AuditLog::log(
+                action: 'failed_login_attempt',
+                description: "Login gagal untuk email: {$request->email}",
+                metadata: [
+                    'email' => $request->email,
+                    'ip_address' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                    'remaining_attempts' => $remaining,
+                ]
+            );
+
             throw ValidationException::withMessages([
-                'email' => ['Kredensial yang diberikan tidak cocok dengan data kami.'],
+                'email' => [
+                    sprintf(
+                        'Kredensial yang diberikan tidak cocok dengan data kami. Sisa percobaan: %d',
+                        $remaining
+                    )
+                ],
             ]);
         }
 
-        // Get the authenticated user
-        $user = Auth::guard('web')->user();
+        // Clear attempts on successful login
+        app(LoginAttemptService::class)->clearAttempts($request->email);
 
-        // For API auth via Sanctum, we need to explicitly login and save session
-        // Don't regenerate session for API context - causes data loss
-        Auth::guard('web')->login($user);
+        // Regenerate session to prevent session fixation attacks
+        $request->session()->regenerate();
 
-        // Explicitly save the session to ensure user data is persisted
-        $request->session()->save();
+        $user = Auth::user();
+
+        // Log successful login
+        AuditLog::log(
+            action: 'successful_login',
+            description: "User {$user->name} berhasil login.",
+            metadata: [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'role' => $user->role->value,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]
+        );
 
         return response()->json([
             'message' => 'Login berhasil.',
@@ -45,7 +81,7 @@ class AuthController extends Controller
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
-                    'role' => $user->role,
+                    'role' => $user->role->value,
                 ],
             ],
         ], 200);
@@ -91,7 +127,7 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'role' => $user->role,
+                'role' => $user->role->value,
             ],
         ], 200);
     }

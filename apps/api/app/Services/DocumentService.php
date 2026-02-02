@@ -44,7 +44,7 @@ class DocumentService
                 'kelas' => $data['kelas'] ?? null,
                 'tahun_lulus' => $data['tahun_lulus'] ?? null,
                 'npm' => $data['npm'] ?? null,
-                'status' => 'menunggu_verifikasi',
+                'status' => \App\Enums\DocumentStatus::PENDING->value,
                 'uploaded_by' => $userId,
             ]);
 
@@ -129,13 +129,13 @@ class DocumentService
     {
         AuditLog::log(
             action: 'upload_document',
-            description: "Dokumen {$document->document_type} '{$document->file_name}' diunggah untuk prodi {$document->prodi}.",
+            description: "Dokumen {$document->document_type->value} '{$document->file_name}' diunggah untuk prodi {$document->prodi->value}.",
             metadata: [
                 'document_id' => $document->id,
-                'document_type' => $document->document_type,
+                'document_type' => $document->document_type->value,
                 'file_name' => $document->file_name,
                 'file_size' => $document->file_size,
-                'prodi' => $document->prodi,
+                'prodi' => $document->prodi->value,
             ],
             modelType: Document::class,
             modelId: $document->id
@@ -247,9 +247,9 @@ class DocumentService
 
         $metadata = [
             'document_id' => $document->id,
-            'document_type' => $document->document_type,
+            'document_type' => $document->document_type->value,
             'verifier_id' => $verifierId,
-            'status' => $status,
+            'status' => $status,  // Already a string parameter
         ];
 
         if ($document->verification_note) {
@@ -367,7 +367,7 @@ class DocumentService
             description: "Dokumen '{$document->file_name}' diperbarui. Field yang diubah: {$fieldNames}",
             metadata: [
                 'document_id' => $document->id,
-                'document_type' => $document->document_type,
+                'document_type' => $document->document_type->value,
                 'updated_by' => $userId,
                 'updated_fields' => $updatedFields,
                 'status_reset' => 'menunggu_verifikasi',

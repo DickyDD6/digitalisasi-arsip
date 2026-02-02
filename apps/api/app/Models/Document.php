@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\DocumentStatus;
+use App\Enums\DocumentType;
+use App\Enums\Prodi;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -42,6 +45,9 @@ class Document extends Model
     protected function casts(): array
     {
         return [
+            'document_type' => DocumentType::class,
+            'status' => DocumentStatus::class,
+            'prodi' => Prodi::class,
             'file_size' => 'integer',
             'verified_at' => 'datetime',
             'created_at' => 'datetime',
@@ -101,7 +107,7 @@ class Document extends Model
      */
     public function scopeVerified($query)
     {
-        return $query->where('status', 'terverifikasi');
+        return $query->where('status', DocumentStatus::VERIFIED);
     }
 
     /**
@@ -112,7 +118,7 @@ class Document extends Model
      */
     public function scopePending($query)
     {
-        return $query->where('status', 'menunggu_verifikasi');
+        return $query->where('status', DocumentStatus::PENDING);
     }
 
     /**
@@ -122,7 +128,7 @@ class Document extends Model
      */
     public function isVerified(): bool
     {
-        return $this->status === 'terverifikasi';
+        return $this->status === DocumentStatus::VERIFIED;
     }
 
     /**
@@ -132,7 +138,7 @@ class Document extends Model
      */
     public function isPending(): bool
     {
-        return $this->status === 'menunggu_verifikasi';
+        return $this->status === DocumentStatus::PENDING;
     }
 
     /**
@@ -142,7 +148,7 @@ class Document extends Model
      */
     public function isRejected(): bool
     {
-        return $this->status === 'tidak_terverifikasi';
+        return $this->status === DocumentStatus::REJECTED;
     }
 
     /**
@@ -153,22 +159,29 @@ class Document extends Model
      */
     public static function generateDuplicateKey(array $data): string
     {
-        $documentType = $data['document_type'];
+        // Extract string value from Enum if needed
+        $documentType = is_string($data['document_type'])
+            ? $data['document_type']
+            : $data['document_type']->value;
+
+        $prodi = is_string($data['prodi'])
+            ? $data['prodi']
+            : $data['prodi']->value;
 
         if ($documentType === 'nilai') {
             // nilai: sha1("nilai|tahun_ajaran|prodi|mata_kuliah|kelas")
             $key = implode('|', [
                 'nilai',
                 $data['tahun_ajaran'],
-                $data['prodi'],
+                $prodi,
                 $data['mata_kuliah'],
                 $data['kelas'],
             ]);
         } else {
-            // ijazah/transkrip: sha1("type|prodi|tahun_lulus|npm")
+            // ijazah/transkrip/berita_acara_sidang: sha1("type|prodi|tahun_lulus|npm")
             $key = implode('|', [
                 $documentType,
-                $data['prodi'],
+                $prodi,
                 $data['tahun_lulus'],
                 $data['npm'],
             ]);

@@ -16,13 +16,13 @@ class DocumentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'document_type' => $this->document_type,
+            'document_type' => $this->document_type->value,
             'file_name' => $this->file_name,
             'file_size' => $this->file_size,
             'file_size_formatted' => $this->formatFileSize($this->file_size),
 
             // Metadata
-            'prodi' => $this->prodi,
+            'prodi' => $this->prodi->value,
             'tahun_ajaran' => $this->tahun_ajaran,
             'mata_kuliah' => $this->mata_kuliah,
             'kelas' => $this->kelas,
@@ -30,22 +30,12 @@ class DocumentResource extends JsonResource
             'npm' => $this->npm,
 
             // Status
-            'status' => $this->status,
+            'status' => $this->status->value,
             'verification_note' => $this->verification_note,
 
-            // User tracking
-            'uploaded_by' => [
-                'id' => $this->uploader->id,
-                'name' => $this->uploader->name,
-                'email' => $this->uploader->email,
-            ],
-            'verified_by' => $this->when($this->verified_by, function () {
-                return [
-                    'id' => $this->verifier->id,
-                    'name' => $this->verifier->name,
-                    'email' => $this->verifier->email,
-                ];
-            }),
+            // User tracking - SIMPLIFIED (only send names)
+            'uploaded_by_name' => $this->uploader->name,
+            'verified_by_name' => $this->verified_by ? $this->verifier->name : null,
             'verified_at' => $this->verified_at?->toISOString(),
 
             // Timestamps

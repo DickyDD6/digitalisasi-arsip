@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\DocumentStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -23,7 +24,7 @@ class VerifyDocumentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => ['required', Rule::in(['terverifikasi', 'tidak_terverifikasi'])],
+            'status' => ['required', Rule::enum(DocumentStatus::class), Rule::in([DocumentStatus::VERIFIED->value, DocumentStatus::REJECTED->value])],
             'verification_note' => ['nullable', 'string', 'max:500'],
         ];
     }
@@ -37,7 +38,7 @@ class VerifyDocumentRequest extends FormRequest
     {
         return [
             'status.required' => 'Status verifikasi wajib diisi.',
-            'status.in' => 'Status harus salah satu dari: terverifikasi, tidak_terverifikasi.',
+            'status.in' => 'Status harus terverifikasi atau tidak_terverifikasi (tidak boleh pending).',
             'verification_note.max' => 'Catatan verifikasi maksimal 500 karakter.',
         ];
     }
