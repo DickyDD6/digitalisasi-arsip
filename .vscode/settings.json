@@ -1,9 +1,9 @@
 {
-  "eslint.workingDirectories": [
-    {
-      "mode": "auto"
-    }
-  ],
-  "tailwindCSS.experimental.configFile": "packages/ui/src/styles/globals.css",
-  "commentTranslate.targetLanguage": "en"
+	"eslint.workingDirectories": [
+		{
+			"mode": "auto"
+		}
+	],
+	"tailwindCSS.experimental.configFile": "packages/ui/src/styles/globals.css",
+	"commentTranslate.targetLanguage": "id"
 }

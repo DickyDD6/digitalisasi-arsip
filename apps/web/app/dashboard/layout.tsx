@@ -1,10 +1,10 @@
 import { SearchCommandShortcut } from "@/shared/components/search/search-input";
 import { ScrollArea } from "@repo/ui/components/scroll-area";
 import { SidebarProvider } from "@repo/ui/components/sidebar";
+import { Metadata } from "next";
 import { ReactNode } from "react";
 import { DashboardNavbar } from "./_components/dashboard-navbar";
 import { DashboardSidebar } from "./_components/dashboard-sidebar";
-import { Metadata } from "next";
 
 export const metadata: Metadata = {
 	title: {

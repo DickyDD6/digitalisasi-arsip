@@ -1,4 +1,8 @@
-import { PageHeader } from "@/shared/components/page-header";
+import {
+	PageDescription,
+	PageHeader,
+	PageTitle,
+} from "@/shared/components/page-header";
 import { SearchInput } from "@/shared/components/search/search-input";
 import { StatusBadge } from "@/shared/components/status-badge";
 import { DocumentStatus, DocumentType } from "@/shared/constants";
@@ -148,10 +152,12 @@ export const metadata: Metadata = {
 const ManageArchivePage = () => {
 	return (
 		<>
-			<PageHeader
-				title="Manage Archive"
-				description="View, download, and delete student grade documents and transcripts."
-			/>
+			<PageHeader>
+				<PageTitle>Manage Archive</PageTitle>
+				<PageDescription>
+					View, download, and delete student grade documents and transcripts.
+				</PageDescription>
+			</PageHeader>
 
 			<Card>
 				<CardHeader>

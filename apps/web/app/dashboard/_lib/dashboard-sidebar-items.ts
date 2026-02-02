@@ -13,22 +13,22 @@ export const sidebarItems = [
 		icon: LayoutDashboard,
 	},
 	{
-		label: "Archive Management",
+		label: "Pengelolaan Arsip",
 		link: "/dashboard/manage-archive",
 		icon: FolderArchive,
 	},
 	{
-		label: "Log Activity",
+		label: "Aktivitas Log",
 		link: "/dashboard/log-activity",
 		icon: Logs,
 	},
 	{
-		label: "User Management",
+		label: "Pengelolaan Pengguna",
 		link: "/dashboard/manage-user",
 		icon: UsersRound,
 	},
 	{
-		label: "Report",
+		label: "Laporan",
 		link: "/dashboard/report",
 		icon: FileText,
 	},

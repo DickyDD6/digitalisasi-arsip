@@ -1,5 +1,4 @@
 import { Badge } from "@repo/ui/components/badge";
-import { Button } from "@repo/ui/components/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -19,11 +18,11 @@ import {
 	CircleQuestionMarkIcon,
 	Ellipsis,
 	KeyRound,
-	LogOut,
 	UserCircle2,
 	UserRound,
 } from "@repo/ui/icons";
 import Link from "next/link";
+import { LogoutButton } from "@/features/auth";
 
 export const UserDropdown = () => {
 	return (
@@ -65,25 +64,22 @@ export const UserDropdown = () => {
 					<DropdownMenuItem className="cursor-pointer" asChild>
 						<Link href={"/dashboard/profile/me"}>
 							<UserRound />
-							My Profile
+							Profil Saya
 						</Link>
 					</DropdownMenuItem>
 					<DropdownMenuItem className="cursor-pointer" asChild>
 						<Link href="/dashboard/profile/change-password">
 							<KeyRound />
-							Change Password
+							Ubah Password
 						</Link>
 					</DropdownMenuItem>
 					<DropdownMenuItem className="cursor-pointer" asChild>
 						<Link href="/dashboard/help">
 							<CircleQuestionMarkIcon />
-							Help
+							Bantuan
 						</Link>
 					</DropdownMenuItem>
-					<Button variant={"destructive"} className="w-full mt-2">
-						<LogOut className="text-white" />
-						LogOut
-					</Button>
+					<LogoutButton className="w-full mt-2" />
 				</DropdownMenuGroup>
 			</DropdownMenuContent>
 		</DropdownMenu>

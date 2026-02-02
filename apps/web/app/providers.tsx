@@ -5,7 +5,13 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { PropsWithChildren } from "react";
 
 export const TanstackQueryProvider = ({ children }: PropsWithChildren) => {
-	const queryClient = new QueryClient();
+	const queryClient = new QueryClient({
+		defaultOptions: {
+			queries: {
+				refetchOnWindowFocus: false,
+			},
+		},
+	});
 
 	return (
 		<QueryClientProvider client={queryClient}>

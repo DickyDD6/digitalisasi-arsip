@@ -1,3 +1,5 @@
+// TODO: PINDAHKAN_KE_FEATURES - Komponen ini harus dipindahkan ke features/shared/widgets/
+// Lokasi saat ini melanggar arsitektur berbasis fitur - komponen layout tidak boleh berada di direktori app/
 import { SearchInput } from "@/shared/components/search/search-input";
 import { SidebarTrigger } from "@repo/ui/components/sidebar";
 import Image from "next/image";

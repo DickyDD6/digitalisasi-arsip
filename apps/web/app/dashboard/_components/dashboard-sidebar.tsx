@@ -1,5 +1,7 @@
 "use client";
 
+// TODO: PINDAHKAN_KE_FEATURES - Komponen ini harus dipindahkan ke features/shared/widgets/
+// Lokasi saat ini melanggar arsitektur berbasis fitur - komponen layout tidak boleh berada di direktori app/
 import {
 	Sidebar,
 	SidebarContent,
@@ -66,7 +68,7 @@ export const DashboardSidebar = () => {
 						<SidebarMenuButton asChild>
 							<Link href={"/dashboard/settings"}>
 								<Settings />
-								System Settings
+								Pengaturan Sistem
 							</Link>
 						</SidebarMenuButton>
 					</SidebarMenuItem>

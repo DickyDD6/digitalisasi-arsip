@@ -1,5 +1,7 @@
 "use client";
 
+// TODO: PINDAHKAN_KE_FEATURES - Komponen ini harus dipindahkan ke features/dashboard/widgets/
+// Lokasi saat ini melanggar arsitektur berbasis fitur - komponen tidak boleh berada di direktori app/
 import { Button } from "@repo/ui/components/button";
 import { Calendar as CalendarComponent } from "@repo/ui/components/calendar";
 import { Card, CardContent } from "@repo/ui/components/card";

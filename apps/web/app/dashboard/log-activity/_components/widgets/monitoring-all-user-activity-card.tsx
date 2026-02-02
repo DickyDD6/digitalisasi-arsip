@@ -1,3 +1,5 @@
+// TODO: PINDAHKAN_KE_FEATURES - Komponen ini harus dipindahkan ke features/dashboard/widgets/
+// Lokasi saat ini melanggar arsitektur berbasis fitur - komponen tidak boleh berada di direktori app/
 import { RoleBadge } from "@/shared/components/role-badge";
 import { StatusBadge } from "@/shared/components/status-badge";
 import { DocumentStatus, Role } from "@/shared/constants";

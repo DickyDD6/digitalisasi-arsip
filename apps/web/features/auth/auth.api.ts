@@ -1,23 +1,40 @@
 import { http } from "@/shared/lib";
 import { LoginRequest, LoginResponse } from "./auth.types";
+import { ApiResponse } from "@/shared/types";
 
-export const login = async (payload: LoginRequest): Promise<LoginResponse> => {
-	const { data, status } = await http.post("/user/login", payload);
+const getCsrfToken = async (): Promise<void> => {
+	try {
+		await http.get("/sanctum/csrf-cookie");
+	} catch (error) {
+		process.env.NODE_ENV !== "production" && console.error(error);
+	}
+};
 
-	if (status !== 200) throw new Error("LogIn Failed!");
+export const login = async (
+	payload: LoginRequest,
+): Promise<ApiResponse<LoginResponse>> => {
+	try {
+		await getCsrfToken();
 
-	return {
-		id: data.id,
-		username: data.username,
-		// role adapter, karna sekarang pakai dummyjson jadi saya konversi manual disini
-		// role uploader belum ada karna di dummyjson hanya ada 3 role yaitu admin, moderator dan user
-		// TODO: sesuaikan dengan backend jika backend restful api sudah ready
-		role:
-			data.role === "admin"
-				? "MANAGER"
-				: data.role === "moderator"
-					? "QC"
-					: "SBAP",
-		accessToken: data.accessToken,
-	};
+		const { data } = await http.post<ApiResponse<LoginResponse>>(
+			"/api/auth/login",
+			payload,
+		);
+
+		return data;
+	} catch (error) {
+		process.env.NODE_ENV !== "production" && console.error(error);
+		throw error;
+	}
+};
+
+export const logout = async (): Promise<ApiResponse> => {
+	try {
+		const { data } = await http.post<ApiResponse>("/api/auth/logout");
+
+		return data;
+	} catch (error) {
+		process.env.NODE_ENV !== "production" && console.error(error);
+		throw error;
+	}
 };

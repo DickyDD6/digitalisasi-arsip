@@ -1,4 +1,8 @@
-import { PageHeader } from "@/shared/components/page-header";
+import {
+	PageDescription,
+	PageHeader,
+	PageTitle,
+} from "@/shared/components/page-header";
 import { Metadata } from "next";
 import { MonitoringAllUserActivityCard } from "./_components/widgets/monitoring-all-user-activity-card";
 import { MonitoringFilterCard } from "./_components/widgets/monitoring-filter-card";
@@ -12,10 +16,12 @@ export const metadata: Metadata = {
 const LogActivityPage = () => {
 	return (
 		<>
-			<PageHeader
-				title="System Log Activity"
-				description="Monitoring and audit trail of all user activities"
-			/>
+			<PageHeader>
+				<PageTitle>Log Activity</PageTitle>
+				<PageDescription>
+					Monitoring and audit trail of all user activities
+				</PageDescription>
+			</PageHeader>
 			<MonitoringFilterCard />
 			<MonitoringStatsSummaryCard />
 			<MonitoringAllUserActivityCard />
