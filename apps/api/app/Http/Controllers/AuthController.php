@@ -117,12 +117,12 @@ class AuthController extends Controller
 
         if (!$user) {
             return response()->json([
-                'message' => 'Unauthenticated.',
+                'message' => 'Tidak terautentikasi.',
             ], 401);
         }
 
         return response()->json([
-            'message' => 'User data retrieved successfully.',
+            'message' => 'Data pengguna berhasil diambil.',
             'data' => [
                 'id' => $user->id,
                 'name' => $user->name,

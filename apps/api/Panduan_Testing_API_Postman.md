@@ -237,7 +237,31 @@ X-XSRF-TOKEN: {{xsrf_token}}
 ```
 GET http://localhost:8000/api/users
 ```
-**Expected:** 200 OK dengan array users + pagination
+
+**Expected Response:**
+```json
+{
+  "message": "Daftar pengguna berhasil diambil.",
+  "data": [
+    {
+      "id": 1,
+      "name": "Manager User",
+      "email": "manager@test.com",
+      "nip": "1234567890",
+      "role": "manager",
+      "created_at": "2026-02-03T07:12:44.000000Z",
+      "updated_at": "2026-02-03T07:12:44.000000Z"
+    }
+  ],
+  "meta": {
+    "current_page": 1,
+    "last_page": 1,
+    "per_page": 15,
+    "total": 4
+  }
+}
+```
+
 **Status:** `200 OK`
 
 ---
@@ -247,9 +271,10 @@ GET http://localhost:8000/api/users
 POST http://localhost:8000/api/users
 
 Headers:
+Content-Type: application/json
 X-XSRF-TOKEN: {{xsrf_token}}
 
-Body (raw JSON):
+Body (raw JSON - pilih "JSON" di dropdown, BUKAN "Text"):
 {
   "name": "Uploader Baru",
   "email": "uploader_baru@test.com",
@@ -258,25 +283,58 @@ Body (raw JSON):
   "role": "uploader"
 }
 ```
-**Expected:** 201 Created
+
+**Expected Response:**
+```json
+{
+  "message": "Pengguna berhasil dibuat.",
+  "data": {
+    "id": 5,
+    "name": "Uploader Baru",
+    "email": "uploader_baru@test.com",
+    "nip": "1234567890",
+    "role": "uploader",
+    "created_at": "2026-02-03T07:12:44.000000Z",
+    "updated_at": "2026-02-03T07:12:44.000000Z"
+  }
+}
+```
+
 **Status:** `201 Created`
 
 ---
 
-date User
+### ✅ 1.3 Update User (Partial Update)
 ```
-PUT http://localhost:8000/api/users/{id}
+PATCH http://localhost:8000/api/users/{id}
 
 Headers:
+Content-Type: application/json
 X-XSRF-TOKEN: {{xsrf_token}}
 
-Body (raw JSON):
+Body (raw JSON - pilih "JSON" di dropdown, BUKAN "Text"):
 {
-  "name": "Uploader Baru - Updated",
+  "name": "Uploader Baru 2- Updated",
   "role": "qc"
 }
 ```
-**Expected:** 200 OK
+
+**Expected Response:**
+```json
+{
+  "message": "Pengguna berhasil diperbarui.",
+  "data": {
+    "id": 5,
+    "name": "Uploader Baru 2- Updated",
+    "email": "uploader_baru@test.com",
+    "nip": "1234567890",
+    "role": "qc",
+    "created_at": "2026-02-03T07:12:44.000000Z",
+    "updated_at": "2026-02-03T07:12:44.000000Z"
+  }
+}
+```
+
 **Status:** `200 OK`
 
 ---
@@ -288,7 +346,14 @@ DELETE http://localhost:8000/api/users/{id}
 Headers:
 X-XSRF-TOKEN: {{xsrf_token}}
 ```
-**Expected:** 200 OK
+
+**Expected Response:**
+```json
+{
+  "message": "Pengguna berhasil dihapus."
+}
+```
+
 **Status:** `200 OK`
 
 ---
@@ -297,8 +362,15 @@ X-XSRF-TOKEN: {{xsrf_token}}
 ```
 GET http://localhost:8000/api/users
 ```
-**Expected:** 403 Forbidden (Uploader tidak boleh akses user management)
-**Status:** `403 Forbidden`
+
+**Expected Response:**
+```json
+{
+  "message": "This action is unauthorized."
+}
+```
+
+**Status:** `403 Forbidden` (Uploader tidak boleh akses user management)
 
 ---
 
@@ -498,7 +570,7 @@ X-XSRF-TOKEN: {{xsrf_token}}
 
 Body (form-data):
 - document_type: nilai
-- prodi: Informatika
+- prodi: Teknik Informatika
 - tahun_ajaran: 2024/2025
 - mata_kuliah: Pemrograman Web
 - kelas: A
@@ -507,7 +579,7 @@ Body (form-data):
 **Expected:** 201 Created, status: `menunggu_verifikasi`
 **Status:** `201 Created`
 
-> **📝 Note:** Prodi sekarang menggunakan Enum. Gunakan nilai: `Informatika`, `Pangan`, `Industri`, `Mesin`, `Lingkungan`, atau `Perencanaan Wilayah Kota`
+> **📝 Note:** Prodi sekarang menggunakan Enum. Gunakan nilai: `Teknik Informatika`, `Teknologi Pangan`, `Teknik Industri`, `Teknik Mesin`, `Teknik Lingkungan`, atau `Perencanaan Wilayah dan Kota`
 
 ---
 
@@ -520,7 +592,7 @@ X-XSRF-TOKEN: {{xsrf_token}}
 
 Body (form-data):
 - document_type: ijazah
-- prodi: Informatika
+- prodi: Teknik Informatika
 - tahun_lulus: 2024
 - npm: 1234567890
 - file: (pilih file PDF)
@@ -539,7 +611,7 @@ X-XSRF-TOKEN: {{xsrf_token}}
 
 Body (form-data):
 - document_type: berita_acara_sidang
-- prodi: Mesin
+- prodi: Teknik Mesin
 - tahun_lulus: 2024
 - npm: 9876543210
 - file: (pilih file PDF)
@@ -587,7 +659,7 @@ X-XSRF-TOKEN: {{xsrf_token}}
 
 Body (form-data):
 - document_type: nilai
-- prodi: Teknik Informatika  // ❌ Invalid! Tidak ada di Enum
+- prodi: Invalid Prodi  // ❌ Invalid! Tidak ada di Enum
 - tahun_ajaran: 2024/2025
 - mata_kuliah: Pemrograman Web
 - kelas: A
@@ -660,9 +732,10 @@ GET http://localhost:8000/api/documents/pending
 PATCH http://localhost:8000/api/documents/{id}/verify
 
 Headers:
+Content-Type: application/json
 X-XSRF-TOKEN: {{xsrf_token}}
 
-Body (raw JSON):
+Body (raw JSON - pilih "JSON" di dropdown, BUKAN "Text"):
 {
   "status": "terverifikasi"
 }
@@ -687,9 +760,10 @@ Body (raw JSON):
 PATCH http://localhost:8000/api/documents/{id}/verify
 
 Headers:
+Content-Type: application/json
 X-XSRF-TOKEN: {{xsrf_token}}
 
-Body (raw JSON):
+Body (raw JSON - pilih "JSON" di dropdown, BUKAN "Text"):
 {
   "status": "tidak_terverifikasi",
   "verification_note": "Format dokumen tidak sesuai standar."
@@ -736,11 +810,12 @@ Coba verifikasi dokumen yang sudah terverifikasi
 PUT http://localhost:8000/api/documents/{id}
 
 Headers:
+Content-Type: application/json
 X-XSRF-TOKEN: {{xsrf_token}}
 
-Body (raw JSON):
+Body (raw JSON - pilih "JSON" di dropdown, BUKAN "Text"):
 {
-  "prodi": "Sistem Informasi - Updated",
+  "prodi": "Pangan",
   "tahun_lulus": "2025"
 }
 ```
@@ -769,7 +844,7 @@ X-XSRF-TOKEN: {{xsrf_token}}
 
 Body (form-data):
 - _method: PUT
-- prodi: Teknik Komputer
+- prodi: Teknik Industri
 - file: (pilih file PDF baru)
 ```
 
@@ -783,9 +858,10 @@ Body (form-data):
 PUT http://localhost:8000/api/documents/{id_terverifikasi}
 
 Headers:
+Content-Type: application/json
 X-XSRF-TOKEN: {{xsrf_token}}
 
-Body (raw JSON):
+Body (raw JSON - pilih "JSON" di dropdown, BUKAN "Text"):
 {
   "prodi": "Test"
 }
@@ -880,7 +956,7 @@ GET http://localhost:8000/api/documents?document_type=nilai
 ```
 GET http://localhost:8000/api/documents?prodi=Teknik%20Informatika
 ```
-**Expected:** Hanya dokumen dari prodi "Teknik Informatika"
+**Expected:** Hanya dokumen dari prodi "Informatika"
 **Status:** `200 OK`
 
 ---
@@ -889,7 +965,7 @@ GET http://localhost:8000/api/documents?prodi=Teknik%20Informatika
 ```
 GET http://localhost:8000/api/documents?document_type=nilai&status=terverifikasi&prodi=Teknik%20Informatika
 ```
-**Expected:** Dokumen nilai yang terverifikasi dari prodi Teknik Informatika
+**Expected:** Dokumen nilai yang terverifikasi dari prodi Informatika
 **Status:** `200 OK`
 
 ---
@@ -1003,6 +1079,20 @@ Login sebagai Uploader, coba download
 
 ---
 
+### Update Berhasil tapi Data Tidak Berubah (200 OK tapi data lama)
+**Penyebab:**
+- Content-Type header tidak diset `application/json`
+- Di Postman memilih "Text" bukan "JSON" di dropdown body type
+- Request body tidak ter-parse dengan benar
+
+**Solusi:**
+1. Di Postman, pilih body type **raw**
+2. Ubah dropdown di sebelah kanan dari **Text** menjadi **JSON**
+3. Atau tambahkan header secara manual: `Content-Type: application/json`
+4. Pastikan format JSON valid
+
+---
+
 ### Cookies Tidak Tersimpan
 **Penyebab:**
 - Postman settings salah
@@ -1046,17 +1136,20 @@ Login sebagai Uploader, coba download
 
 ## ✅ Testing Selesai!
 
-**API Version:** v2.0 - Sanctum Stateful with HTTP-only Cookies  
-**Last Updated:** 22 Januari 2026  
+**API Version:** v2.2 - Enhanced Security with Rate Limiting  
+**Last Updated:** 6 Februari 2026  
 **Security Level:** Production-Ready 🔒  
-**Total Tests:** 41 skenario untuk 10 Use Cases  
+**Total Tests:** 45 skenario untuk 10 Use Cases + Security Features  
 **Performance:** ~40% smaller API responses  
 
-### Key Improvements in v2.0:
+### Key Improvements in v2.2:
 - ✅ Sanctum Stateful API with HTTP-only cookies
 - ✅ CSRF protection
 - ✅ Optimized response structures
 - ✅ Better security (no email exposure in listings)
 - ✅ Faster response times
+- ✅ Dual-Layer Rate Limiting (IP + Account-based)
+- ✅ Account Lockout Protection
+- ✅ Comprehensive Audit Logging
 
-**Security Features:** Rate Limit | PDF Validation | Session-based Auth | CORS | Audit Logs | CSRF Protection
+**Security Features:** Rate Limit | Account Lockout | PDF Validation | Session-based Auth | CORS | Audit Logs | CSRF Protection

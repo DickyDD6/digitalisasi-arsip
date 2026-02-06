@@ -288,7 +288,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationError'
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Tidak dapat menghapus akun sendiri.
+                  errors:
+                    type: object
+                    properties:
+                      user_id:
+                        type: array
+                        items:
+                          type: string
+                    example:
+                      user_id:
+                        - Anda tidak dapat menghapus akun Anda sendiri.
 
   /api/documents:
     get:
@@ -1237,17 +1251,18 @@ components:
       properties:
         message:
           type: string
-          example: The given data was invalid.
+          example: Validasi gagal.
         errors:
           type: object
+          description: Object berisi field yang error dengan array pesan error
           additionalProperties:
             type: array
             items:
               type: string
           example:
-            email:
-              - Email wajib diisi.
-              - Format email tidak valid.
+            field_name:
+              - Field ini wajib diisi.
+              - Format field tidak valid.
 
     ErrorResponse:
       type: object

@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\DocumentStatus;
 use App\Models\Document;
 use App\Models\User;
 
@@ -69,7 +70,7 @@ class DocumentPolicy
         }
 
         // Can only delete rejected documents
-        return $document->status === 'tidak_terverifikasi';
+        return $document->status === DocumentStatus::REJECTED;
     }
 
     /**
@@ -106,7 +107,7 @@ class DocumentPolicy
 
         // SBAP can only download if document is verified
         if ($user->hasRole('sbap')) {
-            return $document->status === 'terverifikasi';
+            return $document->status === DocumentStatus::VERIFIED;
         }
 
         // Manager can download any document
