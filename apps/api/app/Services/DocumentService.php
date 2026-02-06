@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\DocumentStatus;
 use App\Models\AuditLog;
 use App\Models\Document;
 use Illuminate\Http\UploadedFile;
@@ -201,7 +202,7 @@ class DocumentService
         int $verifierId
     ): Document {
         // Validate document is still pending
-        if ($document->status !== 'menunggu_verifikasi') {
+        if ($document->status !== DocumentStatus::PENDING) {
             throw \Illuminate\Validation\ValidationException::withMessages([
                 'document' => ['Dokumen sudah diverifikasi sebelumnya dan tidak dapat diverifikasi ulang.'],
             ]);
@@ -240,8 +241,8 @@ class DocumentService
      */
     protected function logVerification(Document $document, string $status, int $verifierId): void
     {
-        $action = $status === 'terverifikasi' ? 'verify_document' : 'reject_document';
-        $description = $status === 'terverifikasi'
+        $action = $status === DocumentStatus::VERIFIED->value ? 'verify_document' : 'reject_document';
+        $description = $status === DocumentStatus::VERIFIED->value
             ? "Dokumen '{$document->file_name}' diverifikasi."
             : "Dokumen '{$document->file_name}' ditolak.";
 
@@ -249,7 +250,7 @@ class DocumentService
             'document_id' => $document->id,
             'document_type' => $document->document_type->value,
             'verifier_id' => $verifierId,
-            'status' => $status,  // Already a string parameter
+            'status' => $status,
         ];
 
         if ($document->verification_note) {
@@ -283,8 +284,8 @@ class DocumentService
         // Check if document can be updated (only rejected documents can be updated by uploader)
         // Manager can update any document, so we check the user role
         $user = \App\Models\User::find($userId);
-        if ($user && $user->hasRole('uploader') && $document->status !== 'tidak_terverifikasi') {
-            $statusMessage = $document->status === 'terverifikasi'
+        if ($user && $user->hasRole('uploader') && $document->status !== DocumentStatus::REJECTED) {
+            $statusMessage = $document->status === DocumentStatus::VERIFIED
                 ? 'Dokumen yang sudah terverifikasi tidak dapat diperbarui.'
                 : 'Dokumen yang sedang menunggu verifikasi tidak dapat diperbarui.';
 

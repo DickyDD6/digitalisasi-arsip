@@ -47,7 +47,7 @@ class UserController extends Controller
         $users = $query->orderBy('created_at', 'desc')->paginate($perPage);
 
         return response()->json([
-            'message' => 'Daftar user berhasil diambil.',
+            'message' => 'Daftar pengguna berhasil diambil.',
             'data' => UserResource::collection($users),
             'meta' => [
                 'current_page' => $users->currentPage(),
@@ -68,7 +68,7 @@ class UserController extends Controller
         $user = $this->userService->createUser($request->validated());
 
         return response()->json([
-            'message' => 'User berhasil dibuat.',
+            'message' => 'Pengguna berhasil dibuat.',
             'data' => new UserResource($user),
         ], 201);
     }
@@ -81,7 +81,7 @@ class UserController extends Controller
         $this->authorize('view', $user);
 
         return response()->json([
-            'message' => 'Detail user berhasil diambil.',
+            'message' => 'Detail pengguna berhasil diambil.',
             'data' => new UserResource($user),
         ], 200);
     }
@@ -96,7 +96,7 @@ class UserController extends Controller
         $updatedUser = $this->userService->updateUser($user, $request->validated());
 
         return response()->json([
-            'message' => 'User berhasil diupdate.',
+            'message' => 'Pengguna berhasil diperbarui.',
             'data' => new UserResource($updatedUser),
         ], 200);
     }
@@ -121,7 +121,7 @@ class UserController extends Controller
         $this->userService->deleteUser($user);
 
         return response()->json([
-            'message' => 'User berhasil dihapus.',
+            'message' => 'Pengguna berhasil dihapus.',
         ], 200);
     }
 }
