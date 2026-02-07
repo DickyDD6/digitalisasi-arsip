@@ -40,14 +40,14 @@ class CreateUserRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Nama wajib diisi.',
-            'name.max' => 'Nama maksimal 255 karakter.',
-            'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Format email tidak valid.',
-            'email.unique' => 'Email sudah terdaftar.',
+            'name.required' => 'Nama pengguna wajib diisi.',
+            'name.max' => 'Nama pengguna maksimal 255 karakter.',
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.email' => 'Format alamat email tidak valid. Contoh: nama@example.com',
+            'email.unique' => 'Alamat email sudah terdaftar. Gunakan email lain.',
             'password.required' => 'Password wajib diisi.',
             'password.min' => 'Password minimal 8 karakter.',
-            'role.required' => 'Role wajib diisi.',
+            'role.required' => 'Role pengguna wajib dipilih.',
             'role.in' => 'Role harus salah satu dari: manager, uploader, qc, sbap.',
         ];
     }

@@ -46,7 +46,7 @@ class AuthController extends Controller
             throw ValidationException::withMessages([
                 'email' => [
                     sprintf(
-                        'Kredensial yang diberikan tidak cocok dengan data kami. Sisa percobaan: %d',
+                        'Email atau password salah. Sisa percobaan login: %d kali.',
                         $remaining
                     )
                 ],
