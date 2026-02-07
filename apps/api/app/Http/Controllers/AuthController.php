@@ -50,7 +50,6 @@ class AuthController extends Controller
                         'Email atau password salah.'
                     ],
                 ],
-                'retry_after' => 0, // No delay for regular failed attempts
                 'remaining_attempts' => $remaining, // How many attempts left before lockout
             ], 422);
         }
