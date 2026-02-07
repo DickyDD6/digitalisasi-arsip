@@ -43,14 +43,16 @@ class AuthController extends Controller
                 ]
             );
 
-            throw ValidationException::withMessages([
-                'email' => [
-                    sprintf(
-                        'Email atau password salah. Sisa percobaan login: %d kali.',
-                        $remaining
-                    )
+            return response()->json([
+                'message' => 'Email atau password salah.',
+                'errors' => [
+                    'email' => [
+                        'Email atau password salah.'
+                    ],
                 ],
-            ]);
+                'retry_after' => 0, // No delay for regular failed attempts
+                'remaining_attempts' => $remaining, // How many attempts left before lockout
+            ], 422);
         }
 
         // Clear attempts on successful login

@@ -70,11 +70,40 @@ paths:
               schema:
                 $ref: '#/components/schemas/LoginResponse'
         '422':
-          description: Validation Error
+          description: Validation error - Kredensial salah atau field tidak valid
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationError'
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+                  - type: object
+                    properties:
+                      retry_after:
+                        type: integer
+                        description: Waktu tunggu dalam detik (0 untuk login failure biasa, >0 untuk account locked)
+                        example: 0
+                      remaining_attempts:
+                        type: integer
+                        description: Sisa percobaan login sebelum akun dikunci (hanya ada pada login failure)
+                        example: 4
+              examples:
+                invalidCredentials:
+                  summary: Kredensial salah
+                  value:
+                    message: Email atau password salah.
+                    errors:
+                      email:
+                        - Email atau password salah.
+                    retry_after: 0
+                    remaining_attempts: 4
+                validationError:
+                  summary: Field validation error
+                  value:
+                    message: The email field is invalid.
+                    errors:
+                      email:
+                        - Format alamat email tidak valid. Contoh: nama@example.com
+                    retry_after: 0
 
   /api/auth/logout:
     post:
