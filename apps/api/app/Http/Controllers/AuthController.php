@@ -43,14 +43,15 @@ class AuthController extends Controller
                 ]
             );
 
-            throw ValidationException::withMessages([
-                'email' => [
-                    sprintf(
-                        'Kredensial yang diberikan tidak cocok dengan data kami. Sisa percobaan: %d',
-                        $remaining
-                    )
+            return response()->json([
+                'message' => 'Email atau password salah.',
+                'errors' => [
+                    'email' => [
+                        'Email atau password salah.'
+                    ],
                 ],
-            ]);
+                'remaining_attempts' => $remaining, // How many attempts left before lockout
+            ], 422);
         }
 
         // Clear attempts on successful login

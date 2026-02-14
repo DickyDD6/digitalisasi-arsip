@@ -158,7 +158,11 @@ class LoginAttemptService
             return null;
         }
 
-        return max(0, $expiry->diffInSeconds(now()));
+        // Calculate seconds from now until expiry
+        $seconds = now()->diffInSeconds($expiry, false);
+
+        // If expiry is in the past, return 0
+        return max(0, $seconds);
     }
 
     /**

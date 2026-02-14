@@ -54,7 +54,6 @@ class ThrottleLoginAttempts
                         )
                     ],
                 ],
-                'retry_after' => $seconds,
                 'locked_until' => $expiry->toIso8601String(),
             ], 429);
         }

@@ -70,11 +70,34 @@ paths:
               schema:
                 $ref: '#/components/schemas/LoginResponse'
         '422':
-          description: Validation Error
+          description: Validation error - Kredensial salah atau field tidak valid
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationError'
+                allOf:
+                  - $ref: '#/components/schemas/ValidationError'
+                  - type: object
+                    properties:
+                      remaining_attempts:
+                        type: integer
+                        description: Sisa percobaan login sebelum akun dikunci (hanya ada pada login failure)
+                        example: 4
+              examples:
+                invalidCredentials:
+                  summary: Kredensial salah
+                  value:
+                    message: Email atau password salah.
+                    errors:
+                      email:
+                        - Email atau password salah.
+                    remaining_attempts: 4
+                validationError:
+                  summary: Field validation error
+                  value:
+                    message: The email field is invalid.
+                    errors:
+                      email:
+                        - Format alamat email tidak valid. Contoh: nama@example.com
 
   /api/auth/logout:
     post:
@@ -226,6 +249,45 @@ paths:
       summary: Update User
       description: Mengupdate data user
       operationId: updateUser
+      security:
+        - cookieAuth: []
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+      responses:
+        '200':
+          description: User berhasil diupdate
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+    patch:
+      tags:
+        - Users
+      summary: Update User (Partial)
+      description: |
+        Mengupdate data user secara partial (hanya field yang dikirim yang akan diupdate).
+        
+        Semua field bersifat optional. Kirim hanya field yang ingin diubah.
+      operationId: patchUser
       security:
         - cookieAuth: []
       parameters:
@@ -903,6 +965,9 @@ components:
 
     UpdateUserRequest:
       type: object
+      description: |
+        Semua field bersifat optional untuk mendukung partial update.
+        Hanya kirim field yang ingin diubah.
       properties:
         name:
           type: string
@@ -934,7 +999,7 @@ components:
           example: 1
         document_type:
           type: string
-          enum: [nilai, transkrip, ijazah]
+          enum: [nilai, transkrip, ijazah, berita_acara_sidang]
           example: nilai
         file_name:
           type: string
@@ -943,6 +1008,10 @@ components:
           type: integer
           description: Ukuran file dalam bytes
           example: 102400
+        file_size_formatted:
+          type: string
+          description: Ukuran file dalam format human-readable
+          example: "100 KB"
         prodi:
           type: string
           example: Teknik Informatika
@@ -979,13 +1048,15 @@ components:
           type: string
           nullable: true
           example: null
-        uploaded_by:
-          type: integer
-          example: 2
-        verified_by:
-          type: integer
+        uploaded_by_name:
+          type: string
+          description: Nama user yang mengupload (optimized response)
+          example: "Uploader User"
+        verified_by_name:
+          type: string
           nullable: true
-          example: null
+          description: Nama user yang memverifikasi (optimized response)
+          example: "QC User"
         verified_at:
           type: string
           format: date-time
@@ -999,12 +1070,6 @@ components:
           type: string
           format: date-time
           example: "2026-01-14T04:00:00.000000Z"
-        uploader:
-          $ref: '#/components/schemas/User'
-        verifier:
-          nullable: true
-          allOf:
-            - $ref: '#/components/schemas/User'
 
     DocumentResponse:
       type: object
@@ -1037,7 +1102,7 @@ components:
       properties:
         document_type:
           type: string
-          enum: [nilai, transkrip, ijazah]
+          enum: [nilai, transkrip, ijazah, berita_acara_sidang]
           description: Tipe dokumen
           example: nilai
         prodi:
@@ -1067,12 +1132,12 @@ components:
         tahun_lulus:
           type: string
           maxLength: 255
-          description: Wajib untuk dokumen ijazah/transkrip
+          description: Wajib untuk dokumen ijazah/transkrip/berita_acara_sidang
           example: "2024"
         npm:
           type: string
           maxLength: 255
-          description: Wajib untuk dokumen ijazah/transkrip
+          description: Wajib untuk dokumen ijazah/transkrip/berita_acara_sidang
           example: "1234567890"
 
     UpdateDocumentRequest:
@@ -1251,18 +1316,39 @@ components:
       properties:
         message:
           type: string
-          example: Validasi gagal.
+          example: The email field is invalid.
         errors:
           type: object
-          description: Object berisi field yang error dengan array pesan error
+          description: Object berisi field yang error dengan array pesan error yang spesifik dan toast-friendly
           additionalProperties:
             type: array
             items:
               type: string
-          example:
-            field_name:
-              - Field ini wajib diisi.
-              - Format field tidak valid.
+          examples:
+            emailInvalidFormat:
+              value:
+                email:
+                  - Format alamat email tidak valid. Contoh: nama@example.com
+              summary: Email format invalid
+            emailDuplicate:
+              value:
+                email:
+                  - Alamat email sudah terdaftar. Gunakan email lain.
+              summary: Email already exists
+            loginFailed:
+              value:
+                email:
+                  - Email atau password salah. Sisa percobaan login: 4 kali.
+              summary: Login credentials wrong
+            multipleErrors:
+              value:
+                name:
+                  - Nama pengguna wajib diisi.
+                email:
+                  - Format alamat email tidak valid. Contoh: nama@example.com
+                password:
+                  - Password minimal 8 karakter.
+              summary: Multiple validation errors
 
     ErrorResponse:
       type: object
