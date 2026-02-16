@@ -145,6 +145,43 @@ class DocumentController extends Controller
         );
     }
 
+    /**
+     * View the specified document inline (PDF Viewer).
+     */
+    public function view(Document $document)
+    {
+        $this->authorize('view', $document);
+
+        // Check if file exists
+        if (!Storage::exists($document->file_path)) {
+            abort(404, 'File tidak ditemukan.');
+        }
+
+        // Log view activity
+        \App\Models\AuditLog::log(
+            action: 'view_document',
+            description: "Dokumen '{$document->file_name}' dilihat.",
+            metadata: [
+                'document_id' => $document->id,
+                'document_type' => $document->document_type->value,
+                'file_name' => $document->file_name,
+                'prodi' => $document->prodi->value,
+            ],
+            modelType: \App\Models\Document::class,
+            modelId: $document->id
+        );
+
+        // Stream file inline
+        return Storage::response(
+            $document->file_path,
+            $document->file_name,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $document->file_name . '"',
+            ]
+        );
+    }
+
 
     /**
      * Remove the specified document.
