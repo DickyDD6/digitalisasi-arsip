@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Document Download (UC-10) - Manager & SBAP only
     Route::get('/documents/{document}/download', [DocumentController::class, 'download']);
+    Route::get('/documents/{document}/view', [DocumentController::class, 'view']);
 
     // Document Management (UC-04, UC-06, UC-07) - CRUD operations
     Route::apiResource('documents', DocumentController::class);
