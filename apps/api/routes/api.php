@@ -18,6 +18,8 @@ Route::post('/auth/login', [AuthController::class, 'login'])
     ->middleware(['throttle:75,1', 'throttle.login.attempts'])  // IP: 75/min, Account: role-based
     ->name('login');
 
+Route::post('/auth/check-email', [AuthController::class, 'checkEmail']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/auth/me', [AuthController::class, 'me']);
@@ -28,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Audit Log / Activity Monitoring (UC-03) - Only accessible by manager
     Route::get('/audit-logs', [AuditLogController::class, 'index']);
     Route::get('/audit-logs/statistics', [AuditLogController::class, 'statistics']);
+    Route::get('/audit-logs/export', [AuditLogController::class, 'export']);
 
 
     // Document Verification (UC-08) - QC & Manager only

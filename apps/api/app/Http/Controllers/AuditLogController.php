@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\AuditLogResource;
+use App\Enums\AuditAction;
+use App\Enums\ModelType;
 use App\Models\AuditLog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AuditLogController extends Controller
 {
@@ -83,20 +86,24 @@ class AuditLogController extends Controller
 
         $stats = [
             'total_activities' => AuditLog::whereBetween('created_at', [$startDate, $endDate])->count(),
+            'today_total' => AuditLog::whereDate('created_at', today())->count(),
+            'today_upload' => AuditLog::whereDate('created_at', today())
+                ->where('action', AuditAction::UPLOAD_DOCUMENT->value)
+                ->count(),
+            'today_verify' => AuditLog::whereDate('created_at', today())
+                ->where('action', AuditAction::VERIFY_DOCUMENT->value)
+                ->count(),
+            'today_reject' => AuditLog::whereDate('created_at', today())
+                ->where('action', AuditAction::REJECT_DOCUMENT->value)
+                ->count(),
             'by_action' => AuditLog::whereBetween('created_at', [$startDate, $endDate])
                 ->select('action', \DB::raw('count(*) as count'))
                 ->groupBy('action')
                 ->get()
-                ->pluck('count', 'action'),
-            'by_user' => AuditLog::with('user:id,name')
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->select('user_id', \DB::raw('count(*) as count'))
-                ->groupBy('user_id')
-                ->get()
-                ->map(fn($item) => [
-                    'user' => $item->user?->name ?? 'System',
-                    'count' => $item->count
-                ]),
+                ->mapWithKeys(function ($item) {
+                    $enum = AuditAction::tryFrom($item->action);
+                    return [$enum?->label() ?? $item->action => $item->count];
+                }),
             'recent_activities' => AuditLogResource::collection(
                 AuditLog::with('user')
                     ->whereBetween('created_at', [$startDate, $endDate])
@@ -114,5 +121,68 @@ class AuditLogController extends Controller
                 'end_date' => $endDate,
             ],
         ], 200);
+    }
+
+    /**
+     * Export audit logs to CSV.
+     *
+     * @param Request $request
+     * @return StreamedResponse
+     */
+    public function export(Request $request): StreamedResponse
+    {
+        $this->authorize('viewAny', AuditLog::class);
+
+        $startDate = $request->input('start_date', now()->subDays(30));
+        $endDate = $request->input('end_date', now());
+
+        $query = AuditLog::with('user')
+            ->whereBetween('created_at', [$startDate, $endDate]);
+
+        // Apply filters if present
+        if ($request->has('action')) {
+            $query->where('action', $request->input('action'));
+        }
+        if ($request->has('user_id')) {
+            $query->where('user_id', $request->input('user_id'));
+        }
+
+        $logs = $query->orderBy('created_at', 'desc')->get();
+
+        $headers = [
+            "Content-type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=audit_logs_" . date('Y-m-d_H-i') . ".csv",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+
+        $callback = function () use ($logs) {
+            $file = fopen('php://output', 'w');
+
+            // Add BOM for Excel compatibility
+            fputs($file, "\xEF\xBB\xBF");
+
+            fputcsv($file, ['No', 'User', 'Role', 'Aksi', 'ID Dokumen', 'Nama Dokumen', 'Waktu', 'Tanggal', 'Deskripsi']);
+
+            foreach ($logs as $index => $log) {
+                $actionEnum = AuditAction::tryFrom($log->action);
+
+                fputcsv($file, [
+                    $index + 1,
+                    $log->user?->name ?? 'System',
+                    $log->user?->role?->value ?? 'System', // Use value for Enum
+                    $actionEnum?->label() ?? $log->action,
+                    $log->model_type === ModelType::DOCUMENT->value ? 'DOC-' . $log->model_id : '-',
+                    $log->metadata['file_name'] ?? '-',
+                    $log->created_at->format('H.i'),
+                    $log->created_at->format('d/m/Y'),
+                    $log->description
+                ]);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }
