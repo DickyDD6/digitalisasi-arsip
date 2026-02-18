@@ -90,10 +90,11 @@ class AuditLog extends Model
         string $description,
         array $metadata = [],
         ?string $modelType = null,
-        ?int $modelId = null
+        ?int $modelId = null,
+        ?int $userId = null
     ): self {
         return self::create([
-            'user_id' => auth()->id(),
+            'user_id' => $userId ?? auth()->id(),
             'action' => $action,
             'model_type' => $modelType,
             'model_id' => $modelId,

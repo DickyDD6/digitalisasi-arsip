@@ -35,12 +35,11 @@ class DocumentUploadTest extends TestCase
         $this->sbap = User::factory()->create(['role' => 'sbap']);
     }
 
-    /** @test */
-    public function uploader_can_upload_nilai_document_and_audit_log_is_recorded()
+    public function test_uploader_can_upload_nilai_document_and_audit_log_is_recorded()
     {
         $this->actingAs($this->uploader);
 
-        $file = UploadedFile::fake()->create('nilai.pdf', 1000, 'application/pdf');
+        $file = UploadedFile::fake()->createWithContent('nilai.pdf', '%PDF-1.4');
 
         $response = $this->postJson('/api/documents', [
             'document_type' => 'nilai',
@@ -60,20 +59,20 @@ class DocumentUploadTest extends TestCase
                     'file_name',
                     'status',
                     'prodi',
-                    'uploaded_by',
+                    'uploaded_by_name',
                 ],
             ])
             ->assertJson([
                 'data' => [
                     'document_type' => 'nilai',
-                    'status' => 'menunggu_verifikasi',
+                    'status' => 'Menunggu Verifikasi',
                 ],
             ]);
 
         // Verify document in database with duplicate_key
         $document = Document::first();
         $this->assertNotNull($document->duplicate_key);
-        $this->assertEquals(64, strlen($document->duplicate_key)); // SHA1 = 40 chars hex
+        $this->assertEquals(40, strlen($document->duplicate_key)); // SHA1 = 40 chars hex
 
         $this->assertDatabaseHas('documents', [
             'document_type' => 'nilai',
@@ -81,7 +80,7 @@ class DocumentUploadTest extends TestCase
             'tahun_ajaran' => '2023/2024',
             'mata_kuliah' => 'Pemrograman Web',
             'kelas' => 'A',
-            'status' => 'menunggu_verifikasi',
+            'status' => 'menunggu verifikasi', // Database stores enum value
             'uploaded_by' => $this->uploader->id,
         ]);
 
@@ -99,12 +98,11 @@ class DocumentUploadTest extends TestCase
         $this->assertEquals($document->id, $auditLog->metadata['document_id']);
     }
 
-    /** @test */
-    public function manager_can_upload_document()
+    public function test_manager_can_upload_document()
     {
         $this->actingAs($this->manager);
 
-        $file = UploadedFile::fake()->create('ijazah.pdf', 500, 'application/pdf');
+        $file = UploadedFile::fake()->createWithContent('ijazah.pdf', '%PDF-1.4');
 
         $response = $this->postJson('/api/documents', [
             'document_type' => 'ijazah',
@@ -117,12 +115,11 @@ class DocumentUploadTest extends TestCase
         $response->assertStatus(201);
     }
 
-    /** @test */
-    public function sbap_cannot_upload_document()
+    public function test_sbap_cannot_upload_document()
     {
         $this->actingAs($this->sbap);
 
-        $file = UploadedFile::fake()->create('transkrip.pdf', 500, 'application/pdf');
+        $file = UploadedFile::fake()->createWithContent('transkrip.pdf', '%PDF-1.4');
 
         $response = $this->postJson('/api/documents', [
             'document_type' => 'transkrip',
@@ -135,12 +132,11 @@ class DocumentUploadTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function qc_cannot_upload_document()
+    public function test_qc_cannot_upload_document()
     {
         $this->actingAs($this->qc);
 
-        $file = UploadedFile::fake()->create('nilai.pdf', 500, 'application/pdf');
+        $file = UploadedFile::fake()->createWithContent('nilai.pdf', '%PDF-1.4');
 
         $response = $this->postJson('/api/documents', [
             'document_type' => 'nilai',
@@ -154,13 +150,12 @@ class DocumentUploadTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function duplicate_nilai_document_is_rejected()
+    public function test_duplicate_nilai_document_is_rejected()
     {
         $this->actingAs($this->uploader);
 
         // Upload first document
-        $file1 = UploadedFile::fake()->create('nilai1.pdf', 500, 'application/pdf');
+        $file1 = UploadedFile::fake()->createWithContent('nilai1.pdf', '%PDF-1.4');
         $this->postJson('/api/documents', [
             'document_type' => 'nilai',
             'file' => $file1,
@@ -171,7 +166,7 @@ class DocumentUploadTest extends TestCase
         ])->assertStatus(201);
 
         // Try to upload duplicate
-        $file2 = UploadedFile::fake()->create('nilai2.pdf', 500, 'application/pdf');
+        $file2 = UploadedFile::fake()->createWithContent('nilai2.pdf', '%PDF-1.4');
         $response = $this->postJson('/api/documents', [
             'document_type' => 'nilai',
             'file' => $file2,
@@ -190,13 +185,12 @@ class DocumentUploadTest extends TestCase
         $this->assertEquals(1, Document::count());
     }
 
-    /** @test */
-    public function duplicate_ijazah_document_is_rejected()
+    public function test_duplicate_ijazah_document_is_rejected()
     {
         $this->actingAs($this->manager);
 
         // Upload first ijazah
-        $file1 = UploadedFile::fake()->create('ijazah1.pdf', 500, 'application/pdf');
+        $file1 = UploadedFile::fake()->createWithContent('ijazah1.pdf', '%PDF-1.4');
         $this->postJson('/api/documents', [
             'document_type' => 'ijazah',
             'file' => $file1,
@@ -206,7 +200,7 @@ class DocumentUploadTest extends TestCase
         ])->assertStatus(201);
 
         // Try to upload duplicate ijazah
-        $file2 = UploadedFile::fake()->create('ijazah2.pdf', 500, 'application/pdf');
+        $file2 = UploadedFile::fake()->createWithContent('ijazah2.pdf', '%PDF-1.4');
         $response = $this->postJson('/api/documents', [
             'document_type' => 'ijazah',
             'file' => $file2,
@@ -338,8 +332,7 @@ class DocumentUploadTest extends TestCase
         $this->assertFalse($this->sbap->can('download', $rejectedDoc));
     }
 
-    /** @test */
-    public function file_must_be_pdf()
+    public function test_file_must_be_pdf()
     {
         $this->actingAs($this->uploader);
 
@@ -358,8 +351,7 @@ class DocumentUploadTest extends TestCase
             ->assertJsonValidationErrors(['file']);
     }
 
-    /** @test */
-    public function file_size_must_not_exceed_5mb()
+    public function test_file_size_must_not_exceed_5mb()
     {
         $this->actingAs($this->uploader);
 
@@ -378,12 +370,11 @@ class DocumentUploadTest extends TestCase
             ->assertJsonValidationErrors(['file']);
     }
 
-    /** @test */
-    public function required_fields_for_nilai_document()
+    public function test_required_fields_for_nilai_document()
     {
         $this->actingAs($this->uploader);
 
-        $file = UploadedFile::fake()->create('nilai.pdf', 500, 'application/pdf');
+        $file = UploadedFile::fake()->createWithContent('nilai.pdf', '%PDF-1.4');
 
         $response = $this->postJson('/api/documents', [
             'document_type' => 'nilai',
@@ -396,12 +387,11 @@ class DocumentUploadTest extends TestCase
             ->assertJsonValidationErrors(['tahun_ajaran', 'mata_kuliah', 'kelas']);
     }
 
-    /** @test */
-    public function required_fields_for_ijazah_document()
+    public function test_required_fields_for_ijazah_document()
     {
         $this->actingAs($this->manager);
 
-        $file = UploadedFile::fake()->create('ijazah.pdf', 500, 'application/pdf');
+        $file = UploadedFile::fake()->createWithContent('ijazah.pdf', '%PDF-1.4');
 
         $response = $this->postJson('/api/documents', [
             'document_type' => 'ijazah',
@@ -436,12 +426,11 @@ class DocumentUploadTest extends TestCase
             ]);
     }
 
-    /** @test */
-    public function uploaded_file_is_stored_in_private_storage()
+    public function test_uploaded_file_is_stored_in_private_storage()
     {
         $this->actingAs($this->uploader);
 
-        $file = UploadedFile::fake()->create('test.pdf', 500, 'application/pdf');
+        $file = UploadedFile::fake()->createWithContent('test.pdf', '%PDF-1.4');
 
         $this->postJson('/api/documents', [
             'document_type' => 'nilai',

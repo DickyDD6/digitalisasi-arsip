@@ -30,7 +30,7 @@ class DocumentResource extends JsonResource
             'npm' => $this->npm,
 
             // Status
-            'status' => $this->status->value,
+            'status' => $this->status->label(),
             'verification_note' => $this->verification_note,
 
             // User tracking - SIMPLIFIED (only send names)
