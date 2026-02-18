@@ -45,10 +45,11 @@ class AuditLogTest extends TestCase
                 'data' => [
                     '*' => [
                         'id',
-                        'user',
-                        'action',
+                        'user' => ['name', 'role'],
+                        'action' => ['name', 'label', 'color'],
+                        'document' => ['id_formatted', 'name'],
                         'description',
-                        'created_at',
+                        'date' => ['formatted', 'time', 'timestamp'],
                     ],
                 ],
                 'meta',
@@ -76,7 +77,7 @@ class AuditLogTest extends TestCase
         $this->assertNotEmpty($data);
 
         foreach ($data as $log) {
-            $this->assertEquals('upload_document', $log['action']);
+            $this->assertEquals('upload_document', $log['action']['name']);
         }
     }
 
@@ -92,7 +93,7 @@ class AuditLogTest extends TestCase
         $this->assertNotEmpty($data);
 
         foreach ($data as $log) {
-            $this->assertEquals($this->uploader->id, $log['user']['id']);
+            $this->assertEquals($this->uploader->name, $log['user']['name']);
         }
     }
 
@@ -128,8 +129,11 @@ class AuditLogTest extends TestCase
                 'message',
                 'data' => [
                     'total_activities',
+                    'today_total',
+                    'today_upload',
+                    'today_verify',
+                    'today_reject',
                     'by_action',
-                    'by_user',
                     'recent_activities',
                 ],
                 'period' => [
@@ -149,8 +153,11 @@ class AuditLogTest extends TestCase
 
         $data = $response->json('data');
         $this->assertEquals(8, $data['total_activities']); // 5 + 3 from setUp
-        $this->assertArrayHasKey('upload_document', $data['by_action']);
-        $this->assertArrayHasKey('create_user', $data['by_action']);
+        // by_action keys are now labels
+        // 'upload_document' -> 'Unggah'
+        // 'create_user' -> 'Buat Pengguna'
+        $this->assertArrayHasKey('Unggah', $data['by_action']);
+        $this->assertArrayHasKey('Buat Pengguna', $data['by_action']);
     }
 
     /** @test */

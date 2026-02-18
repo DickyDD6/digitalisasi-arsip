@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Enums\DocumentStatus;
+use App\Enums\AuditAction;
+use App\Enums\ModelType;
 use App\Models\AuditLog;
 use App\Models\Document;
 use Illuminate\Http\UploadedFile;
@@ -129,7 +131,7 @@ class DocumentService
     protected function logUpload(Document $document, int $userId): void
     {
         AuditLog::log(
-            action: 'upload_document',
+            action: AuditAction::UPLOAD_DOCUMENT->value,
             description: "Dokumen {$document->document_type->value} '{$document->file_name}' diunggah untuk prodi {$document->prodi->value}.",
             metadata: [
                 'document_id' => $document->id,
@@ -138,7 +140,7 @@ class DocumentService
                 'file_size' => $document->file_size,
                 'prodi' => $document->prodi->value,
             ],
-            modelType: Document::class,
+            modelType: ModelType::DOCUMENT->value,
             modelId: $document->id
         );
     }
@@ -167,7 +169,7 @@ class DocumentService
 
                 // Log deletion
                 AuditLog::log(
-                    action: 'delete_document',
+                    action: AuditAction::DELETE_DOCUMENT->value,
                     description: "Dokumen '{$fileName}' dihapus.",
                     metadata: [
                         'document_id' => $documentId,
@@ -241,7 +243,7 @@ class DocumentService
      */
     protected function logVerification(Document $document, string $status, int $verifierId): void
     {
-        $action = $status === DocumentStatus::VERIFIED->value ? 'verify_document' : 'reject_document';
+        $action = $status === DocumentStatus::VERIFIED->value ? AuditAction::VERIFY_DOCUMENT->value : AuditAction::REJECT_DOCUMENT->value;
         $description = $status === DocumentStatus::VERIFIED->value
             ? "Dokumen '{$document->file_name}' diverifikasi."
             : "Dokumen '{$document->file_name}' ditolak.";
@@ -262,7 +264,7 @@ class DocumentService
             action: $action,
             description: $description,
             metadata: $metadata,
-            modelType: Document::class,
+            modelType: ModelType::DOCUMENT->value,
             modelId: $document->id
         );
     }
@@ -331,7 +333,7 @@ class DocumentService
             // Update document metadata and reset verification status
             $updatePayload = array_merge($data, [
                 'duplicate_key' => $newDuplicateKey,
-                'status' => 'menunggu_verifikasi',
+                'status' => \App\Enums\DocumentStatus::PENDING->value,
                 'verified_by' => null,
                 'verified_at' => null,
                 'verification_note' => null,
@@ -364,16 +366,16 @@ class DocumentService
         $fieldNames = implode(', ', array_keys($updatedFields));
 
         AuditLog::log(
-            action: 'update_document',
+            action: AuditAction::UPDATE_DOCUMENT->value,
             description: "Dokumen '{$document->file_name}' diperbarui. Field yang diubah: {$fieldNames}",
             metadata: [
                 'document_id' => $document->id,
                 'document_type' => $document->document_type->value,
                 'updated_by' => $userId,
                 'updated_fields' => $updatedFields,
-                'status_reset' => 'menunggu_verifikasi',
+                'status_reset' => \App\Enums\DocumentStatus::PENDING->value,
             ],
-            modelType: Document::class,
+            modelType: ModelType::DOCUMENT->value,
             modelId: $document->id
         );
     }

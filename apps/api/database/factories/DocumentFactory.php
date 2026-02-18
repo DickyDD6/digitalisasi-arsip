@@ -35,8 +35,8 @@ class DocumentFactory extends Factory
 
         if ($documentType === 'nilai') {
             $data['tahun_ajaran'] = fake()->randomElement(['2022/2023', '2023/2024', '2024/2025']);
-            $data['mata_kuliah'] = fake()->randomElement(['Pemrograman Web', 'Basis Data', 'Algoritma']);
-            $data['kelas'] = fake()->randomElement(['A', 'B', 'C']);
+            $data['mata_kuliah'] = fake()->randomElement(['Pemrograman Web', 'Basis Data', 'Algoritma', 'Struktur Data', 'Jaringan Komputer', 'Kecerdasan Buatan']) . ' ' . fake()->unique()->numerify('###');
+            $data['kelas'] = fake()->randomElement(['A', 'B', 'C', 'D', 'E']);
         } else {
             $data['tahun_lulus'] = (string) fake()->year();
             $data['npm'] = fake()->numerify('########');

@@ -14,16 +14,32 @@ class AuditLogResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $actionEnum = \App\Enums\AuditAction::tryFrom($this->action);
+
         return [
             'id' => $this->id,
-            'user_name' => $this->user?->name ?? 'System',
-            'action' => $this->action,
+            'user' => [
+                'name' => $this->user?->name ?? 'System',
+                'role' => $this->user?->role ?? 'System',
+            ],
+            'action' => [
+                'name' => $this->action,
+                'label' => $actionEnum?->label() ?? $this->action,
+                'color' => $actionEnum?->color() ?? 'secondary',
+            ],
+            'document' => [
+                'id_formatted' => $this->model_type === \App\Enums\ModelType::DOCUMENT->value ? 'DOC-' . $this->model_id : '-',
+                'name' => $this->metadata['file_name'] ?? '-',
+            ],
             'description' => $this->description,
-            'model_type' => $this->model_type,
-            'model_id' => $this->model_id,
-            'metadata' => $this->metadata,
             'ip_address' => $this->ip_address,
-            'created_at' => $this->created_at?->toISOString(),
+            'date' => [
+                'formatted' => $this->created_at?->format('d/m/Y'),
+                'time' => $this->created_at?->format('H.i'),
+                'timestamp' => $this->created_at?->toISOString(),
+            ],
+            // Keep original fields for backward compatibility if needed
+            'metadata' => $this->metadata,
         ];
     }
 }

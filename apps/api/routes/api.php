@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Audit Log / Activity Monitoring (UC-03) - Only accessible by manager
     Route::get('/audit-logs', [AuditLogController::class, 'index']);
     Route::get('/audit-logs/statistics', [AuditLogController::class, 'statistics']);
+    Route::get('/audit-logs/export', [AuditLogController::class, 'export']);
 
 
     // Document Verification (UC-08) - QC & Manager only
