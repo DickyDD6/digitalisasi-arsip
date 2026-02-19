@@ -4,9 +4,9 @@ namespace App\Enums;
 
 enum DocumentStatus: string
 {
-    case PENDING = 'menunggu_verifikasi';
+    case PENDING = 'menunggu verifikasi';
     case VERIFIED = 'terverifikasi';
-    case REJECTED = 'tidak_terverifikasi';
+    case REJECTED = 'tidak terverifikasi';
 
     /**
      * Get all status values as array.

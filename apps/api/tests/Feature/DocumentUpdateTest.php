@@ -28,8 +28,7 @@ class DocumentUpdateTest extends TestCase
         $this->qc = User::factory()->create(['role' => 'qc']);
     }
 
-    /** @test */
-    public function uploader_can_update_own_rejected_document()
+    public function test_uploader_can_update_own_rejected_document()
     {
         $this->actingAs($this->uploader);
 
@@ -42,7 +41,7 @@ class DocumentUpdateTest extends TestCase
         ]);
 
         $response = $this->putJson("/api/documents/{$document->id}", [
-            'prodi' => 'Sistem Informasi',
+            'prodi' => 'Teknologi Pangan',
             'tahun_ajaran' => '2024/2025',
         ]);
 
@@ -50,23 +49,22 @@ class DocumentUpdateTest extends TestCase
             ->assertJson([
                 'message' => 'Dokumen berhasil diperbarui. Status direset ke menunggu verifikasi.',
                 'data' => [
-                    'prodi' => 'Sistem Informasi',
+                    'prodi' => 'Teknologi Pangan',
                     'tahun_ajaran' => '2024/2025',
-                    'status' => 'menunggu_verifikasi',
+                    'status' => 'Menunggu Verifikasi',
                 ],
             ]);
 
         // Verify database
         $this->assertDatabaseHas('documents', [
             'id' => $document->id,
-            'prodi' => 'Sistem Informasi',
+            'prodi' => 'Teknologi Pangan',
             'tahun_ajaran' => '2024/2025',
-            'status' => 'menunggu_verifikasi',
+            'status' => 'menunggu verifikasi',
         ]);
     }
 
-    /** @test */
-    public function uploader_cannot_update_others_rejected_document()
+    public function test_uploader_cannot_update_others_rejected_document()
     {
         $this->actingAs($this->uploader);
 
@@ -76,14 +74,13 @@ class DocumentUpdateTest extends TestCase
         ]);
 
         $response = $this->putJson("/api/documents/{$document->id}", [
-            'prodi' => 'Sistem Informasi',
+            'prodi' => 'Teknologi Pangan',
         ]);
 
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function uploader_cannot_update_pending_document()
+    public function test_uploader_cannot_update_pending_document()
     {
         $this->actingAs($this->uploader);
 
@@ -93,14 +90,14 @@ class DocumentUpdateTest extends TestCase
         ]);
 
         $response = $this->putJson("/api/documents/{$document->id}", [
-            'prodi' => 'Sistem Informasi',
+            'prodi' => 'Teknologi Pangan',
         ]);
 
-        $response->assertStatus(403);
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['document']);
     }
 
-    /** @test */
-    public function uploader_cannot_update_verified_document()
+    public function test_uploader_cannot_update_verified_document()
     {
         $this->actingAs($this->uploader);
 
@@ -110,14 +107,14 @@ class DocumentUpdateTest extends TestCase
         ]);
 
         $response = $this->putJson("/api/documents/{$document->id}", [
-            'prodi' => 'Sistem Informasi',
+            'prodi' => 'Teknologi Pangan',
         ]);
 
-        $response->assertStatus(403);
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['document']);
     }
 
-    /** @test */
-    public function manager_can_update_any_document()
+    public function test_manager_can_update_any_document()
     {
         $this->actingAs($this->manager);
 
@@ -128,37 +125,36 @@ class DocumentUpdateTest extends TestCase
         ]);
 
         $response = $this->putJson("/api/documents/{$document->id}", [
-            'prodi' => 'Sistem Informasi',
+            'prodi' => 'Teknologi Pangan',
         ]);
 
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('documents', [
             'id' => $document->id,
-            'prodi' => 'Sistem Informasi',
+            'prodi' => 'Teknologi Pangan',
         ]);
     }
 
-    /** @test */
-    public function update_resets_status_to_pending()
+    public function test_update_resets_status_to_pending()
     {
         $this->actingAs($this->uploader);
 
         $document = Document::factory()->rejected()->create([
             'uploaded_by' => $this->uploader->id,
-            'status' => 'tidak_terverifikasi',
+            'status' => 'tidak terverifikasi',
         ]);
 
         $this->putJson("/api/documents/{$document->id}", [
-            'prodi' => 'Sistem Informasi',
+            'prodi' => 'Teknologi Pangan',
         ]);
 
         $document->refresh();
-        $this->assertEquals('menunggu_verifikasi', $document->status);
+        $document->refresh();
+        $this->assertEquals('menunggu verifikasi', $document->status->value);
     }
 
-    /** @test */
-    public function update_clears_verification_data()
+    public function test_update_clears_verification_data()
     {
         $this->actingAs($this->uploader);
 
@@ -170,7 +166,7 @@ class DocumentUpdateTest extends TestCase
         ]);
 
         $this->putJson("/api/documents/{$document->id}", [
-            'prodi' => 'Sistem Informasi',
+            'prodi' => 'Teknologi Pangan',
         ]);
 
         $document->refresh();
@@ -179,8 +175,7 @@ class DocumentUpdateTest extends TestCase
         $this->assertNull($document->verification_note);
     }
 
-    /** @test */
-    public function cannot_update_file()
+    public function test_cannot_update_file()
     {
         $this->actingAs($this->uploader);
 
@@ -196,8 +191,7 @@ class DocumentUpdateTest extends TestCase
             ->assertJsonValidationErrors(['file']);
     }
 
-    /** @test */
-    public function cannot_update_document_type()
+    public function test_cannot_update_document_type()
     {
         $this->actingAs($this->uploader);
 
@@ -215,24 +209,28 @@ class DocumentUpdateTest extends TestCase
     }
 
     /** @test */
-    public function duplicate_check_on_update()
+    public function test_duplicate_check_on_update()
     {
         $this->actingAs($this->uploader);
 
         // Create first document
-        Document::factory()->pending()->create([
+        $doc1Data = [
             'document_type' => 'nilai',
             'prodi' => 'Teknik Informatika',
             'tahun_ajaran' => '2024/2025',
             'mata_kuliah' => 'Database',
             'kelas' => 'A',
-        ]);
+            'uploaded_by' => $this->uploader->id,
+            'status' => 'menunggu verifikasi',
+        ];
+        $doc1Data['duplicate_key'] = Document::generateDuplicateKey($doc1Data);
+        Document::factory()->create($doc1Data);
 
         // Create second document
         $document = Document::factory()->rejected()->create([
             'uploaded_by' => $this->uploader->id,
             'document_type' => 'nilai',
-            'prodi' => 'Sistem Informasi',
+            'prodi' => 'Teknologi Pangan',
             'tahun_ajaran' => '2023/2024',
             'mata_kuliah' => 'Web',
             'kelas' => 'B',
@@ -250,8 +248,7 @@ class DocumentUpdateTest extends TestCase
             ->assertJsonValidationErrors(['duplicate']);
     }
 
-    /** @test */
-    public function audit_log_recorded_for_update()
+    public function test_audit_log_recorded_for_update()
     {
         $this->actingAs($this->uploader);
 
@@ -260,7 +257,7 @@ class DocumentUpdateTest extends TestCase
         ]);
 
         $this->putJson("/api/documents/{$document->id}", [
-            'prodi' => 'Sistem Informasi',
+            'prodi' => 'Teknologi Pangan',
         ]);
 
         // Verify audit log exists
@@ -275,8 +272,7 @@ class DocumentUpdateTest extends TestCase
         $this->assertArrayHasKey('updated_fields', $auditLog->metadata);
     }
 
-    /** @test */
-    public function validation_fails_for_invalid_metadata()
+    public function test_validation_fails_for_invalid_metadata()
     {
         $this->actingAs($this->uploader);
 

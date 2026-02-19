@@ -70,7 +70,17 @@ class DocumentPolicy
         }
 
         // Can only delete rejected documents
-        return $document->status === DocumentStatus::REJECTED;
+        if ($document->status !== DocumentStatus::REJECTED) {
+            return false;
+        }
+
+        // Manager can delete any rejected document
+        if ($user->hasRole('manager')) {
+            return true;
+        }
+
+        // Uploader can only delete their own rejected documents
+        return $document->uploaded_by === $user->id;
     }
 
     /**
@@ -100,17 +110,29 @@ class DocumentPolicy
      */
     public function download(User $user, Document $document): bool
     {
-        // Only manager and sbap can download
-        if (!$user->hasAnyRole(['manager', 'sbap'])) {
-            return false;
+        // 1. Verified documents can be downloaded by ALL roles
+        if ($document->status === DocumentStatus::VERIFIED) {
+            return true;
         }
 
-        // SBAP can only download if document is verified
-        if ($user->hasRole('sbap')) {
-            return $document->status === DocumentStatus::VERIFIED;
-        }
+        // 2. Unverified documents (Pending/Rejected)
 
         // Manager can download any document
-        return true;
+        if ($user->hasRole('manager')) {
+            return true;
+        }
+
+        // Uploader can download THEIR OWN documents (to check what they uploaded)
+        if ($user->hasRole('uploader') && $document->uploaded_by === $user->id) {
+            return true;
+        }
+
+        // QC can download PENDING documents (to verify thoroughly)
+        if ($user->hasRole('qc') && $document->status === DocumentStatus::PENDING) {
+            return true;
+        }
+
+        // SBAP cannot download unverified documents
+        return false;
     }
 }

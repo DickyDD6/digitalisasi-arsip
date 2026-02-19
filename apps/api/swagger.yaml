@@ -17,7 +17,7 @@ info:
     - **Uploader**: Upload, update & delete dokumen sendiri
     - **QC**: Verifikasi dokumen
     - **SBAP**: Download dokumen terverifikasi
-  version: 1.0.0
+  version: 2.3.0
   contact:
     name: API Support
 
@@ -48,6 +48,47 @@ paths:
       responses:
         '204':
           description: No Content - CSRF cookie berhasil disimpan
+
+  /api/auth/check-email:
+    post:
+      tags:
+        - Authentication
+      summary: Check Email Availability (UC-12)
+      description: Cek apakah email sudah terdaftar (Public).
+      operationId: checkEmail
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: new.user@example.com
+      responses:
+        '200':
+          description: Email tersedia
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  available:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Email tersedia.
+        '422':
+          description: Email sudah terdaftar atau tidak valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
 
   /api/auth/login:
     post:
@@ -398,6 +439,20 @@ paths:
           description: Cari berdasarkan nama file
           schema:
             type: string
+        - name: sort_by
+          in: query
+          description: Kolom untuk sorting (default: created_at)
+          schema:
+            type: string
+            enum: [created_at, updated_at, tahun_lulus, status, document_type, prodi, file_name]
+            default: created_at
+        - name: sort_direction
+          in: query
+          description: Arah sorting (asc/desc, default: desc)
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
         - name: per_page
           in: query
           description: Jumlah data per halaman
@@ -431,7 +486,7 @@ paths:
 
         **Tipe dokumen dan field yang diperlukan:**
         - `nilai`: prodi, tahun_ajaran, mata_kuliah, kelas
-        - `ijazah` / `transkrip`: prodi, tahun_lulus, npm
+        - `ijazah` / `transkrip` / `berita_acara_sidang`: prodi, tahun_lulus, npm
       operationId: uploadDocument
       security:
         - cookieAuth: []
@@ -754,6 +809,51 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
 
+  /api/audit-logs/export:
+    get:
+      tags:
+        - Audit Logs
+      summary: Export Audit Logs (UC-11)
+      description: |
+        Export audit logs ke format CSV (Manager only).
+      operationId: exportAuditLogs
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: format
+          in: query
+          description: Format export (default: csv)
+          schema:
+            type: string
+            enum: [csv]
+            default: csv
+        - name: start_date
+          in: query
+          description: Filter dari tanggal
+          schema:
+            type: string
+            format: date
+            example: "2026-01-01"
+        - name: end_date
+          in: query
+          description: Filter sampai tanggal
+          schema:
+            type: string
+            format: date
+            example: "2026-12-31"
+      responses:
+        '200':
+          description: File CSV
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
   /api/audit-logs/statistics:
     get:
       tags:
@@ -1042,8 +1142,8 @@ components:
           example: "1234567890"
         status:
           type: string
-          enum: [menunggu_verifikasi, terverifikasi, tidak_terverifikasi]
-          example: menunggu_verifikasi
+          description: Status dokumen (Title Case)
+          example: Menunggu Verifikasi
         verification_note:
           type: string
           nullable: true
@@ -1209,9 +1309,21 @@ components:
             email:
               type: string
               example: uploader@test.com
+            role:
+              type: string
+              example: uploader
         action:
-          type: string
-          example: upload_document
+          type: object
+          properties:
+            name:
+              type: string
+              example: upload_document
+            label:
+              type: string
+              example: Upload Dokumen
+            color:
+              type: string
+              example: primary
         description:
           type: string
           example: "Dokumen 'Nilai_DB_2024.pdf' diunggah."
@@ -1223,20 +1335,37 @@ components:
           type: integer
           nullable: true
           example: 1
+        document:
+          type: object
+          nullable: true
+          properties:
+            id_formatted:
+              type: string
+              example: "#001"
+            name:
+              type: string
+              example: "Nilai_DB.pdf"
         metadata:
           type: object
           nullable: true
         ip_address:
-
           type: string
           example: "127.0.0.1"
         user_agent:
           type: string
           example: "PostmanRuntime/7.32.1"
-        created_at:
-          type: string
-          format: date-time
-          example: "2026-01-19T10:30:00.000000Z"
+        date:
+          type: object
+          properties:
+            formatted:
+              type: string
+              example: "19/02/2026"
+            time:
+              type: string
+              example: "10.30"
+            timestamp:
+              type: string
+              example: "2026-02-19T10:30:00.000000Z"
 
     AuditLogListResponse:
       type: object

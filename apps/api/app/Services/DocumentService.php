@@ -141,7 +141,8 @@ class DocumentService
                 'prodi' => $document->prodi->value,
             ],
             modelType: ModelType::DOCUMENT->value,
-            modelId: $document->id
+            modelId: $document->id,
+            userId: $userId
         );
     }
 
@@ -265,7 +266,8 @@ class DocumentService
             description: $description,
             metadata: $metadata,
             modelType: ModelType::DOCUMENT->value,
-            modelId: $document->id
+            modelId: $document->id,
+            userId: $verifierId
         );
     }
 
@@ -316,10 +318,12 @@ class DocumentService
                 ->exists();
 
             if ($exists) {
-                $documentType = $document->document_type;
-                $message = $documentType === 'nilai'
+                // Fix: Get string value from Enum for comparison and interpolation
+                $documentTypeValue = $document->document_type->value;
+
+                $message = $documentTypeValue === 'nilai'
                     ? 'Dokumen nilai dengan kombinasi tahun ajaran, prodi, mata kuliah, dan kelas yang sama sudah ada.'
-                    : "Dokumen {$documentType} dengan kombinasi prodi, tahun lulus, dan NPM yang sama sudah ada.";
+                    : "Dokumen {$documentTypeValue} dengan kombinasi prodi, tahun lulus, dan NPM yang sama sudah ada.";
 
                 throw \Illuminate\Validation\ValidationException::withMessages([
                     'duplicate' => [$message],
@@ -376,7 +380,8 @@ class DocumentService
                 'status_reset' => \App\Enums\DocumentStatus::PENDING->value,
             ],
             modelType: ModelType::DOCUMENT->value,
-            modelId: $document->id
+            modelId: $document->id,
+            userId: $userId
         );
     }
 }

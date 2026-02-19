@@ -34,8 +34,7 @@ class DocumentDeleteTest extends TestCase
         $this->sbap = User::factory()->create(['role' => 'sbap']);
     }
 
-    /** @test */
-    public function manager_can_delete_rejected_document()
+    public function test_manager_can_delete_rejected_document()
     {
         $this->actingAs($this->manager);
 
@@ -62,8 +61,7 @@ class DocumentDeleteTest extends TestCase
         Storage::assertMissing($document->file_path);
     }
 
-    /** @test */
-    public function uploader_can_delete_own_rejected_document()
+    public function test_uploader_can_delete_own_rejected_document()
     {
         $this->actingAs($this->uploader);
 
@@ -85,8 +83,7 @@ class DocumentDeleteTest extends TestCase
         Storage::assertMissing($document->file_path);
     }
 
-    /** @test */
-    public function uploader_cannot_delete_others_rejected_document()
+    public function test_uploader_cannot_delete_others_rejected_document()
     {
         $this->actingAs($this->uploader);
 
@@ -104,8 +101,7 @@ class DocumentDeleteTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function qc_cannot_delete_document()
+    public function test_qc_cannot_delete_document()
     {
         $this->actingAs($this->qc);
 
@@ -120,8 +116,7 @@ class DocumentDeleteTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function sbap_cannot_delete_document()
+    public function test_sbap_cannot_delete_document()
     {
         $this->actingAs($this->sbap);
 
@@ -136,8 +131,7 @@ class DocumentDeleteTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function cannot_delete_pending_document()
+    public function test_cannot_delete_pending_document()
     {
         $this->actingAs($this->manager);
 
@@ -152,8 +146,7 @@ class DocumentDeleteTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function cannot_delete_verified_document()
+    public function test_cannot_delete_verified_document()
     {
         $this->actingAs($this->manager);
 
@@ -168,8 +161,7 @@ class DocumentDeleteTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function audit_log_recorded_for_delete()
+    public function test_audit_log_recorded_for_delete()
     {
         $this->actingAs($this->manager);
 
@@ -194,8 +186,7 @@ class DocumentDeleteTest extends TestCase
         $this->assertEquals('test.pdf', $auditLog->metadata['file_name']);
     }
 
-    /** @test */
-    public function delete_removes_physical_file()
+    public function test_delete_removes_physical_file()
     {
         $this->actingAs($this->manager);
 
@@ -213,8 +204,7 @@ class DocumentDeleteTest extends TestCase
         Storage::assertMissing($document->file_path);
     }
 
-    /** @test */
-    public function unauthenticated_user_cannot_delete()
+    public function test_unauthenticated_user_cannot_delete()
     {
         $document = Document::factory()->rejected()->create();
 

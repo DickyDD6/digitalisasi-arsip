@@ -54,9 +54,22 @@ class DocumentController extends Controller
             $query->where('file_name', 'like', "%{$search}%");
         }
 
+        // Sorting
+        $allowedSorts = ['created_at', 'updated_at', 'tahun_lulus', 'status', 'document_type', 'prodi', 'file_name'];
+        $sortBy = $request->input('sort_by', 'created_at');
+        $sortDirection = $request->input('sort_direction', 'desc');
+
+        if (!in_array($sortBy, $allowedSorts)) {
+            $sortBy = 'created_at';
+        }
+
+        if (!in_array(strtolower($sortDirection), ['asc', 'desc'])) {
+            $sortDirection = 'desc';
+        }
+
         // Pagination
         $perPage = $request->input('per_page', 15);
-        $documents = $query->orderBy('created_at', 'desc')->paginate($perPage);
+        $documents = $query->orderBy($sortBy, $sortDirection)->paginate($perPage);
 
         return response()->json([
             'message' => 'Daftar dokumen berhasil diambil.',

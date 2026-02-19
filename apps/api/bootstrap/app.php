@@ -31,15 +31,18 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        // Handle unauthenticated requests for API - return JSON instead of redirect
-        $exceptions->render(function (AuthenticationException $e, Request $request) {
-            // Check if this is an API request (with or without leading slash)
-            $isApiRequest = $request->is('api/*') ||
-                $request->is('*/api/*') ||
-                str_starts_with($request->path(), 'api/') ||
-                $request->expectsJson();
+        // Force JSON response for API requests even without correct headers
+        $exceptions->shouldRenderJsonWhen(function (Request $request, Throwable $e) {
+            if ($request->is('api/*')) {
+                return true;
+            }
+            return $request->expectsJson();
+        });
 
-            if ($isApiRequest) {
+        // Handle unauthenticated requests for API - return JSON with custom message
+        $exceptions->render(function (AuthenticationException $e, Request $request) {
+            // Logic moved to shouldRenderJsonWhen, but custom message needs render
+            if ($request->is('api/*')) {
                 return response()->json([
                     'message' => 'Unauthenticated. Please login first.',
                 ], 401);
