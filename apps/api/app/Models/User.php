@@ -79,4 +79,11 @@ class User extends Authenticatable
         }
         return false;
     }
+    /**
+     * Get the audit logs for the user.
+     */
+    public function auditLogs()
+    {
+        return $this->hasMany(AuditLog::class);
+    }
 }

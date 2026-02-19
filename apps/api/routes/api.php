@@ -25,6 +25,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/auth/me', [AuthController::class, 'me']);
 
     // User Management (UC-01) - Only accessible by manager
+    Route::get('/users/statistics', [UserController::class, 'statistics']);
     Route::apiResource('users', UserController::class);
     Route::post('/users/delete-multiple', [UserController::class, 'destroyMultiple']);
 
@@ -36,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Document Verification (UC-08) - QC & Manager only
     // IMPORTANT: These must be BEFORE apiResource to prevent route collision
+    Route::get('/documents/statistics', [DocumentController::class, 'statistics']);
     Route::get('/documents/pending', [DocumentController::class, 'pending']);
     Route::patch('/documents/{document}/verify', [DocumentController::class, 'verify']);
 

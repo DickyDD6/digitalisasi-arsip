@@ -384,4 +384,23 @@ class DocumentService
             userId: $userId
         );
     }
+    /**
+     * Get document statistics.
+     * 
+     * @return array
+     */
+    public function getStatistics(): array
+    {
+        $total = Document::count();
+        $verified = Document::where('status', DocumentStatus::VERIFIED)->count();
+        $pending = Document::where('status', DocumentStatus::PENDING)->count();
+        $rejected = Document::where('status', DocumentStatus::REJECTED)->count();
+
+        return [
+            'total_documents' => $total,
+            'verified_documents' => $verified,
+            'pending_documents' => $pending,
+            'rejected_documents' => $rejected,
+        ];
+    }
 }

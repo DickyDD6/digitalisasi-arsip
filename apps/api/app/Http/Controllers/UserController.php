@@ -148,4 +148,19 @@ class UserController extends Controller
             'deleted_count' => count($users),
         ], 200);
     }
+
+    /**
+     * Get user statistics.
+     */
+    public function statistics(): JsonResponse
+    {
+        $this->authorize('viewAny', User::class);
+
+        $stats = $this->userService->getStatistics();
+
+        return response()->json([
+            'message' => 'Statistik pengguna berhasil diambil.',
+            'data' => $stats,
+        ], 200);
+    }
 }

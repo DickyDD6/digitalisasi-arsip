@@ -403,4 +403,19 @@ class DocumentController extends Controller
             ], 422);
         }
     }
+
+    /**
+     * Get document statistics.
+     */
+    public function statistics(): JsonResponse
+    {
+        $this->authorize('viewAny', Document::class);
+
+        $stats = $this->documentService->getStatistics();
+
+        return response()->json([
+            'message' => 'Statistik dokumen berhasil diambil.',
+            'data' => $stats,
+        ], 200);
+    }
 }
