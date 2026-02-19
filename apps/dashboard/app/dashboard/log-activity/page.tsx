@@ -1,0 +1,26 @@
+import {
+  PageActions,
+  PageDescription,
+  PageHeader,
+  PageTitle,
+} from "@/components/page-header";
+import { Button } from "@/components/ui/button";
+import { LogActivityContent } from "./_components/log-activity-content";
+
+export default function LogActivityPage() {
+  return (
+    <>
+      <PageHeader>
+        <PageTitle>Log Aktivitas</PageTitle>
+        <PageDescription>
+          Monitoring dan audit trail seluruh aktivitas pengguna
+        </PageDescription>
+        <PageActions>
+          <Button>Export Log</Button>
+        </PageActions>
+      </PageHeader>
+
+      <LogActivityContent />
+    </>
+  );
+}

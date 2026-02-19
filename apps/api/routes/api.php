@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // User Management (UC-01) - Only accessible by manager
     Route::apiResource('users', UserController::class);
+    Route::post('/users/delete-multiple', [UserController::class, 'destroyMultiple']);
 
     // Audit Log / Activity Monitoring (UC-03) - Only accessible by manager
     Route::get('/audit-logs', [AuditLogController::class, 'index']);
@@ -37,6 +38,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Document Download (UC-10) - Manager & SBAP only
     Route::get('/documents/{document}/download', [DocumentController::class, 'download']);
+    Route::post('/documents/download-multiple', [DocumentController::class, 'downloadMultiple']);
+    Route::post('/documents/delete-multiple', [DocumentController::class, 'destroyMultiple']);
     Route::get('/documents/{document}/view', [DocumentController::class, 'view']);
 
     // Document Management (UC-04, UC-06, UC-07) - CRUD operations
