@@ -1,24 +1,20 @@
 {
-	"name": "digitalisasi-arsip",
-	"private": true,
-	"scripts": {
-		"build": "turbo run build",
-		"dev": "turbo run dev",
-		"lint": "turbo run lint",
-		"test": "turbo run test",
-		"test:watch": "turbo run test:watch",
-		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
-		"check-types": "turbo run check-types",
-		"add:component": "pnpm dlx shadcn add -c packages/ui"
-	},
-	"devDependencies": {
-		"eslint": "^9.39.1",
-		"prettier": "^3.7.4",
-		"turbo": "^2.7.4",
-		"typescript": "5.9.3"
-	},
-	"packageManager": "pnpm@10.28.0",
-	"engines": {
-		"node": ">=24"
-	}
+  "name": "digitalisasi-arsip",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "check-types": "turbo run check-types"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.1",
+    "turbo": "^2.8.8",
+    "typescript": "5.9.2"
+  },
+  "packageManager": "pnpm@10.29.3",
+  "engines": {
+    "node": ">=22"
+  }
 }

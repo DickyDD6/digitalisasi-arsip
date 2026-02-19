@@ -124,4 +124,28 @@ class UserController extends Controller
             'message' => 'Pengguna berhasil dihapus.',
         ], 200);
     }
+
+    public function destroyMultiple(Request $request): JsonResponse
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:users,id',
+        ]);
+
+        $userIds = $request->input('ids');
+        $users = User::whereIn('id', $userIds)->get();
+
+        foreach ($users as $user) {
+            $this->authorize('delete', $user);
+        }
+
+        foreach ($users as $user) {
+            $this->userService->deleteUser($user);
+        }
+
+        return response()->json([
+            'message' => count($users) . ' pengguna berhasil dihapus.',
+            'deleted_count' => count($users),
+        ], 200);
+    }
 }

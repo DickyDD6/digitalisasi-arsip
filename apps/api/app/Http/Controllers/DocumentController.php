@@ -14,6 +14,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
+use ZipArchive;
 
 class DocumentController extends Controller
 {
@@ -48,10 +49,17 @@ class DocumentController extends Controller
             $query->where('prodi', 'like', "%{$request->input('prodi')}%");
         }
 
-        // Search by file name
+        // Search by all fields
         if ($request->has('search')) {
             $search = $request->input('search');
-            $query->where('file_name', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->where('file_name', 'like', "%{$search}%")
+                    ->orWhere('tahun_ajaran', 'like', "%{$search}%")
+                    ->orWhere('mata_kuliah', 'like', "%{$search}%")
+                    ->orWhere('npm', 'like', "%{$search}%")
+                    ->orWhere('document_type', 'like', "%{$search}%")
+                    ->orWhere('status', 'like', "%{$search}%");
+            });
         }
 
         // Sorting
@@ -153,13 +161,80 @@ class DocumentController extends Controller
         );
 
         // Stream file with proper headers
-        return Storage::download(
+        return Storage::disk('public')->download(
             $document->file_path,
             $document->file_name,
             [
                 'Content-Type' => 'application/pdf',
             ]
         );
+    }
+
+    /**
+     * Download multiple documents as ZIP
+     */
+    public function downloadMultiple(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:documents,id',
+        ]);
+
+        $documentIds = $request->input('ids');
+        $documents = Document::whereIn('id', $documentIds)->get();
+
+        // Check authorization for each document
+        foreach ($documents as $document) {
+            $this->authorize('download', $document);
+        }
+
+        // Create temporary zip file
+        $zipFileName = 'documents_' . now()->format('YmdHis') . '.zip';
+        $zipPath = storage_path('app/temp/' . $zipFileName);
+
+        // Ensure temp directory exists
+        if (!file_exists(storage_path('app/temp'))) {
+            mkdir(storage_path('app/temp'), 0755, true);
+        }
+
+        $zip = new ZipArchive();
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+            abort(500, 'Gagal membuat file ZIP');
+        }
+
+        // Add files to zip
+        foreach ($documents as $document) {
+            $filePath = Storage::disk('public')->path($document->file_path);
+
+            if (file_exists($filePath)) {
+                // Add file with original name (handle duplicates)
+                $fileName = $document->file_name;
+                $counter = 1;
+
+                while ($zip->locateName($fileName) !== false) {
+                    $pathInfo = pathinfo($document->file_name);
+                    $fileName = $pathInfo['filename'] . '_' . $counter . '.' . $pathInfo['extension'];
+                    $counter++;
+                }
+
+                $zip->addFile($filePath, $fileName);
+            }
+        }
+
+        $zip->close();
+
+        // Log download activity
+        \App\Models\AuditLog::log(
+            action: 'download_multiple_documents',
+            description: "Mengunduh " . count($documents) . " dokumen sebagai ZIP.",
+            metadata: [
+                'document_ids' => $documentIds,
+                'total_files' => count($documents),
+            ]
+        );
+
+        // Return zip file and delete after download
+        return response()->download($zipPath, $zipFileName)->deleteFileAfterSend(true);
     }
 
     /**
@@ -189,7 +264,7 @@ class DocumentController extends Controller
         );
 
         // Stream file inline
-        return Storage::response(
+        return Storage::disk('public')->response(
             $document->file_path,
             $document->file_name,
             [
@@ -211,6 +286,33 @@ class DocumentController extends Controller
 
         return response()->json([
             'message' => 'Dokumen berhasil dihapus.',
+        ], 200);
+    }
+
+    /**
+     * Remove multiple documents.
+     */
+    public function destroyMultiple(Request $request): JsonResponse
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:documents,id',
+        ]);
+
+        $documentIds = $request->input('ids');
+        $documents = Document::whereIn('id', $documentIds)->get();
+
+        foreach ($documents as $document) {
+            $this->authorize('delete', $document);
+        }
+
+        foreach ($documents as $document) {
+            $this->documentService->deleteDocument($document);
+        }
+
+        return response()->json([
+            'message' => count($documents) . ' dokumen berhasil dihapus.',
+            'deleted_count' => count($documents),
         ], 200);
     }
 

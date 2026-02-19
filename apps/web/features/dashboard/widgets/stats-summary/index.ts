@@ -1,5 +1,0 @@
-export * from "./stats-summary.config"
-export * from "./stats-summary.adapter"
-export * from "./stats-summary.mock"
-export * from "./stats-summary.types"
-export {StatsSummaryWidget} from "./stats-summary.widget"
