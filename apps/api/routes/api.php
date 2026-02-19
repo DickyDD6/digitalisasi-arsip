@@ -44,4 +44,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Document Management (UC-04, UC-06, UC-07) - CRUD operations
     Route::apiResource('documents', DocumentController::class);
+
+    // Report & Statistics (UC-09) - Manager
+    Route::post('/reports/generate', [App\Http\Controllers\ReportController::class, 'generate']);
+    Route::get('/reports/dashboard', [App\Http\Controllers\ReportController::class, 'dashboardStats']);
 });

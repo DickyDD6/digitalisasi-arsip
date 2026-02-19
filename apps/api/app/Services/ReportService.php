@@ -1,0 +1,190 @@
+<?php
+
+namespace App\Services;
+
+use App\Enums\DocumentStatus;
+use App\Enums\AuditAction;
+use App\Models\AuditLog;
+use App\Models\Document;
+use App\Models\User;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+// We will need export classes later, defined in App\Exports namespace
+
+class ReportService
+{
+    /**
+     * Generate report based on parameters.
+     */
+    public function generate(array $params)
+    {
+        $startDate = Carbon::parse($params['period_start']);
+        $endDate = Carbon::parse($params['period_end']);
+        $format = $params['format'] ?? 'pdf';
+        $contentTypes = $params['content'] ?? [];
+
+        $data = $this->collectData($startDate, $endDate, $contentTypes);
+        $data['period'] = [
+            'start' => $startDate->format('d F Y'),
+            'end' => $endDate->format('d F Y'),
+            'range' => $startDate->format('Y-m-d') . ' - ' . $endDate->format('Y-m-d'),
+        ];
+        $data['style'] = $params['style'] ?? 'detailed';
+
+        if ($format === 'pdf') {
+            return $this->generatePdf($data);
+        } elseif ($format === 'xlsx') {
+            return $this->generateExcel($data);
+        } elseif ($format === 'csv') {
+            return $this->generateCsv($data);
+        }
+
+        throw new \InvalidArgumentException("Format laporan tidak didukung: $format");
+    }
+
+    protected function collectData(Carbon $start, Carbon $end, array $contentTypes)
+    {
+        $data = [];
+
+        if (in_array('upload_stats', $contentTypes)) {
+            $data['upload_stats'] = $this->getUploadStatistics($start, $end);
+        }
+
+        if (in_array('qc_metrics', $contentTypes)) {
+            $data['qc_metrics'] = $this->getQCPerformanceMetrics($start, $end);
+        }
+
+        if (in_array('doc_status', $contentTypes)) {
+            $data['doc_status'] = $this->getDocumentStatusOverview($start, $end);
+        }
+
+        if (in_array('user_activity', $contentTypes)) {
+            $data['user_activity'] = $this->getUserActivitySummary($start, $end);
+        }
+
+        if (in_array('trend_analysis', $contentTypes)) {
+            $data['trend_analysis'] = $this->getTrendAnalysis($start, $end);
+        }
+
+        // Executive summary is always included or handled separately
+        $data['executive_summary'] = $this->getExecutiveSummary($start, $end);
+
+        return $data;
+    }
+
+    public function getUploadStatistics(Carbon $start, Carbon $end)
+    {
+        return Document::whereBetween('created_at', [$start, $end])
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as count'))
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+    }
+
+    public function getQCPerformanceMetrics(Carbon $start, Carbon $end)
+    {
+        $totalVerified = AuditLog::whereBetween('created_at', [$start, $end])
+            ->whereIn('action', [AuditAction::VERIFY_DOCUMENT->value, AuditAction::REJECT_DOCUMENT->value])
+            ->count();
+
+        $approved = AuditLog::whereBetween('created_at', [$start, $end])
+            ->where('action', AuditAction::VERIFY_DOCUMENT->value)
+            ->count();
+
+        $approvalRate = $totalVerified > 0 ? ($approved / $totalVerified) * 100 : 0;
+
+        // Average verification time logic would require more complex queries matching upload time with verification time
+        // For now, we return placeholder or simplified metric
+
+        return [
+            'total_verified' => $totalVerified,
+            'approval_rate' => round($approvalRate, 2),
+            // 'avg_verification_time' => '2.5 hours', // Placeholder
+        ];
+    }
+
+    public function getDocumentStatusOverview(Carbon $start, Carbon $end)
+    {
+        return Document::whereBetween('created_at', [$start, $end])
+            ->select('status', DB::raw('count(*) as count'))
+            ->groupBy('status')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'status' => $item->status, // Enum value
+                    'label' => DocumentStatus::tryFrom($item->status)?->label() ?? $item->status,
+                    'count' => $item->count,
+                ];
+            });
+    }
+
+    public function getUserActivitySummary(Carbon $start, Carbon $end)
+    {
+        return AuditLog::whereBetween('created_at', [$start, $end])
+            ->with('user')
+            ->select('user_id', DB::raw('count(*) as activity_count'))
+            ->groupBy('user_id')
+            ->orderByDesc('activity_count')
+            ->limit(10)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'user_name' => $item->user->name ?? 'Unknown',
+                    'activity_count' => $item->activity_count,
+                ];
+            });
+    }
+
+    public function getTrendAnalysis(Carbon $start, Carbon $end)
+    {
+        // Compare with previous period
+        $previousStart = $start->copy()->subDays($start->diffInDays($end));
+        $previousEnd = $start->copy();
+
+        $currentCount = Document::whereBetween('created_at', [$start, $end])->count();
+        $previousCount = Document::whereBetween('created_at', [$previousStart, $previousEnd])->count();
+
+        $growth = $previousCount > 0 ? (($currentCount - $previousCount) / $previousCount) * 100 : 0;
+
+        return [
+            'current_period_total' => $currentCount,
+            'previous_period_total' => $previousCount,
+            'growth_percentage' => round($growth, 2),
+        ];
+    }
+
+    private function getExecutiveSummary(Carbon $start, Carbon $end)
+    {
+        $totalDocs = Document::whereBetween('created_at', [$start, $end])->count();
+        $pendingDocs = Document::whereBetween('created_at', [$start, $end])->where('status', DocumentStatus::PENDING->value)->count();
+
+        return [
+            'total_documents' => $totalDocs,
+            'pending_documents' => $pendingDocs,
+            // Add more key metrics here
+        ];
+    }
+
+    protected function generatePdf(array $data)
+    {
+        // Implementation for dompdf
+        // We need a blade view for this
+        $pdf = app('dompdf.wrapper');
+        $pdf->loadView('reports.generic', ['data' => $data]);
+        return $pdf->download('report.pdf');
+    }
+
+    protected function generateExcel(array $data)
+    {
+        // Implementation for excel
+        // For now return dummy response or implement basic export
+        return response()->json(['message' => 'Excel generation not yet fully implemented']);
+    }
+
+    protected function generateCsv(array $data)
+    {
+        // Implementation for csv
+        return response()->json(['message' => 'CSV generation not yet fully implemented']);
+    }
+}
