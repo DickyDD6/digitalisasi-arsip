@@ -47,6 +47,8 @@ class UserSeeder extends Seeder
                 $userData
             );
         }
+
+        User::factory()->count(20)->create();
     }
 }
 

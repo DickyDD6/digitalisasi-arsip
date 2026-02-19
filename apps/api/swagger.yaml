@@ -3,21 +3,15 @@ info:
   title: API Digitalisasi Arsip
   description: |
     REST API untuk sistem digitalisasi arsip akademik.
-    
-    ## Fitur Baru v2.3
-    - **Dashboard Statistics**: Statistik aktivitas user & dokumen.
-    - **Export**: Audit log export ke CSV.
-    - **Unique Validation**: Cek ketersediaan email & NIP.
-    - **Optimized Responses**: Status dokumen menggunakan Title Case.
-    
+
     ## Autentikasi
     API ini menggunakan Laravel Sanctum dengan session-based authentication.
-    
+
     **Langkah autentikasi:**
     1. GET `/sanctum/csrf-cookie` untuk mendapatkan CSRF token
     2. POST `/api/auth/login` dengan credentials
     3. Sertakan cookie dan X-XSRF-TOKEN header pada setiap request
-    
+
     ## Roles
     - **Manager**: Full access ke semua fitur
     - **Uploader**: Upload, update & delete dokumen sendiri
@@ -489,7 +483,7 @@ paths:
       summary: Upload Document (UC-04)
       description: |
         Upload dokumen baru (Manager & Uploader only).
-        
+
         **Tipe dokumen dan field yang diperlukan:**
         - `nilai`: prodi, tahun_ajaran, mata_kuliah, kelas
         - `ijazah` / `transkrip` / `berita_acara_sidang`: prodi, tahun_lulus, npm
@@ -568,7 +562,7 @@ paths:
       summary: Update Document (UC-06)
       description: |
         Update metadata dokumen (hanya untuk dokumen dengan status `tidak_terverifikasi`).
-        
+
         Setelah update, status akan direset ke `menunggu_verifikasi`.
         File dan document_type tidak dapat diubah.
       operationId: updateDocument
@@ -608,7 +602,7 @@ paths:
       summary: Delete Document (UC-07)
       description: |
         Menghapus dokumen (hanya untuk dokumen dengan status `tidak_terverifikasi`).
-        
+
         Manager dapat menghapus semua dokumen rejected.
         Uploader hanya dapat menghapus dokumen miliknya sendiri.
       operationId: deleteDocument
@@ -645,7 +639,7 @@ paths:
       summary: Download Document (UC-10)
       description: |
         Download file dokumen (Manager & SBAP only).
-        
+
         SBAP hanya dapat download dokumen dengan status `terverifikasi`.
       operationId: downloadDocument
       security:
@@ -708,7 +702,7 @@ paths:
       summary: Verify Document (UC-08)
       description: |
         Verifikasi atau tolak dokumen (Manager & QC only).
-        
+
         Dokumen yang sudah terverifikasi sebelumnya tidak dapat diverifikasi ulang.
       operationId: verifyDocument
       security:
@@ -748,7 +742,7 @@ paths:
       summary: List Audit Logs (UC-03)
       description: |
         Mengambil daftar audit log aktivitas sistem (Manager only).
-        
+
         Mendukung filtering berdasarkan action, user, model type, dan date range.
       operationId: listAuditLogs
       security:
@@ -867,7 +861,7 @@ paths:
       summary: Get Audit Log Statistics (UC-03)
       description: |
         Mengambil statistik aktivitas sistem (Manager only).
-        
+
         Termasuk total aktivitas, breakdown by action, by user, dan recent activities.
       operationId: getAuditLogStatistics
       security:
@@ -875,13 +869,13 @@ paths:
       parameters:
         - name: start_date
           in: query
-          description: Filter dari tanggal (default: 30 hari lalu)
+          description: "Filter dari tanggal (default: 30 hari lalu)"
           schema:
             type: string
             format: date-time
         - name: end_date
           in: query
-          description: Filter sampai tanggal (default: sekarang)
+          description: "Filter sampai tanggal (default: sekarang)"
           schema:
             type: string
             format: date-time

@@ -1,0 +1,11 @@
+export const DOCUMENT_STATUS = {
+	VERIFIED: "VERIFIED",
+	REJECTED: "REJECTED",
+	PENDING: "PENDING",
+	DELETED: "DELETED",
+	DOWNLOADED: "DOWNLOADED",
+	UPLOADED: "UPLOADED",
+} as const;
+
+export type DocumentStatus =
+	(typeof DOCUMENT_STATUS)[keyof typeof DOCUMENT_STATUS];
