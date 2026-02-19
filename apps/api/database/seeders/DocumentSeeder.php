@@ -102,23 +102,49 @@ startxref
         }
 
         // Create documents
-        Document::factory()->count(20)->state(fn() => [
-            'uploaded_by' => $users->random()->id
-        ])->create();
+        foreach (DocumentType::cases() as $type) {
+            // Buat struktur folder sesuai dengan upload
+            $directory = sprintf(
+                'archives/%s/%s/%s',
+                $type->value,
+                now()->format('Y'),
+                now()->format('m')
+            );
 
-        Document::factory()->verified()->count(10)->state(fn() => [
-            'uploaded_by' => $users->random()->id,
-            'verified_by' => $users->random()->id
-        ])->create();
+            // Pastikan folder ada
+            if (!Storage::disk('public')->exists($directory)) {
+                Storage::disk('public')->makeDirectory($directory);
+                $this->command->info("Created directory: {$directory}");
+            }
 
-        Document::factory()->rejected()->count(5)->state(fn() => [
-            'uploaded_by' => $users->random()->id,
-            'verified_by' => $users->random()->id
-        ])->create();
+            // Buat 3 dummy file untuk setiap type
+            for ($i = 1; $i <= 3; $i++) {
+                $filename = uniqid() . "_test_{$i}.pdf";
+                $filePath = $directory . '/' . $filename;
 
-        Document::factory()->pending()->count(5)->state(fn() => [
-            'uploaded_by' => $users->random()->id
-        ])->create();
+                Storage::disk('public')->put($filePath, $dummyContent);
+                $this->command->info("Created dummy PDF at: {$filePath}");
+            }
+        }
+
+        // Create documents dengan file_path yang benar
+        Document::factory()->count(20)->create([
+            'uploaded_by' => fn() => $users->random()->id,
+        ]);
+
+        Document::factory()->verified()->count(10)->create([
+            'uploaded_by' => fn() => $users->random()->id,
+            'verified_by' => fn() => $users->random()->id,
+        ]);
+
+        Document::factory()->rejected()->count(5)->create([
+            'uploaded_by' => fn() => $users->random()->id,
+            'verified_by' => fn() => $users->random()->id,
+        ]);
+
+        Document::factory()->pending()->count(5)->create([
+            'uploaded_by' => fn() => $users->random()->id,
+        ]);
 
         $this->command->info('DocumentSeeder completed successfully.');
     }

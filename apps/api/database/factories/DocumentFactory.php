@@ -8,6 +8,7 @@ use App\Enums\Prodi;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
 use App\Models\Document;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Document>
@@ -25,7 +26,7 @@ class DocumentFactory extends Factory
 
         $data = [
             'document_type' => $documentType,
-            'file_path' => 'archives/' . $documentType . '/test.pdf',
+            'file_path' => $this->getRandomExistingFile(),
             'file_name' => fake()->word() . '.pdf',
             'file_size' => fake()->numberBetween(100000, 5000000),
             'prodi' => fake()->randomElement(Prodi::cases())->value,
@@ -46,6 +47,21 @@ class DocumentFactory extends Factory
         $data['duplicate_key'] = Document::generateDuplicateKey($data);
 
         return $data;
+    }
+
+    /**
+     * Get random existing file from storage
+     */
+    private function getRandomExistingFile(): string
+    {
+        $allFiles = Storage::disk('public')->allFiles('archives');
+
+        if (empty($allFiles)) {
+            // Fallback jika belum ada file
+            return 'archives/nilai/' . now()->format('Y/m') . '/dummy.pdf';
+        }
+
+        return $allFiles[array_rand($allFiles)];
     }
 
     /**
