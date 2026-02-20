@@ -5,15 +5,17 @@ import {
 	InputGroupAddon,
 	InputGroupInput,
 } from "@/components/ui/input-group";
-import { DOCUMENT_TYPE } from "@/constants/document-type";
-import { DOCUMENT_STATUS } from "@/constants/document_status";
 import { http } from "@/lib/http";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnFiltersState, PaginationState } from "@tanstack/react-table";
 import { Search } from "lucide-react";
 import { useState } from "react";
-import { columns } from "../lib/table-columns";
+import { columns } from "../_lib/table-columns";
 import { DataTableArchive } from "./data-table-archive";
+import {
+	ARCHIVE_DOCUMENT_STATUS,
+	ARCHIVE_DOCUMENT_TYPE,
+} from "@/constants/archive-document";
 
 export const ArchiveDataContent = () => {
 	const [pagination, setPagination] = useState<PaginationState>({
@@ -103,13 +105,15 @@ export const ArchiveDataContent = () => {
 				globalFilter={globalFilter}
 				setGlobalFilter={setGlobalFilter}
 				filterOptions={{
-					document_type: Object.entries(DOCUMENT_TYPE).map(
+					document_type: Object.entries(ARCHIVE_DOCUMENT_TYPE).map(
 						([value, label]) => ({ value, label }),
 					),
-					status: Object.entries(DOCUMENT_STATUS).map(([value, label]) => ({
-						value,
-						label,
-					})),
+					status: Object.entries(ARCHIVE_DOCUMENT_STATUS).map(
+						([value, label]) => ({
+							value,
+							label,
+						}),
+					),
 					mata_kuliah: filterOptionsData
 						? Array.from(
 								new Set(filterOptionsData.map((item) => item.mata_kuliah)),

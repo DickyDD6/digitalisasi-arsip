@@ -30,7 +30,7 @@ import {
 	PaginationState,
 	useReactTable,
 } from "@tanstack/react-table";
-import { CloudAlert, Download, FileX, Loader2, Trash2 } from "lucide-react";
+import { CloudAlert, FileX, Loader2 } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ContextMenuArchive } from "./ui/context-menu-archive";
 import { DeleteArchiveModal } from "./ui/delete-archive-modal";

@@ -1,26 +1,23 @@
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { getQueryClient } from "@/lib/query-instance";
+import { AUTH_QUERY } from "@/queries/auth.query";
 import { redirect } from "next/navigation";
 import React from "react";
-import { getServerUser } from "./_lib/server-auth";
-import { getQueryClient } from "@/lib/query-instance";
 
 export default async function AuthLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-  const user = await getServerUser();
+	const queryClient = getQueryClient();
 
-  if (!user) {
-    const queryClient = getQueryClient();
-    return (
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <div className="min-h-screen place-items-center place-content-center">
-          {children}
-        </div>
-      </HydrationBoundary>
-    );
-  }
+	try {
+		await queryClient.prefetchQuery(AUTH_QUERY.userMeQuery());
+		redirect("/dashboard");
+	} catch {}
 
-  redirect("/dashboard");
+	return (
+		<div className="min-h-screen place-items-center place-content-center">
+			{children}
+		</div>
+	);
 }

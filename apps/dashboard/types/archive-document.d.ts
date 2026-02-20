@@ -18,3 +18,16 @@ interface ArchiveDocument {
 	created_at: Date;
 	updated_at: Date;
 }
+
+type ArchiveDocumentTypeKey = "GRADE" | "CERTIFICATE" | "TRANSCRIPT" | "SIDANG";
+type ArchiveDocumentType =
+	| "Nilai"
+	| "Ijazah"
+	| "Transkrip"
+	| "Berita Acara Sidang";
+
+type ArchiveDocumentStatusKey = "PENDING" | "VERIFIED" | "REJECTED";
+type ArchiveDocumentStatus =
+	| "Menunggu Verifikasi"
+	| "Diverifikaksi"
+	| "Ditolak";

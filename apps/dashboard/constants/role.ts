@@ -1,8 +1,6 @@
-export const ROLE = {
-  MANAGER: "manager",
-  UPLOADER: "uploader",
-  QC: "qc",
-  SBAP: "sbap",
+export const ROLE: Record<UserRole, UserRole> = {
+	MANAGER: "MANAGER",
+	UPLOADER: "UPLOADER",
+	QC: "QC",
+	SBAP: "SBAP",
 } as const;
-
-export type Role = (typeof ROLE)[keyof typeof ROLE];

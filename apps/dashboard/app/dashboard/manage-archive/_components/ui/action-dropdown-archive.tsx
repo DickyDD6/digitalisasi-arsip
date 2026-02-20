@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-import React from "react";
 import { DeleteArchiveModal } from "./delete-archive-modal";
 import { DownloadArchiveModal } from "./download-archive-modal";
 import { ViewArchiveModal } from "./view-archive-modal";

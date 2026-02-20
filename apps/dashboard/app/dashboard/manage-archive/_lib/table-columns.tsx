@@ -2,13 +2,13 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-
-import { DOCUMENT_TYPE, DocumentType } from "@/constants/document-type";
-import { DOCUMENT_STATUS, DocumentStatus } from "@/constants/document_status";
 import { ColumnDef } from "@tanstack/react-table";
-
 import { DataTableViewOptions } from "@/components/ui/data-table";
 import { ActionDropdownArchive } from "../_components/ui/action-dropdown-archive";
+import {
+	ARCHIVE_DOCUMENT_STATUS,
+	ARCHIVE_DOCUMENT_TYPE,
+} from "@/constants/archive-document";
 
 export const columns: ColumnDef<ArchiveDocument>[] = [
 	{
@@ -64,8 +64,9 @@ export const columns: ColumnDef<ArchiveDocument>[] = [
 		cell: ({ row }) => {
 			return (
 				<Badge variant="muted">
-					{DOCUMENT_TYPE[row.original.document_type as DocumentType] ||
-						row.original.document_type}
+					{ARCHIVE_DOCUMENT_TYPE[
+						row.original.document_type as ArchiveDocumentTypeKey
+					] || row.original.document_type}
 				</Badge>
 			);
 		},
@@ -86,23 +87,22 @@ export const columns: ColumnDef<ArchiveDocument>[] = [
 			const status = row.original.status;
 			let variant: "success" | "warning" | "error" = "warning";
 
-			switch (status as DocumentStatus) {
-				case "terverifikasi":
+			switch (status as ArchiveDocumentStatusKey) {
+				case "VERIFIED":
 					variant = "success";
 					break;
-				case "tidak_terverifikasi":
+				case "REJECTED":
 					variant = "error";
 					break;
-				case "menunggu_verifikasi":
+				case "PENDING":
 					variant = "warning";
 					break;
-				default:
-					variant = "warning";
 			}
 
 			return (
 				<Badge variant={variant}>
-					{DOCUMENT_STATUS[status as DocumentStatus] || status}
+					{ARCHIVE_DOCUMENT_STATUS[status as ArchiveDocumentStatusKey] ||
+						status}
 				</Badge>
 			);
 		},

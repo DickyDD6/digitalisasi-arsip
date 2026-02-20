@@ -11,8 +11,6 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
-import { DOCUMENT_TYPE, DocumentType } from "@/constants/document-type";
-import { DOCUMENT_STATUS, DocumentStatus } from "@/constants/document_status";
 import { http } from "@/lib/http";
 import { useQuery } from "@tanstack/react-query";
 import { formatDate } from "date-fns";
@@ -30,6 +28,10 @@ import {
 } from "lucide-react";
 import React, { Dispatch, useState } from "react";
 import { Document, Page } from "@/lib/react-pdf";
+import {
+	ARCHIVE_DOCUMENT_STATUS,
+	ARCHIVE_DOCUMENT_TYPE,
+} from "@/constants/archive-document";
 
 export const ViewArchiveModal = ({
 	id,
@@ -108,10 +110,18 @@ export const ViewArchiveModal = ({
 						</DialogTitle>
 						<DialogDescription className="space-x-2">
 							<Badge variant="muted">
-								{DOCUMENT_TYPE[data?.data?.document_type as DocumentType]}
+								{
+									ARCHIVE_DOCUMENT_TYPE[
+										data?.data?.document_type as ArchiveDocumentTypeKey
+									]
+								}
 							</Badge>
 							<Badge variant="success">
-								{DOCUMENT_STATUS[data?.data?.status as DocumentStatus]}
+								{
+									ARCHIVE_DOCUMENT_STATUS[
+										data?.data?.status as ArchiveDocumentStatusKey
+									]
+								}
 							</Badge>
 						</DialogDescription>
 					</div>

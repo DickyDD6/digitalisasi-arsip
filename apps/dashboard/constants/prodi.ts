@@ -1,10 +1,8 @@
-export const PRODI = {
-  "Teknik Informatika": "Teknik Informatika",
-  "Teknologi Pangan": "Teknologi Pangan",
-  "Teknik Industri": "Teknik Industri",
-  "Teknik Mesin": "Teknik Mesin",
-  "Teknik Lingkungan": "Teknik Lingkungan",
-  "Perencanaan Wilayah dan Kota": "Perencanaan Wilayah dan Kota",
+export const PRODI: Record<ProdiCode, ProdiName> = {
+	TIF: "Teknik Informatika",
+	TP: "Teknologi Pangan",
+	TI: "Teknik Industri",
+	TMI: "Teknik Mesin",
+	TL: "Teknik Lingkungan",
+	PWK: "Perencanaan Wilayah dan Kota",
 } as const;
-
-export type Prodi = keyof typeof PRODI;
