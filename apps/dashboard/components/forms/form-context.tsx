@@ -1,6 +1,6 @@
 import {
-	createFormHook,
-	createFormHookContexts,
+  createFormHook,
+  createFormHookContexts,
 } from "@tanstack/react-form-nextjs";
 import { Password } from "./fields/password";
 import { PasswordGenerate } from "./fields/pasword-generate";
@@ -9,18 +9,18 @@ import { TextField } from "./fields/text-field";
 import { SubmitButton } from "./fields/submit-button";
 
 export const { fieldContext, formContext, useFieldContext, useFormContext } =
-	createFormHookContexts();
+  createFormHookContexts();
 
 export const { useAppForm, withForm } = createFormHook({
-	fieldContext,
-	formContext,
-	fieldComponents: {
-		TextField,
-		Password,
-		PasswordGenerate,
-		Select,
-	},
-	formComponents: {
-		SubmitButton,
-	},
+  fieldContext,
+  formContext,
+  fieldComponents: {
+    TextField,
+    Password,
+    PasswordGenerate,
+    Select,
+  },
+  formComponents: {
+    SubmitButton,
+  },
 });

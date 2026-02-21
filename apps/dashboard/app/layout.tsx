@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import "./_styles/globals.css";
+import "./globals.css";
 import { favicons } from "@/lib/favicons";
 import { TanstackProvider } from "./provider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";

@@ -50,7 +50,7 @@ export const FilterDropdownArchive = <TData, TValue>({
               Reset Filter
             </Button>
           </DropdownMenuItem>
-          {filterOptions[header.column.id].map((option) => (
+          {filterOptions[header.column.id]?.map((option) => (
             <DropdownMenuItem
               key={option.value}
               asChild

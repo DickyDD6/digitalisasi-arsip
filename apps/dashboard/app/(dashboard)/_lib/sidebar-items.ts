@@ -19,27 +19,27 @@ interface SidebarItem {
 export const SIDEBAR_ITEMS: SidebarItem[] = [
   {
     label: "Dashboard",
-    link: "/dashboard",
+    link: "/",
     icon: LayoutDashboard,
   },
   {
     label: "Pengelolaan Arsip",
-    link: "/dashboard/manage-archive",
+    link: "/manage-archive",
     icon: FolderArchive,
   },
   {
     label: "Aktivitas Log",
-    link: "/dashboard/log-activity",
+    link: "/log-activity",
     icon: Logs,
   },
   {
     label: "Pengelolaan Pengguna",
-    link: "/dashboard/manage-user",
+    link: "/manage-user",
     icon: UsersRound,
   },
   {
     label: "Laporan",
-    link: "/dashboard/report",
+    link: "/report",
     icon: FileText,
   },
 ];

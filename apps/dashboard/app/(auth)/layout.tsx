@@ -4,20 +4,20 @@ import { redirect } from "next/navigation";
 import React from "react";
 
 export default async function AuthLayout({
-	children,
+  children,
 }: {
-	children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-	const queryClient = getQueryClient();
+  const queryClient = getQueryClient();
 
-	try {
-		await queryClient.prefetchQuery(AUTH_QUERY.userMeQuery());
-		redirect("/dashboard");
-	} catch {}
+  try {
+    await queryClient.prefetchQuery(AUTH_QUERY.userMeQuery());
+    redirect("/");
+  } catch {}
 
-	return (
-		<div className="min-h-screen place-items-center place-content-center">
-			{children}
-		</div>
-	);
+  return (
+    <div className="min-h-screen place-items-center place-content-center">
+      {children}
+    </div>
+  );
 }
