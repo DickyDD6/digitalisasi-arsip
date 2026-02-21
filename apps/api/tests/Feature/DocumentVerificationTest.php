@@ -28,8 +28,7 @@ class DocumentVerificationTest extends TestCase
         $this->sbap = User::factory()->create(['role' => 'sbap']);
     }
 
-    /** @test */
-    public function qc_can_view_pending_documents()
+    public function test_qc_can_view_pending_documents()
     {
         $this->actingAs($this->qc);
 
@@ -51,8 +50,7 @@ class DocumentVerificationTest extends TestCase
             ]);
     }
 
-    /** @test */
-    public function manager_can_view_pending_documents()
+    public function test_manager_can_view_pending_documents()
     {
         $this->actingAs($this->manager);
 
@@ -63,8 +61,7 @@ class DocumentVerificationTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /** @test */
-    public function uploader_cannot_view_pending_documents()
+    public function test_uploader_cannot_view_pending_documents()
     {
         $this->actingAs($this->uploader);
 
@@ -73,8 +70,7 @@ class DocumentVerificationTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function sbap_cannot_view_pending_documents()
+    public function test_sbap_cannot_view_pending_documents()
     {
         $this->actingAs($this->sbap);
 
@@ -83,8 +79,7 @@ class DocumentVerificationTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function qc_can_verify_document()
+    public function test_qc_can_verify_document()
     {
         $this->actingAs($this->qc);
 
@@ -98,7 +93,7 @@ class DocumentVerificationTest extends TestCase
             ->assertJson([
                 'message' => 'Dokumen berhasil diverifikasi.',
                 'data' => [
-                    'status' => 'terverifikasi',
+                    'status' => 'Terverifikasi',
                 ],
             ]);
 
@@ -113,15 +108,14 @@ class DocumentVerificationTest extends TestCase
         $this->assertNotNull($document->verified_at);
     }
 
-    /** @test */
-    public function qc_can_reject_document_with_note()
+    public function test_qc_can_reject_document_with_note()
     {
         $this->actingAs($this->qc);
 
         $document = Document::factory()->pending()->create();
 
         $response = $this->patchJson("/api/documents/{$document->id}/verify", [
-            'status' => 'tidak_terverifikasi',
+            'status' => 'tidak terverifikasi',
             'verification_note' => 'Format dokumen tidak sesuai standar.',
         ]);
 
@@ -129,21 +123,20 @@ class DocumentVerificationTest extends TestCase
             ->assertJson([
                 'message' => 'Dokumen ditolak.',
                 'data' => [
-                    'status' => 'tidak_terverifikasi',
+                    'status' => 'Tidak Terverifikasi',
                     'verification_note' => 'Format dokumen tidak sesuai standar.',
                 ],
             ]);
 
         $this->assertDatabaseHas('documents', [
             'id' => $document->id,
-            'status' => 'tidak_terverifikasi',
+            'status' => 'tidak terverifikasi',
             'verification_note' => 'Format dokumen tidak sesuai standar.',
             'verified_by' => $this->qc->id,
         ]);
     }
 
-    /** @test */
-    public function manager_can_verify_document()
+    public function test_manager_can_verify_document()
     {
         $this->actingAs($this->manager);
 
@@ -162,8 +155,7 @@ class DocumentVerificationTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function uploader_cannot_verify_document()
+    public function test_uploader_cannot_verify_document()
     {
         $this->actingAs($this->uploader);
 
@@ -176,8 +168,7 @@ class DocumentVerificationTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function sbap_cannot_verify_document()
+    public function test_sbap_cannot_verify_document()
     {
         $this->actingAs($this->sbap);
 
@@ -190,8 +181,7 @@ class DocumentVerificationTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function cannot_verify_already_verified_document()
+    public function test_cannot_verify_already_verified_document()
     {
         $this->actingAs($this->qc);
 
@@ -206,8 +196,7 @@ class DocumentVerificationTest extends TestCase
             ->assertJsonValidationErrors(['document']);
     }
 
-    /** @test */
-    public function cannot_verify_already_rejected_document()
+    public function test_cannot_verify_already_rejected_document()
     {
         $this->actingAs($this->qc);
 
@@ -215,7 +204,7 @@ class DocumentVerificationTest extends TestCase
         $document = Document::factory()->rejected()->create();
 
         $response = $this->patchJson("/api/documents/{$document->id}/verify", [
-            'status' => 'tidak_terverifikasi',
+            'status' => 'tidak terverifikasi',
             'verification_note' => 'Another reason',
         ]);
 
@@ -223,8 +212,7 @@ class DocumentVerificationTest extends TestCase
             ->assertJsonValidationErrors(['document']);
     }
 
-    /** @test */
-    public function audit_log_recorded_for_verify_action()
+    public function test_audit_log_recorded_for_verify_action()
     {
         $this->actingAs($this->qc);
 
@@ -246,15 +234,14 @@ class DocumentVerificationTest extends TestCase
         $this->assertEquals('terverifikasi', $auditLog->metadata['status']);
     }
 
-    /** @test */
-    public function audit_log_recorded_for_reject_action()
+    public function test_audit_log_recorded_for_reject_action()
     {
         $this->actingAs($this->qc);
 
         $document = Document::factory()->pending()->create();
 
         $this->patchJson("/api/documents/{$document->id}/verify", [
-            'status' => 'tidak_terverifikasi',
+            'status' => 'tidak terverifikasi',
             'verification_note' => 'Dokumen tidak lengkap',
         ]);
 
@@ -267,12 +254,11 @@ class DocumentVerificationTest extends TestCase
         $auditLog = AuditLog::where('action', 'reject_document')->first();
         $this->assertNotNull($auditLog);
         $this->assertEquals($document->id, $auditLog->metadata['document_id']);
-        $this->assertEquals('tidak_terverifikasi', $auditLog->metadata['status']);
+        $this->assertEquals('tidak terverifikasi', $auditLog->metadata['status']);
         $this->assertEquals('Dokumen tidak lengkap', $auditLog->metadata['verification_note']);
     }
 
-    /** @test */
-    public function validation_fails_if_status_is_invalid()
+    public function test_validation_fails_if_status_is_invalid()
     {
         $this->actingAs($this->qc);
 
@@ -286,8 +272,7 @@ class DocumentVerificationTest extends TestCase
             ->assertJsonValidationErrors(['status']);
     }
 
-    /** @test */
-    public function validation_fails_if_status_is_missing()
+    public function test_validation_fails_if_status_is_missing()
     {
         $this->actingAs($this->qc);
 
@@ -301,8 +286,7 @@ class DocumentVerificationTest extends TestCase
             ->assertJsonValidationErrors(['status']);
     }
 
-    /** @test */
-    public function pending_documents_ordered_by_oldest_first()
+    public function test_pending_documents_ordered_by_oldest_first()
     {
         $this->actingAs($this->qc);
 

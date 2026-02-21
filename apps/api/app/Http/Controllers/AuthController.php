@@ -132,4 +132,24 @@ class AuthController extends Controller
             ],
         ], 200);
     }
+
+    /**
+     * Check if email is available.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function checkEmail(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+        ]);
+
+        $exists = \App\Models\User::where('email', $request->email)->exists();
+
+        return response()->json([
+            'available' => !$exists,
+            'message' => $exists ? 'Email sudah digunakan.' : 'Email tersedia.',
+        ]);
+    }
 }

@@ -31,8 +31,7 @@ class DocumentDownloadTest extends TestCase
         $this->sbap = User::factory()->create(['role' => 'sbap']);
     }
 
-    /** @test */
-    public function manager_can_download_any_document()
+    public function test_manager_can_download_any_document()
     {
         $this->actingAs($this->manager);
 
@@ -51,8 +50,7 @@ class DocumentDownloadTest extends TestCase
         $this->assertEquals('PDF content here', $response->streamedContent());
     }
 
-    /** @test */
-    public function sbap_can_download_verified_document()
+    public function test_sbap_can_download_verified_document()
     {
         $this->actingAs($this->sbap);
 
@@ -69,8 +67,7 @@ class DocumentDownloadTest extends TestCase
         $response->assertHeader('content-type', 'application/pdf');
     }
 
-    /** @test */
-    public function sbap_cannot_download_pending_document()
+    public function test_sbap_cannot_download_pending_document()
     {
         $this->actingAs($this->sbap);
 
@@ -85,8 +82,7 @@ class DocumentDownloadTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function sbap_cannot_download_rejected_document()
+    public function test_sbap_cannot_download_rejected_document()
     {
         $this->actingAs($this->sbap);
 
@@ -101,8 +97,7 @@ class DocumentDownloadTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function uploader_cannot_download_document()
+    public function test_uploader_can_download_verified_document()
     {
         $this->actingAs($this->uploader);
 
@@ -114,11 +109,43 @@ class DocumentDownloadTest extends TestCase
 
         $response = $this->get("/api/documents/{$document->id}/download");
 
+        $response->assertStatus(200);
+    }
+
+    public function test_uploader_can_download_own_unverified_document()
+    {
+        $this->actingAs($this->uploader);
+
+        $document = Document::factory()->pending()->create([
+            'file_path' => 'archives/pending.pdf',
+            'uploaded_by' => $this->uploader->id,
+        ]);
+
+        Storage::put($document->file_path, 'Pending PDF');
+
+        $response = $this->get("/api/documents/{$document->id}/download");
+
+        $response->assertStatus(200);
+    }
+
+    public function test_uploader_cannot_download_others_unverified_document()
+    {
+        $this->actingAs($this->uploader);
+
+        $otherUploader = User::factory()->create(['role' => 'uploader']);
+        $document = Document::factory()->pending()->create([
+            'file_path' => 'archives/pending.pdf',
+            'uploaded_by' => $otherUploader->id,
+        ]);
+
+        Storage::put($document->file_path, 'Pending PDF');
+
+        $response = $this->get("/api/documents/{$document->id}/download");
+
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function qc_cannot_download_document()
+    public function test_qc_can_download_verified_document()
     {
         $this->actingAs($this->qc);
 
@@ -130,11 +157,40 @@ class DocumentDownloadTest extends TestCase
 
         $response = $this->get("/api/documents/{$document->id}/download");
 
+        $response->assertStatus(200);
+    }
+
+    public function test_qc_can_download_pending_document()
+    {
+        $this->actingAs($this->qc);
+
+        $document = Document::factory()->pending()->create([
+            'file_path' => 'archives/pending.pdf',
+        ]);
+
+        Storage::put($document->file_path, 'Pending PDF');
+
+        $response = $this->get("/api/documents/{$document->id}/download");
+
+        $response->assertStatus(200);
+    }
+
+    public function test_qc_cannot_download_rejected_document()
+    {
+        $this->actingAs($this->qc);
+
+        $document = Document::factory()->rejected()->create([
+            'file_path' => 'archives/rejected.pdf',
+        ]);
+
+        Storage::put($document->file_path, 'Rejected PDF');
+
+        $response = $this->get("/api/documents/{$document->id}/download");
+
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function download_returns_404_if_file_not_found()
+    public function test_download_returns_404_if_file_not_found()
     {
         $this->actingAs($this->manager);
 
@@ -149,8 +205,7 @@ class DocumentDownloadTest extends TestCase
         $response->assertStatus(404);
     }
 
-    /** @test */
-    public function download_has_proper_headers()
+    public function test_download_has_proper_headers()
     {
         $this->actingAs($this->manager);
 
@@ -161,15 +216,14 @@ class DocumentDownloadTest extends TestCase
 
         Storage::put($document->file_path, 'PDF content');
 
-        $response = $this->get("/api/documents/{$document}/download");
+        $response = $this->get("/api/documents/{$document->id}/download");
 
         $response->assertStatus(200);
         $response->assertHeader('content-type', 'application/pdf');
         $response->assertHeader('content-disposition', 'attachment; filename=my_document.pdf');
     }
 
-    /** @test */
-    public function manager_can_download_pending_document()
+    public function test_manager_can_download_pending_document()
     {
         $this->actingAs($this->manager);
 
@@ -184,8 +238,7 @@ class DocumentDownloadTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /** @test */
-    public function manager_can_download_rejected_document()
+    public function test_manager_can_download_rejected_document()
     {
         $this->actingAs($this->manager);
 

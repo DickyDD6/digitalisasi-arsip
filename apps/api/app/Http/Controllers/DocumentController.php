@@ -6,6 +6,10 @@ use App\Http\Requests\UploadDocumentRequest;
 use App\Http\Resources\DocumentResource;
 use App\Models\Document;
 use App\Services\DocumentService;
+use App\Enums\AuditAction;
+use App\Enums\ModelType;
+use App\Enums\DocumentStatus;
+use App\Models\AuditLog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -58,9 +62,22 @@ class DocumentController extends Controller
             });
         }
 
+        // Sorting
+        $allowedSorts = ['created_at', 'updated_at', 'tahun_lulus', 'status', 'document_type', 'prodi', 'file_name'];
+        $sortBy = $request->input('sort_by', 'created_at');
+        $sortDirection = $request->input('sort_direction', 'desc');
+
+        if (!in_array($sortBy, $allowedSorts)) {
+            $sortBy = 'created_at';
+        }
+
+        if (!in_array(strtolower($sortDirection), ['asc', 'desc'])) {
+            $sortDirection = 'desc';
+        }
+
         // Pagination
         $perPage = $request->input('per_page', 15);
-        $documents = $query->orderBy('created_at', 'desc')->paginate($perPage);
+        $documents = $query->orderBy($sortBy, $sortDirection)->paginate($perPage);
 
         return response()->json([
             'message' => 'Daftar dokumen berhasil diambil.',
@@ -130,8 +147,8 @@ class DocumentController extends Controller
         }
 
         // Log download activity
-        \App\Models\AuditLog::log(
-            action: 'download_document',
+        AuditLog::log(
+            action: AuditAction::DOWNLOAD_DOCUMENT->value,
             description: "Dokumen '{$document->file_name}' diunduh.",
             metadata: [
                 'document_id' => $document->id,
@@ -139,7 +156,7 @@ class DocumentController extends Controller
                 'file_name' => $document->file_name,
                 'prodi' => $document->prodi->value,
             ],
-            modelType: \App\Models\Document::class,
+            modelType: ModelType::DOCUMENT->value,
             modelId: $document->id
         );
 
@@ -233,8 +250,8 @@ class DocumentController extends Controller
         }
 
         // Log view activity
-        \App\Models\AuditLog::log(
-            action: 'view_document',
+        AuditLog::log(
+            action: AuditAction::VIEW_DOCUMENT->value,
             description: "Dokumen '{$document->file_name}' dilihat.",
             metadata: [
                 'document_id' => $document->id,
@@ -242,7 +259,7 @@ class DocumentController extends Controller
                 'file_name' => $document->file_name,
                 'prodi' => $document->prodi->value,
             ],
-            modelType: \App\Models\Document::class,
+            modelType: ModelType::DOCUMENT->value,
             modelId: $document->id
         );
 
@@ -335,7 +352,7 @@ class DocumentController extends Controller
         $this->authorize('viewPending', Document::class);
 
         $query = Document::with(['uploader'])
-            ->where('status', 'menunggu_verifikasi')
+            ->where('status', DocumentStatus::PENDING->value)
             ->orderBy('created_at', 'asc');
 
         // Pagination
@@ -371,7 +388,7 @@ class DocumentController extends Controller
                 auth()->id()
             );
 
-            $message = $verified->status === 'terverifikasi'
+            $message = $verified->status === DocumentStatus::VERIFIED
                 ? 'Dokumen berhasil diverifikasi.'
                 : 'Dokumen ditolak.';
 
