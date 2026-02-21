@@ -136,4 +136,26 @@ class UserService
 
         return $deleted;
     }
+    /**
+     * Get user statistics.
+     * 
+     * @return array
+     */
+    public function getStatistics(): array
+    {
+        $totalUsers = User::count();
+
+        // Active users: Users who have at least one audit log in the last 30 days
+        $activeUsers = User::whereHas('auditLogs', function ($query) {
+            $query->where('created_at', '>=', now()->subDays(30));
+        })->count();
+
+        $newUsers = User::where('created_at', '>=', now()->subDays(30))->count();
+
+        return [
+            'total_users' => $totalUsers,
+            'active_users' => $activeUsers,
+            'new_users' => $newUsers,
+        ];
+    }
 }
