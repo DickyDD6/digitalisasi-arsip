@@ -53,7 +53,8 @@ export const ManagementUserContent = () => {
 									Coba Lagi
 								</Button>
 							</Empty>
-						) : data?.user_statistic ? (
+						) : (
+							data?.user_statistic &&
 							Object.entries(data?.user_statistic ?? {}).map(
 								([role, { label, value }]) => (
 									<Card key={role}>
@@ -64,7 +65,7 @@ export const ManagementUserContent = () => {
 									</Card>
 								),
 							)
-						) : null}
+						)}
 					</div>
 
 					<DataTableUsers />

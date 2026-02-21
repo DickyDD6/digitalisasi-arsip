@@ -41,7 +41,7 @@ import {
 	useReactTable,
 } from "@tanstack/react-table";
 import { CloudAlert, Loader2, UserRoundX } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { tableUsersColumn } from "../_lib/table-users-column";
 import { DeleteUserModal } from "./ui/delete-user-modal";
 
@@ -54,19 +54,28 @@ export const DataTableUsers = () => {
 
 	const queryClient = useQueryClient();
 
-	const { data, isLoading, isError, refetch, isFetching, isPending } =
-		useUsersTable({
-			role: roleFilter,
-			page: pagination.pageIndex + 1,
-			per_page: pagination.pageSize,
-		});
+	const {
+		data: { users, meta: userMeta } = {},
+		isLoading,
+		isError,
+		refetch,
+		isFetching,
+		isPending,
+	} = useUsersTable({
+		role: roleFilter,
+		page: pagination.pageIndex + 1,
+		per_page: pagination.pageSize,
+	});
 
 	const currentUser = queryClient.getQueryData<User>(["current", "user"]);
 
+	const data = useMemo(() => users || [], [users]);
+	const columns = useMemo(() => tableUsersColumn, []);
+
 	// eslint-disable-next-line react-hooks/incompatible-library
 	const table = useReactTable({
-		data: data?.users || [],
-		columns: tableUsersColumn,
+		data,
+		columns,
 		defaultColumn: {
 			cell: ({ getValue }) => {
 				const value = getValue();
@@ -75,13 +84,13 @@ export const DataTableUsers = () => {
 		},
 		manualFiltering: true,
 		manualPagination: true,
-		pageCount: data
-			? Math.ceil((data.meta?.total || 0) / pagination.pageSize)
+		pageCount: userMeta
+			? Math.ceil((userMeta.total || 0) / pagination.pageSize)
 			: 0,
 		state: {
 			columnFilters: [
 				{
-					id: "role",
+					id: "Peran",
 					value: roleFilter,
 				},
 			],
@@ -94,13 +103,11 @@ export const DataTableUsers = () => {
 					: updater;
 
 			const roleFilter =
-				(newFilters.find((f) => f.id === "role")?.value as UserRole) || "";
+				(newFilters.find((f) => f.id === "Peran")?.value as UserRole) || "";
 			setRoleFilter(roleFilter);
 		},
 		enableRowSelection: (row) =>
-			(!!row.id || !!row.index) &&
-			row.original.role !== ROLE.MANAGER &&
-			row.original.id !== currentUser?.id,
+			row.original.role !== ROLE.MANAGER && row.original.id !== currentUser?.id,
 		onPaginationChange: setPagination,
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),

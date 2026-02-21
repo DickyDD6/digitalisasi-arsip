@@ -23,9 +23,7 @@ export const tableUsersColumn: ColumnDef<User>[] = [
 				<Checkbox
 					checked={row.getIsSelected()}
 					aria-label="Select row"
-					onCheckedChange={(value) =>
-						row.getCanSelect() && row.toggleSelected(!!value)
-					}
+					onCheckedChange={(value) => row.toggleSelected(!!value)}
 					disabled={!row.getCanSelect()}
 					className="rounded-sm"
 				/>
