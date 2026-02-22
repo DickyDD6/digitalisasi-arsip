@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\AuditAction;
 use App\Models\AuditLog;
 use App\Services\LoginAttemptService;
 use Closure;
@@ -32,7 +33,7 @@ class ThrottleLoginAttempts
 
             // Log account lockout for security monitoring
             AuditLog::log(
-                action: 'account_locked',
+                action: AuditAction::LOGIN->value,
                 description: "Akun {$email} dikunci sementara karena terlalu banyak percobaan login.",
                 metadata: [
                     'email' => $email,
