@@ -38,7 +38,7 @@ export const EditUserModal = ({ id }: { id: number }) => {
         ) {
           payload[key as keyof UserSchema] = value[
             key as keyof typeof value
-          ] as UserRole;
+          ] as Lowercase<UserRole>;
         }
       }
 

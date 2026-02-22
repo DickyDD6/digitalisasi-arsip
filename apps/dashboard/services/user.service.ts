@@ -44,6 +44,13 @@ const deleteUserMultiple = async (
   return data;
 };
 
+const getUsersStatistic = async (): Promise<ApiResponse<UserStatistic>> => {
+  const { data } = await http.get<ApiResponse<UserStatistic>>(
+    `/api/users/statistics`,
+  );
+  return data;
+};
+
 export const USER_SERVICE = {
   getUsers,
   getUserById,
@@ -51,4 +58,5 @@ export const USER_SERVICE = {
   updateUser,
   deleteUser,
   deleteUserMultiple,
+  getUsersStatistic,
 };

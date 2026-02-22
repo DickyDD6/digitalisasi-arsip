@@ -59,7 +59,7 @@ export const EditUserForm = withForm({
       </form.AppField>
       <form.AppField name="nip">
         {(field) => (
-          <field.TextField
+          <field.NumberField
             label="NIP"
             placeholder="Masukkan NIP"
             icon={{ side: "left", element: <UserRoundKey /> }}

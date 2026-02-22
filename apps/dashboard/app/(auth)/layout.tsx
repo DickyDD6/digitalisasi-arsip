@@ -1,5 +1,4 @@
-import { getQueryClient } from "@/lib/query-instance";
-import { AUTH_QUERY } from "@/queries/auth.query";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import React from "react";
 
@@ -8,12 +7,13 @@ export default async function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const queryClient = getQueryClient();
+  const cookie = (await cookies())
+    .getAll()
+    .find((c) => c.name.endsWith("session") || c.name.endsWith("TOKEN"))?.value;
 
-  try {
-    await queryClient.prefetchQuery(AUTH_QUERY.userMeQuery());
+  if (cookie) {
     redirect("/");
-  } catch {}
+  }
 
   return (
     <div className="min-h-screen place-items-center place-content-center">

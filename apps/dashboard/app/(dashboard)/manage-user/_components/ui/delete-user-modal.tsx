@@ -25,11 +25,13 @@ import { useUserDeleteMultiple } from "@/hooks/users/use-user-delete-multiple";
 import { useUserDeleteMultipleDetail } from "@/hooks/users/use-user-delete-multiple-detail";
 import { isAxiosError } from "axios";
 import { Loader2, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export const DeleteUserModal = ({ id }: { id: number | number[] }) => {
   const { data: singleQuery } = useUserDeleteDetail(id as number);
   const { data: multipleQuery } = useUserDeleteMultipleDetail(id as number[]);
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const { mutateAsync: singleDelete, isPending: pendingSingleDelete } =
     useUserDelete();
@@ -152,9 +154,23 @@ export const DeleteUserModal = ({ id }: { id: number | number[] }) => {
   const isLoading = pendingSingleDelete || pendingMultipleDelete;
 
   return (
-    <Dialog>
+    <Dialog
+      open={openDialog}
+      onOpenChange={(open) => {
+        if (id === undefined) return;
+        setOpenDialog(open);
+      }}
+    >
       <DialogTrigger asChild>
-        <Button variant={"destructive"} className="justify-start w-full">
+        <Button
+          variant={"destructive"}
+          className="justify-start w-full"
+          disabled={
+            isLoading ||
+            singleQuery?.data.role === "manager" ||
+            multipleQuery?.some((user) => user.role === "manager")
+          }
+        >
           <Trash2 /> Hapus Pengguna
         </Button>
       </DialogTrigger>

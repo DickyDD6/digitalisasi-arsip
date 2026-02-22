@@ -100,6 +100,9 @@ export const AddUserModal = () => {
             new KeyboardEvent("keydown", { key: "Escape" }),
           );
         }}
+        onInteractOutside={() => {
+          form.reset();
+        }}
       >
         <DialogHeader>
           <DialogTitle>Tambah Pengguna</DialogTitle>

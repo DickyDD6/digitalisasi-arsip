@@ -3,7 +3,7 @@ interface User {
   name: string;
   email: string;
   nip: string | null;
-  role: UserRole;
+  role: Lowercase<UserRole>;
   email_verified_at: Date | null;
   // passwors (private)
   createdAt: Date;
@@ -14,7 +14,7 @@ interface UserSchema {
   name: string;
   email: string;
   password: string;
-  role: UserRole;
+  role: Lowercase<UserRole>;
   nip: string | null;
 }
 
@@ -25,4 +25,11 @@ interface UserParams {
   per_page?: number;
   role?: UserRole;
   search?: string;
+}
+
+interface UserStatistic {
+  total_users: number;
+  total_by_role: Record<Lowercase<UserRole>, number>;
+  active_users: number;
+  new_users: number;
 }

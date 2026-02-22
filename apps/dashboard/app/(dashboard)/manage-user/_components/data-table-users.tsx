@@ -182,7 +182,7 @@ export const DataTableUsers = () => {
           ))}
         </TableHeader>
         <TableBody>
-          {isLoading ? (
+          {isLoading || isFetching ? (
             <TableRow>
               <TableCell
                 colSpan={table.getAllColumns().length}

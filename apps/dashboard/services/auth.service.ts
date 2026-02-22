@@ -16,9 +16,13 @@ const logout = async () => {
   return data;
 };
 
-const currentUser = async () => {
-  const { data } = await http.get<ApiResponse<User>>("/api/auth/me");
+const getCurrentUser = async (cookie?: string) => {
+  const { data } = await http.get<ApiResponse<User>>("/api/auth/me", {
+    headers: {
+      Cookie: cookie,
+    },
+  });
   return data;
 };
 
-export const AUTH_SERVICE = { login, logout, currentUser };
+export const AUTH_SERVICE = { login, logout, getCurrentUser };

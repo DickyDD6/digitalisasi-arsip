@@ -1411,6 +1411,21 @@ components:
             total_users:
               type: "integer"
               example: 25
+            total_by_role:
+              type: "object"
+              properties:
+                manager:
+                  type: "integer"
+                  example: 2
+                uploader:
+                  type: "integer"
+                  example: 15
+                qc:
+                  type: "integer"
+                  example: 5
+                sbap:
+                  type: "integer"
+                  example: 3
             active_users:
               type: "integer"
               description: "Users yang memiliki aktivitas dalam 30 hari terakhir"

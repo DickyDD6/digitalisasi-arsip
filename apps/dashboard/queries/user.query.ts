@@ -70,35 +70,30 @@ const usersTableQuery = (params?: UserParams) =>
     placeholderData: (prev) => prev,
   });
 
-const usersStatisticQuery = (params?: UserParams) =>
+const usersStatisticQuery = () =>
   queryOptions({
     queryKey: ["users", "statistic"],
-    queryFn: async () => await USER_SERVICE.getUsers(params),
-    select: (res) => {
-      return {
-        user_statistic: {
-          all: {
-            label: "Semua Pengguna",
-            value: res.data.length,
+    queryFn: async () => await USER_SERVICE.getUsersStatistic(),
+    select: (res) => ({
+      all: {
+        label: "Semua Pengguna",
+        value: res.data.total_users || 0,
+      },
+      ...Object.values(ROLE)
+        .filter((role) => role !== ROLE.MANAGER)
+        .reduce(
+          (acc, role) => {
+            const count =
+              res.data.total_by_role[role as Lowercase<UserRole>] || 0;
+            acc[role] = {
+              label: `Tim ${role === ROLE.UPLOADER ? toSentenceCase(role) : role.toUpperCase()}`,
+              value: count,
+            };
+            return acc;
           },
-          ...Object.values(ROLE)
-            .filter((role) => role !== "MANAGER")
-            .reduce(
-              (acc, role) => {
-                const count = res.data.filter(
-                  (user) => user.role === role,
-                ).length;
-                acc[role] = {
-                  label: `Tim ${role === "UPLOADER" ? toSentenceCase(role) : role.toUpperCase()}`,
-                  value: count,
-                };
-                return acc;
-              },
-              {} as Record<string, { label: string; value: number }>,
-            ),
-        },
-      };
-    },
+          {} as Record<string, { label: string; value: number }>,
+        ),
+    }),
   });
 
 export const USER_QUERY = {

@@ -54,17 +54,14 @@ export const ManagementUserContent = () => {
                 </Button>
               </Empty>
             ) : (
-              data?.user_statistic &&
-              Object.entries(data?.user_statistic ?? {}).map(
-                ([role, { label, value }]) => (
-                  <Card key={role}>
-                    <CardContent>
-                      <CardTitle>{label}</CardTitle>
-                      <span className="text-xl font-bold">{value}</span>
-                    </CardContent>
-                  </Card>
-                ),
-              )
+              Object.entries(data ?? {}).map(([role, { label, value }]) => (
+                <Card key={role}>
+                  <CardContent>
+                    <CardTitle>{label}</CardTitle>
+                    <span className="text-xl font-bold">{value}</span>
+                  </CardContent>
+                </Card>
+              ))
             )}
           </div>
 
