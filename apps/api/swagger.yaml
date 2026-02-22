@@ -5,19 +5,24 @@ info:
     REST API untuk sistem digitalisasi arsip akademik.
 
     ## Autentikasi
-    API ini menggunakan Laravel Sanctum dengan session-based authentication.
+    API ini menggunakan Laravel Sanctum dengan **Token-Based Authentication (Bearer Token)**.
 
     **Langkah autentikasi:**
-    1. GET `/sanctum/csrf-cookie` untuk mendapatkan CSRF token
-    2. POST `/api/auth/login` dengan credentials
-    3. Sertakan cookie dan X-XSRF-TOKEN header pada setiap request
+    1. POST `/api/auth/login` dengan credentials (email & password)
+    2. Simpan `token` dari response
+    3. Sertakan token pada setiap request: `Authorization: Bearer <token>`
+
+    **Token Info:**
+    - Token berlaku selama **24 jam** (86400 detik)
+    - Logout akan me-revoke token yang digunakan
+    - Endpoint `/api/auth/logout-all` untuk revoke semua token (semua perangkat)
 
     ## Roles
     - **Manager**: Full access ke semua fitur
     - **Uploader**: Upload, update & delete dokumen sendiri
     - **QC**: Verifikasi dokumen
     - **SBAP**: Download dokumen terverifikasi
-  version: "2.4.0"
+  version: "3.0.0"
   contact:
     name: "API Support"
 
@@ -27,7 +32,7 @@ servers:
 
 tags:
   - name: "Authentication"
-    description: "Endpoints untuk autentikasi"
+    description: "Endpoints untuk autentikasi (Bearer Token)"
   - name: "Users"
     description: "User Management (UC-01) - Manager only"
   - name: "Documents"
@@ -39,20 +44,10 @@ tags:
   - name: "Statistics"
     description: "Endpoints untuk statistik data"
 
-paths:
-  /sanctum/csrf-cookie:
-    get:
-      tags:
-        - "Authentication"
-      summary: "Get CSRF Cookie"
-      description: |
-        Mengambil CSRF cookie yang diperlukan untuk autentikasi.
-        Cookie `XSRF-TOKEN` akan otomatis tersimpan.
-      operationId: "getCsrfCookie"
-      responses:
-        "204":
-          description: "No Content - CSRF cookie berhasil disimpan"
+security:
+  - bearerAuth: []
 
+paths:
   /api/auth/check-email:
     post:
       tags:
@@ -99,8 +94,12 @@ paths:
       tags:
         - "Authentication"
       summary: "Login"
-      description: "Login dengan email dan password"
+      description: |
+        Login dengan email dan password.
+        Mengembalikan Bearer Token yang harus disertakan pada setiap request.
+        Token berlaku selama 24 jam.
       operationId: "login"
+      security: []
       requestBody:
         required: true
         content:
@@ -109,11 +108,44 @@ paths:
               $ref: "#/components/schemas/LoginRequest"
       responses:
         "200":
-          description: "Login berhasil"
+          description: "Login berhasil - Token diberikan"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/LoginResponse"
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "Login berhasil."
+                  data:
+                    type: "object"
+                    properties:
+                      user:
+                        type: "object"
+                        properties:
+                          id:
+                            type: "integer"
+                            example: 1
+                          name:
+                            type: "string"
+                            example: "Admin Manager"
+                          email:
+                            type: "string"
+                            example: "manager@example.com"
+                          role:
+                            type: "string"
+                            example: "manager"
+                      token:
+                        type: "string"
+                        description: "Personal Access Token untuk Bearer Authentication"
+                        example: "1|abc123def456..."
+                      token_type:
+                        type: "string"
+                        example: "Bearer"
+                      expires_in:
+                        type: "integer"
+                        description: "Masa berlaku token dalam detik"
+                        example: 86400
         "422":
           description: "Validation error - Kredensial salah atau field tidak valid"
           content:
@@ -125,37 +157,33 @@ paths:
                     properties:
                       remaining_attempts:
                         type: "integer"
-                        description: "Sisa percobaan login sebelum akun dikunci (hanya ada pada login failure)"
+                        description: "Sisa percobaan login sebelum akun dikunci"
                         example: 4
-              examples:
-                invalidCredentials:
-                  summary: "Kredensial salah"
-                  value:
-                    message: "Email atau password salah."
-                    errors:
-                      email:
-                        - "Email atau password salah."
-                    remaining_attempts: 4
-                validationError:
-                  summary: "Field validation error"
-                  value:
-                    message: "The email field is invalid."
-                    errors:
-                      email:
-                        - "Format alamat email tidak valid. Contoh: nama@example.com"
+        "429":
+          description: "Too Many Requests - Akun terkunci sementara"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "Terlalu banyak percobaan login. Akun dikunci sementara."
+                  locked_until:
+                    type: "string"
+                    format: "date-time"
+                    example: "2026-02-22T14:30:00+07:00"
 
   /api/auth/logout:
     post:
       tags:
         - "Authentication"
       summary: "Logout"
-      description: "Logout dan invalidate session"
+      description: "Logout dan revoke access token yang digunakan saat ini."
       operationId: "logout"
-      security:
-        - cookieAuth: []
       responses:
         "200":
-          description: "Logout berhasil"
+          description: "Logout berhasil - Token di-revoke"
           content:
             application/json:
               schema:
@@ -167,15 +195,34 @@ paths:
         "401":
           $ref: "#/components/responses/Unauthorized"
 
+  /api/auth/logout-all:
+    post:
+      tags:
+        - "Authentication"
+      summary: "Logout dari Semua Perangkat"
+      description: "Revoke semua access token untuk user yang sedang login. Berguna untuk security emergency."
+      operationId: "logoutAll"
+      responses:
+        "200":
+          description: "Semua token berhasil di-revoke"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "Logout dari semua perangkat berhasil."
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
   /api/auth/me:
     get:
       tags:
         - "Authentication"
       summary: "Get Current User"
-      description: "Mengambil data user yang sedang login"
+      description: "Mengambil data user yang sedang login berdasarkan Bearer Token."
       operationId: "getCurrentUser"
-      security:
-        - cookieAuth: []
       responses:
         "200":
           description: "Data user berhasil diambil"
@@ -1932,3 +1979,23 @@ components:
         message:
           type: "string"
           example: "This action is unauthorized."
+
+  securitySchemes:
+    bearerAuth:
+      type: "http"
+      scheme: "bearer"
+      bearerFormat: "Sanctum"
+      description: "Personal Access Token dari Laravel Sanctum. Dapatkan token melalui POST /api/auth/login. Gunakan format: Bearer <token>"
+
+  responses:
+    Unauthorized:
+      description: "Unauthenticated - Token tidak valid, expired, atau tidak disertakan"
+      content:
+        application/json:
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Unauthenticated. Please login first."
+

@@ -7,21 +7,16 @@ use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// CSRF Cookie endpoint for Sanctum Stateful API
-// Frontend MUST call this before login to get CSRF token
-Route::get('/csrf-cookie', function () {
-    return response()->json(['message' => 'CSRF cookie set.']);
-})->name('sanctum.csrf-cookie');
-
-// Authentication routes
+// Authentication routes (public)
 Route::post('/auth/login', [AuthController::class, 'login'])
-    ->middleware(['throttle:75,1', 'throttle.login.attempts'])  // IP: 75/min, Account: role-based
+    ->middleware(['throttle:75,1', 'throttle.login.attempts'])
     ->name('login');
 
 Route::post('/auth/check-email', [AuthController::class, 'checkEmail']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
+    Route::post('/auth/logout-all', [AuthController::class, 'logoutAll']);
     Route::get('/auth/me', [AuthController::class, 'me']);
 
     // User Management (UC-01) - Only accessible by manager
