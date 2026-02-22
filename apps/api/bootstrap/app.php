@@ -14,17 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->statefulApi();
-
-        // Add session middleware to API routes BEFORE Sanctum 
-        // This ensures session is available for all API requests
-        $middleware->api(prepend: [
-            \Illuminate\Cookie\Middleware\EncryptCookies::class,
-            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-            \Illuminate\Session\Middleware\StartSession::class,
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-        ]);
-
+        // Token-based API — no session/cookie middleware needed
         // Register custom middleware aliases
         $middleware->alias([
             'throttle.login.attempts' => \App\Http\Middleware\ThrottleLoginAttempts::class,
