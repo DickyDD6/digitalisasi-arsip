@@ -19,8 +19,7 @@ export default function Unauthorized() {
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-4">
           <CardDescription className="text-center">
-            Tidak Terautentikasai - Anda harus login untuk mengakses halaman
-            ini.
+            Tidak Terautentikasi - Anda harus login untuk mengakses halaman ini.
           </CardDescription>
           <Link href="/login">
             <Button className="w-full">Login</Button>

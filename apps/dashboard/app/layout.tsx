@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import "./_styles/globals.css";
+import "./globals.css";
 import { favicons } from "@/lib/favicons";
-import { TanstackProvider } from "./provider";
+import { TanstackProvider } from "./tanstack-provider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";

@@ -138,7 +138,7 @@ class UserService
     }
     /**
      * Get user statistics.
-     * 
+     *
      * @return array
      */
     public function getStatistics(): array
@@ -154,6 +154,7 @@ class UserService
 
         return [
             'total_users' => $totalUsers,
+            'total_by_role' => User::selectRaw('role, count(*) as count')->groupBy('role')->pluck('count', 'role'),
             'active_users' => $activeUsers,
             'new_users' => $newUsers,
         ];
