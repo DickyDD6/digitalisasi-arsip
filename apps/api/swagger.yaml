@@ -1254,6 +1254,11 @@ components:
       in: "cookie"
       name: "digitalisasi_arsip_api_session"
       description: "Session cookie dari Laravel Sanctum"
+    bearerAuth:
+      type: "http"
+      scheme: "bearer"
+      bearerFormat: "Sanctum"
+      description: "Personal Access Token dari Laravel Sanctum. Dapatkan token melalui POST /api/auth/login. Gunakan format: Bearer <token>"
 
   parameters:
     UserId:
@@ -1947,31 +1952,13 @@ components:
             type: "array"
             items:
               type: "string"
-          examples:
-            emailInvalidFormat:
-              value:
-                email:
-                  - "Format alamat email tidak valid. Contoh: nama@example.com"
-              summary: "Email format invalid"
-            emailDuplicate:
-              value:
-                email:
-                  - "Alamat email sudah digunakan. Gunakan email lain."
-              summary: "Email already exists"
-            loginFailed:
-              value:
-                email:
-                  - "Email atau password salah. Sisa percobaan login: 4 kali."
-              summary: "Login credentials wrong"
-            multipleErrors:
-              value:
-                name:
-                  - "Nama pengguna wajib diisi."
-                email:
-                  - "Format alamat email tidak valid. Contoh: nama@example.com"
-                password:
-                  - "Password minimal 8 karakter."
-              summary: "Multiple validation errors"
+          example:
+            name:
+              - "Nama pengguna wajib diisi."
+            email:
+              - "Format alamat email tidak valid. Contoh: nama@example.com"
+            password:
+              - "Password minimal 8 karakter."
 
     ErrorResponse:
       type: "object"
@@ -1979,23 +1966,3 @@ components:
         message:
           type: "string"
           example: "This action is unauthorized."
-
-  securitySchemes:
-    bearerAuth:
-      type: "http"
-      scheme: "bearer"
-      bearerFormat: "Sanctum"
-      description: "Personal Access Token dari Laravel Sanctum. Dapatkan token melalui POST /api/auth/login. Gunakan format: Bearer <token>"
-
-  responses:
-    Unauthorized:
-      description: "Unauthenticated - Token tidak valid, expired, atau tidak disertakan"
-      content:
-        application/json:
-          schema:
-            type: "object"
-            properties:
-              message:
-                type: "string"
-                example: "Unauthenticated. Please login first."
-

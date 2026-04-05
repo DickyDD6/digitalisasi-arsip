@@ -1,9 +1,6 @@
-import { getCsrfToken } from "@/lib/csrf";
 import { http } from "@/lib/http";
 
 const login = async (payload: LoginRequest) => {
-  await getCsrfToken();
-
   const { data } = await http.post<ApiResponse<LoginResponse>>(
     "/api/auth/login",
     payload,
@@ -16,12 +13,8 @@ const logout = async () => {
   return data;
 };
 
-const getCurrentUser = async (cookie?: string) => {
-  const { data } = await http.get<ApiResponse<User>>("/api/auth/me", {
-    headers: {
-      Cookie: cookie,
-    },
-  });
+const getCurrentUser = async () => {
+  const { data } = await http.get<ApiResponse<User>>("/api/auth/me");
   return data;
 };
 

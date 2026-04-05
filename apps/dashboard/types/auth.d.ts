@@ -4,13 +4,10 @@ interface LoginRequest {
 }
 
 interface LoginResponse {
-  message: string;
-  data: {
-    user: {
-      name: string;
-      email: string;
-      nip: string | null;
-      role: UserRole;
-    };
+  user: {
+    name: string;
+    email: string;
+    nip: string | null;
+    role: UserRole;
   };
 }

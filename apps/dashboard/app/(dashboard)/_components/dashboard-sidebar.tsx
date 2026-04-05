@@ -15,6 +15,7 @@ import { FolderArchive, Settings } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { SIDEBAR_ITEMS } from "../_lib/sidebar-items";
 import Link from "next/link";
+import { UserDropdown } from "@/app/(auth)/_components/user-dropdown";
 
 export const DashboardSidebar = () => {
   const pathname = usePathname();
@@ -61,15 +62,15 @@ export const DashboardSidebar = () => {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href={"/settings"}>
+              <Link href={"/system-settings"}>
                 <Settings />
                 Pengaturan Sistem
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          {/* <SidebarMenuItem>
-						<UserDropdown />
-					</SidebarMenuItem> */}
+          <SidebarMenuItem>
+            <UserDropdown />
+          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>

@@ -1,23 +1,18 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+"use client";
+
+import { GuestGuard } from "@/components/guest-guard";
 import React from "react";
 
-export default async function AuthLayout({
+export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const cookie = (await cookies())
-    .getAll()
-    .find((c) => c.name.endsWith("session") || c.name.endsWith("TOKEN"))?.value;
-
-  if (cookie) {
-    redirect("/");
-  }
-
   return (
-    <div className="min-h-screen place-items-center place-content-center">
-      {children}
-    </div>
+    <GuestGuard>
+      <div className="min-h-screen place-items-center place-content-center">
+        {children}
+      </div>
+    </GuestGuard>
   );
 }

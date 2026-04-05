@@ -8,7 +8,9 @@ export const useLogout = () => {
 
   return useMutation({
     mutationFn: AUTH_SERVICE.logout,
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["current", "user"] }),
+    onSuccess: () => {
+      localStorage.removeItem("token");
+      queryClient.removeQueries({ queryKey: ["current", "user"] });
+    },
   });
 };

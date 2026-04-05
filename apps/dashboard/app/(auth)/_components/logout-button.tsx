@@ -13,10 +13,14 @@ import { useQueryClient } from "@tanstack/react-query";
 
 export const LogoutButton = ({
   asChild,
+  withIcon = false,
+  children,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
+    withIcon?: boolean;
+    children: React.ReactNode;
   }) => {
   const Comp = asChild ? Slot.Root : Button;
   const router = useRouter();
@@ -51,9 +55,9 @@ export const LogoutButton = ({
       {isPending ? (
         <Loader2 className="animate-spin duration-300" />
       ) : (
-        <LogOut />
+        withIcon && <LogOut className="size-4" />
       )}
-      Logout
+      {children}
     </Comp>
   );
 };

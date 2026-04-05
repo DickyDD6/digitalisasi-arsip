@@ -1,6 +1,10 @@
 interface ApiResponse<T = unknown> {
   message: string;
-  data: T;
+  data: T & {
+    token: string;
+    token_type: string;
+    expires_in: number;
+  };
   meta?: MetaPagination;
 }
 

@@ -8,7 +8,18 @@ export const useLogin = () => {
 
   return useMutation({
     mutationFn: AUTH_SERVICE.login,
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["current", "user"] }),
+    onSuccess: (res) => {
+      console.log(res);
+      const token = res.data.token;
+      const user = res.data.user;
+
+      if (token) {
+        localStorage.setItem("token", String(token));
+      }
+
+      if (user) {
+        queryClient.setQueryData(["current", "user"], user);
+      }
+    },
   });
 };
