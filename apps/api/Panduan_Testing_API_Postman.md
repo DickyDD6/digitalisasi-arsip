@@ -1,6 +1,6 @@
 # 📋 Panduan Testing API dengan Postman
 
-## ✅ Status: UPDATED v2.3 (Dashboard, Export & Unique Validation)
+## ✅ Status: UPDATED v2.4 (Reports, Bulk Operations & Swagger Docs)
 
 | UC           | Fitur                              | Tests | Status      |
 | ------------ | ---------------------------------- | ----- | ----------- |
@@ -18,14 +18,14 @@
 | UC-12        | **Unique Validation**              | 3/3   | ✅ NEW!     |
 | **Security** | Rate Limit, Account Lockout, Audit | 8/8   | ✅ ENHANCED |
 
-**Total Tests:** 50+ | **Security Level:** Production-Ready 🔒  
-**API Version:** v2.3 - Dashboard Stats, CSV Export, Unique NIP/Email  
+**Total Tests:** 60+ | **Security Level:** Production-Ready 🔒  
+**API Version:** v2.4 - Reports, Bulk Operations, Swagger Documentation  
 **Payload Optimization:** ~40% smaller responses  
 **Authentication:** Sanctum Stateful with HTTP-only Cookies
 
 ---
 
-## 🆕 What's New in v2.2 (Latest)
+## 🆕 What's New in v2.2
 
 ### 🔐 Enhanced Security Features
 
@@ -50,7 +50,35 @@
 - ✅ Efficient login attempt tracking
 - ✅ Automatic cleanup of old records
 
-## 🆕 What's New in v2.3 (Latest)
+## 🆕 What's New in v2.4 (Latest)
+
+### 📖 Swagger Documentation
+
+- ✅ **Interactive API Docs**: Akses di `/api/documentation` (Swagger UI)
+- ✅ **L5-Swagger Integration**: Dokumentasi langsung di kode PHP
+- ✅ **Auto-generate**: Docs otomatis ter-update saat development
+
+### 📊 Report Generation
+
+- ✅ **Generate Report**: `POST /api/reports/generate` (PDF, XLSX, CSV)
+- ✅ **Dashboard Stats**: `GET /api/reports/dashboard`
+
+### 📦 Bulk Operations
+
+- ✅ **Delete Multiple Users**: `POST /api/users/delete-multiple`
+- ✅ **Delete Multiple Documents**: `POST /api/documents/delete-multiple`
+- ✅ **Download Multiple (ZIP)**: `POST /api/documents/download-multiple`
+
+### 📈 Statistics Endpoints
+
+- ✅ **User Statistics**: `GET /api/users/statistics`
+- ✅ **Document Statistics**: `GET /api/documents/statistics`
+
+### 👁️ Document View
+
+- ✅ **View Inline (PDF)**: `GET /api/documents/{id}/view`
+
+## 🆕 What's New in v2.3
 
 ### 📈 Dashboard & Reporting
 
@@ -235,7 +263,7 @@ GET http://localhost:8000/api/auth/me
 
 ```json
 {
-    "message": "User data retrieved successfully.",
+    "message": "Data pengguna berhasil diambil.",
     "data": {
         "id": 1,
         "name": "Manager User",
@@ -596,38 +624,30 @@ GET http://localhost:8000/api/audit-logs/statistics
     "message": "Statistik aktivitas berhasil diambil.",
     "data": {
         "total_activities": 45,
+        "today_total": 12,
+        "today_upload": 5,
+        "today_verify": 3,
+        "today_reject": 1,
         "by_action": {
-            "upload_document": 15,
-            "verify_document": 10,
-            "reject_document": 5,
-            "update_document": 8,
-            "delete_document": 3,
-            "download_document": 4
+            "Upload Dokumen": 15,
+            "Verifikasi Dokumen": 10,
+            "Tolak Dokumen": 5,
+            "Update Dokumen": 8,
+            "Hapus Dokumen": 3,
+            "Download Dokumen": 4
         },
-        "by_user": [
-            {
-                "user": "Manager User",
-                "count": 20
-            },
-            {
-                "user": "Uploader User",
-                "count": 15
-            },
-            {
-                "user": "QC User",
-                "count": 10
-            }
-        ],
         "recent_activities": [
-            // ... last 10 activities
+            // ... last 10 activities (format AuditLogResource)
         ]
     },
     "period": {
-        "start_date": "2026-01-01T00:00:00.000000Z",
-        "end_date": "2026-01-22T20:00:00.000000Z"
+        "start_date": "2026-06-08T00:00:00.000000Z",
+        "end_date": "2026-07-08T23:59:59.000000Z"
     }
 }
 ```
+
+> **📝 Catatan:** Field `by_action` menggunakan label Indonesia sebagai key (bukan snake_case). Field `today_*` menunjukkan statistik hari ini.
 
 **Status:** `200 OK`
 
@@ -1251,55 +1271,91 @@ Login sebagai Uploader, coba download
 
 ## 📊 Matrix Akses Role
 
-| Fitur                     | Manager | Uploader | QC  | SBAP   |
-| ------------------------- | ------- | -------- | --- | ------ |
-| User CRUD                 | ✅      | ❌       | ❌  | ❌     |
-| View Documents            | ✅      | ✅       | ✅  | ✅     |
-| Upload Dokumen            | ✅      | ✅       | ❌  | ❌     |
-| Update Dokumen (rejected) | ✅      | ✅\*     | ❌  | ❌     |
-| Delete Dokumen (rejected) | ✅      | ✅\*     | ❌  | ❌     |
-| Verifikasi Dokumen        | ✅      | ❌       | ✅  | ❌     |
-| Download Dokumen          | ✅      | ❌       | ❌  | ✅\*\* |
-| View Audit Logs           | ✅      | ❌       | ❌  | ❌     |
+| Fitur                     | Manager | Uploader   | QC     | SBAP       |
+| ------------------------- | ------- | ---------- | ------ | ---------- |
+| User CRUD                 | ✅      | ❌         | ❌     | ❌         |
+| User Statistics           | ✅      | ❌         | ❌     | ❌         |
+| View Documents            | ✅      | ✅         | ✅     | ✅         |
+| View Document Inline      | ✅      | ✅         | ✅     | ✅         |
+| Upload Dokumen            | ✅      | ✅         | ❌     | ❌         |
+| Update Dokumen (rejected) | ✅      | ✅\*       | ❌     | ❌         |
+| Delete Dokumen (rejected) | ✅      | ✅\*       | ❌     | ❌         |
+| Bulk Delete Dokumen       | ✅      | ✅\*       | ❌     | ❌         |
+| Verifikasi Dokumen        | ✅      | ❌         | ✅     | ❌         |
+| Download Dokumen          | ✅      | ✅\*\*\*  | ✅\*\* | ✅\*\*\*\* |
+| Bulk Download (ZIP)       | ✅      | ✅\*\*\*  | ✅\*\* | ✅\*\*\*\* |
+| Document Statistics        | ✅      | ❌         | ❌     | ❌         |
+| View Audit Logs           | ✅      | ❌         | ❌     | ❌         |
+| Export Audit Logs (CSV)   | ✅      | ❌         | ❌     | ❌         |
+| Generate Reports          | ✅      | ❌         | ❌     | ❌         |
+| Dashboard Stats           | ✅      | ❌         | ❌     | ❌         |
 
 \*Uploader hanya bisa update/delete dokumen miliknya sendiri  
-\*\*SBAP hanya bisa download dokumen terverifikasi
+\*\*QC hanya bisa download dokumen pending (untuk verifikasi)  
+\*\*\*Uploader hanya bisa download dokumen miliknya sendiri  
+\*\*\*\*SBAP hanya bisa download dokumen terverifikasi
 
 ---
 
 ---
 
-## 📈 UC-11: Dashboard Statistics & Audit Export (Login: Manager) [BARU v2.3]
+## 📈 UC-11: Reports & Export (Login: Manager) [UPDATED v2.4]
 
-### ✅ 11.1 Lihat Statistik Dashboard
+### ✅ 11.1 Generate Report (UC-09)
 
 ```
-GET http://localhost:8000/api/audit-logs/statistics
+POST http://localhost:8000/api/reports/generate
+
+Headers:
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf_token}}
+
+Body (raw JSON):
+{
+  "period_start": "2026-01-01",
+  "period_end": "2026-06-30",
+  "format": "pdf",
+  "type": "monthly",
+  "style": "detailed",
+  "content": ["upload_stats", "qc_metrics", "doc_status"]
+}
+```
+
+**Expected:** File PDF/XLSX/CSV ter-download (sesuai `format`)
+**Status:** `200 OK`
+
+> **📝 Format yang didukung:** `pdf`, `xlsx`, `csv`  
+> **Tipe laporan:** `monthly`, `annual`, `custom`  
+> **Style:** `detailed`, `summary`, `executive`  
+> **Content options:** `upload_stats`, `qc_metrics`, `doc_status`, `user_activity`, `trend_analysis`
+
+---
+
+### ✅ 11.2 Dashboard Stats
+
+```
+GET http://localhost:8000/api/reports/dashboard
+GET http://localhost:8000/api/reports/dashboard?start_date=2026-01-01&end_date=2026-06-30
 ```
 
 **Expected Response:**
 
 ```json
 {
-  "message": "Statistik aktivitas berhasil diambil.",
-  "data": {
-    "today_total": 25,
-    "today_upload": 10,
-    "today_verify": 10,
-    "today_reject": 5,
-    "total_activities": 150,
-    "by_action": {
-        "upload_document": 50,
-        "verify_document": 40
-    },
-    "by_user": [ ... ]
-  }
+    "message": "Statistik dashboard berhasil diambil.",
+    "data": {
+        "total_reports_generated": 0,
+        "most_downloaded_type": "Bulanan",
+        "last_generated": "2026-07-08 21:20"
+    }
 }
 ```
 
 **Status:** `200 OK`
 
-### ✅ 11.2 Export Audit Log ke CSV
+---
+
+### ✅ 11.3 Export Audit Log ke CSV
 
 ```
 GET http://localhost:8000/api/audit-logs/export?format=csv&start_date=2026-01-01&end_date=2026-12-31
@@ -1308,6 +1364,172 @@ GET http://localhost:8000/api/audit-logs/export?format=csv&start_date=2026-01-01
 **Postman:** Klik tombol **"Send and Download"**.
 **Expected:** File `.csv` terunduh.
 **Status:** `200 OK`
+
+---
+
+## 📦 UC-13: Bulk Operations (Login: Manager) [BARU v2.4]
+
+### ✅ 13.1 Delete Multiple Users
+
+```
+POST http://localhost:8000/api/users/delete-multiple
+
+Headers:
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf_token}}
+
+Body (raw JSON):
+{
+  "ids": [5, 6, 7]
+}
+```
+
+**Expected Response:**
+
+```json
+{
+    "message": "3 pengguna berhasil dihapus.",
+    "deleted_count": 3
+}
+```
+
+**Status:** `200 OK`
+
+---
+
+### ✅ 13.2 Delete Multiple Documents
+
+```
+POST http://localhost:8000/api/documents/delete-multiple
+
+Headers:
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf_token}}
+
+Body (raw JSON):
+{
+  "ids": [10, 11, 12]
+}
+```
+
+**Expected Response:**
+
+```json
+{
+    "message": "3 dokumen berhasil dihapus.",
+    "deleted_count": 3
+}
+```
+
+**Status:** `200 OK`
+
+> **⚠️ Catatan:** Hanya dokumen dengan status `tidak_terverifikasi` yang bisa dihapus.
+
+---
+
+### ✅ 13.3 Download Multiple Documents (ZIP)
+
+```
+POST http://localhost:8000/api/documents/download-multiple
+
+Headers:
+Content-Type: application/json
+X-XSRF-TOKEN: {{xsrf_token}}
+
+Body (raw JSON):
+{
+  "ids": [1, 2, 3]
+}
+```
+
+**Postman:** Klik tombol **"Send and Download"**.
+**Expected:** File `.zip` berisi dokumen-dokumen yang dipilih.
+**Status:** `200 OK`
+
+---
+
+## 📈 UC-14: Statistics Endpoints (Login: Manager) [BARU v2.4]
+
+### ✅ 14.1 User Statistics
+
+```
+GET http://localhost:8000/api/users/statistics
+```
+
+**Expected Response:**
+
+```json
+{
+    "message": "Statistik pengguna berhasil diambil.",
+    "data": {
+        "total_users": 25,
+        "active_users": 18,
+        "new_users": 5
+    }
+}
+```
+
+**Status:** `200 OK`
+
+> **📝 Catatan:** `active_users` = users dengan aktivitas 30 hari terakhir. `new_users` = users dibuat 30 hari terakhir.
+
+---
+
+### ✅ 14.2 Document Statistics
+
+```
+GET http://localhost:8000/api/documents/statistics
+```
+
+**Expected Response:**
+
+```json
+{
+    "message": "Statistik dokumen berhasil diambil.",
+    "data": {
+        "total_documents": 150,
+        "verified_documents": 80,
+        "pending_documents": 50,
+        "rejected_documents": 20
+    }
+}
+```
+
+**Status:** `200 OK`
+
+---
+
+## 👁️ UC-15: Document View Inline (Login: Any Role) [BARU v2.4]
+
+### ✅ 15.1 View Document di Browser (PDF Viewer)
+
+```
+GET http://localhost:8000/api/documents/{id}/view
+```
+
+**Expected:**
+
+- Status: `200 OK`
+- Content-Type: `application/pdf`
+- Content-Disposition: `inline` (ditampilkan di browser, bukan di-download)
+
+> **📝 Perbedaan dengan Download:** Endpoint `view` menampilkan PDF langsung di browser (inline), sedangkan `download` mengunduh file ke komputer.
+
+---
+
+## 📖 Swagger Documentation [BARU v2.4]
+
+API sekarang memiliki dokumentasi interaktif yang ter-generate otomatis dari kode PHP.
+
+### Akses Swagger UI
+
+```
+GET http://localhost:8000/api/documentation
+```
+
+Buka URL di atas pada browser untuk melihat semua endpoint API secara interaktif dengan Swagger UI.
+
+> **💡 Tips:** Swagger UI memungkinkan Anda menguji endpoint langsung dari browser tanpa Postman!
 
 ---
 
@@ -1494,18 +1716,22 @@ Body: { "nip": "1234567890", ... }
 
 ## ✅ Testing Selesai!
 
-**API Version:** v2.3 - Dashboard, Export, Unique Validation
-**Last Updated:** 18 Februari 2026  
+**API Version:** v2.4 - Reports, Bulk Operations, Swagger Documentation  
+**Last Updated:** 9 Juli 2026  
 **Security Level:** Production-Ready 🔒  
-**Total Tests:** 50+ skenario untuk 12 Use Cases + Security Features  
+**Total Tests:** 60+ skenario untuk 15 Use Cases + Security Features  
 **Performance:** ~40% smaller API responses
 
-### Key Improvements in v2.3:
+### Key Improvements in v2.4:
 
-- ✅ **Dashboard Statistics & Reporting**
-- ✅ **CSV Export for Audit Logs**
-- ✅ **Unique Data Validation (NIP, Email)**
-- ✅ **Optimized Status Labels (Title Case)**
+- ✅ **Swagger Interactive Documentation** (`/api/documentation`)
+- ✅ **Report Generation** (PDF, XLSX, CSV)
+- ✅ **Bulk Operations** (Delete Multiple, Download ZIP)
+- ✅ **Statistics Endpoints** (Users, Documents)
+- ✅ **Document View Inline** (PDF Viewer)
+- ✅ Dashboard Statistics & Reporting
+- ✅ CSV Export for Audit Logs
+- ✅ Unique Data Validation (NIP, Email)
 - ✅ Sanctum Stateful API with HTTP-only cookies
 - ✅ Dual-Layer Rate Limiting (IP + Account-based)
 - ✅ Account Lockout Protection
