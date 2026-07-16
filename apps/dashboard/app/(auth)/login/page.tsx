@@ -1,5 +1,129 @@
-import { LoginCard } from "./_components/login-card";
+"use client";
+
+import { useAppForm } from "@/components/forms/form-context";
+import {
+  LoginForm,
+  loginFormOptions,
+} from "@/components/forms/form/auth/login";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { FieldSet } from "@/components/ui/field";
+import { useLogin } from "@/hooks/auth/use-login";
+import { useTimeAgo } from "@/hooks/use-time-ago";
+import { isAxiosError } from "axios";
+import Image from "next/image";
+import { useRouter } from "nextjs-toploader/app";
+import { toast } from "sonner";
 
 export default function LoginPage() {
-  return <LoginCard />;
+  const router = useRouter();
+  const { mutateAsync } = useLogin();
+  const { timeAgo } = useTimeAgo();
+
+  const form = useAppForm({
+    ...loginFormOptions,
+    onSubmit: async ({ value }) =>
+      await mutateAsync(
+        {
+          email: value.email,
+          password: value.password,
+        },
+        {
+          onSuccess: () => {
+            toast.success("Login berhasil!");
+            router.replace("/");
+          },
+          onError: (err) => {
+            if (isAxiosError(err)) {
+              const lockedUntil = err?.response?.data?.locked_until;
+
+              switch (err.status) {
+                case 401:
+                  toast.error("Login gagal", {
+                    description: `${err?.response?.data?.message || "Terjadi kesalahan saat login."}. Silahkan Coba Lagi ${lockedUntil ? `${timeAgo(lockedUntil)}` : ""}`,
+                  });
+                  router.replace("/login");
+                  break;
+                case 403:
+                  toast.error("Akun Anda tidak memiliki akses.", {
+                    description:
+                      "Silakan hubungi administrator untuk mendapatkan akses.",
+                  });
+                  break;
+                case 500:
+                  toast.error(
+                    "Terjadi kesalahan server. Silakan coba lagi nanti.",
+                    {
+                      description:
+                        "Jika masalah berlanjut, silakan hubungi dukungan teknis.",
+                    },
+                  );
+                  break;
+              }
+            }
+          },
+        },
+      ),
+  });
+
+  return (
+    <Card className="w-full lg:w-300 py-0 overflow-hidden lg:grid lg:grid-cols-2">
+      <div className="bg-[url('/img/login-bg-card.png')] hidden lg:block bg-cover bg-center h-150">
+        <div className="bg-black/30 h-full py-6 px-4">
+          <div className="flex items-center gap-2">
+            <Image
+              src={"/img/logo-univ.png"}
+              alt="logo-universitas-pasundan"
+              width={40}
+              height={40}
+            />
+            <Image
+              src={"/img/logo-ft.png"}
+              alt="logo-fakultas-teknik"
+              width={40}
+              height={40}
+            />
+            <div className="flex flex-col justify-center text-primary-foreground">
+              <h1 className="font-semibold text-3xl">Digital Archive</h1>
+              <p className="text-primary-foreground text-xs font-light">
+                Fakultas Teknik Universitas Pasundan
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <CardContent className="space-y-5 py-6 place-content-center">
+        <CardHeader className="px-0">
+          <CardTitle className="text-2xl">Welcome Back</CardTitle>
+          <CardDescription>
+            Masukkan Credentials Anda untuk Melanjutkan.
+          </CardDescription>
+        </CardHeader>
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          <FieldSet>
+            <LoginForm form={form} />
+
+            <form.AppForm>
+              <form.SubmitButton label="Login" />
+            </form.AppForm>
+            <p className="text-center text-xs text-muted-foreground">
+              &copy; 2026 Digital Archive. All rights reserved.
+            </p>
+          </FieldSet>
+        </form>
+      </CardContent>
+    </Card>
+  );
 }

@@ -1,6 +1,6 @@
 # 📋 Panduan Testing API dengan Postman
 
-## ✅ Status: UPDATED v2.4 (Reports, Bulk Operations & Swagger Docs)
+## ✅ Status: UPDATED v3.0 (Token-Based Auth / Bearer Token)
 
 | UC           | Fitur                              | Tests | Status      |
 | ------------ | ---------------------------------- | ----- | ----------- |
@@ -18,10 +18,10 @@
 | UC-12        | **Unique Validation**              | 3/3   | ✅ NEW!     |
 | **Security** | Rate Limit, Account Lockout, Audit | 8/8   | ✅ ENHANCED |
 
-**Total Tests:** 60+ | **Security Level:** Production-Ready 🔒  
-**API Version:** v2.4 - Reports, Bulk Operations, Swagger Documentation  
-**Payload Optimization:** ~40% smaller responses  
-**Authentication:** Sanctum Stateful with HTTP-only Cookies
+**Total Tests:** 50+ | **Security Level:** Production-Ready 🔒
+**API Version:** v3.0 - Token-Based Auth (Bearer Token)
+**Payload Optimization:** ~40% smaller responses
+**Authentication:** Sanctum Token-Based (Bearer Token)
 
 ---
 
@@ -37,9 +37,7 @@
     - Other roles: 5 fails → locked for 1 minute
     - Auto-unlock after lockout period
 - ✅ **Comprehensive Audit Logging:**
-    - `failed_login_attempt` - Track all failed logins
-    - `successful_login` - Track all successful logins
-    - `account_locked` - Track account lockouts
+    - `login` - Track all login events (success, failed, lockout)
 - ✅ **Configurable via .env:**
     - Rate limits can be adjusted per environment
     - See `config/login-security.php`
@@ -99,13 +97,17 @@
 - ✅ Prodi: Informatika, Pangan, Industri, Mesin, Lingkungan, Perencanaan Wilayah Kota
 - ✅ DocumentStatus: menunggu_verifikasi, terverifikasi, tidak_terverifikasi
 
+## 🆕 What's New in v3.0
+
+### 🔐 Token-Based Auth (Bearer Token)
+
+- ✅ Migrasi dari cookie/session ke Bearer Token
+- ✅ Stateless API — tidak perlu CSRF
+- ✅ Cross-domain friendly
+- ✅ Endpoint baru: `POST /api/auth/logout-all`
+- ✅ Token expiration: 24 jam (configurable)
+
 ## 🆕 What's New in v2.0
-
-### ✨ Sanctum Stateful API
-
-- ✅ HTTP-only cookies for better security
-- ✅ CSRF protection
-- ✅ New `/api/csrf-cookie` endpoint
 
 ### 📦 Optimized Responses (~40% smaller)
 
@@ -147,76 +149,35 @@ php artisan db:seed --class=UserSeeder
 
 ### 4. Postman Configuration (PENTING!)
 
-> **💡 Good News:** Postman modern **otomatis menangani cookies**! Anda tidak perlu setting manual yang rumit.
+> **💡 API menggunakan Bearer Token.** Tidak perlu cookies atau CSRF token.
 
 #### Yang Perlu Anda Lakukan:
 
-**A. Pastikan Cookies Otomatis (Default Behavior):**
-
-- Postman **secara default** sudah menyimpan dan mengirim cookies
-- Setelah request ke `/api/csrf-cookie`, cookie akan tersimpan otomatis
-- Cookie akan dikirim otomatis ke request berikutnya
-
-**B. Cek Cookies (Opsional - Untuk Verifikasi):**
-
-1. Setelah request ke `/api/csrf-cookie`
-2. Klik tab **"Cookies"** (di bawah URL bar)
-3. Anda akan lihat cookies untuk `localhost:8000`:
-    - `XSRF-TOKEN` ✅
-    - `laravel_session` ✅
-
-**C. Create Environment Variable (Untuk Auto-Save CSRF Token):**
+**A. Create Environment Variable (Untuk Auto-Save Token):**
 
 1. Klik **"Environments"** di sidebar kiri
 2. Klik **"+"** untuk create environment baru
 3. Nama: `Digitalisasi Arsip API`
-4. Tambahkan variable baru:
-    - Variable: `xsrf_token`
+4. Tambahkan variable:
+    - Variable: `auth_token`
     - Initial value: (kosongkan)
-    - Current value: (kosongkan)
 5. Klik **"Save"**
 6. **Aktifkan environment** dengan dropdown di kanan atas
 
-> **📝 Catatan:** Jika Postman versi lama, cari **Settings** (icon ⚙️) → **General** → pastikan "Automatically follow redirects" aktif.
+**B. Setup Authorization (Global):**
+
+1. Di Collection, klik tab **"Authorization"**
+2. Type: **Bearer Token**
+3. Token: `{{auth_token}}`
+4. Semua request dalam collection akan otomatis menggunakan token ini
 
 ---
 
-## 🔐 STEP 0: Autentikasi (Sanctum Stateful API)
+## 🔐 STEP 0: Autentikasi (Sanctum Token-Based API)
 
-> **🔒 PENTING:** API menggunakan **HTTP-only Cookies** untuk autentikasi. Pastikan Postman settings sudah benar (lihat Setup Awal #4).
+> **🔒 PENTING:** API menggunakan **Bearer Token** untuk autentikasi. Token didapat dari login response.
 
-### ✅ 0.1 Get CSRF Cookie (WAJIB - Lakukan Pertama Kali)
-
-```
-GET http://localhost:8000/api/csrf-cookie
-```
-
-**Postman Settings:**
-
-- Di tab "Tests", tambahkan script ini untuk auto-save CSRF token:
-
-```javascript
-var xsrfCookie = pm.cookies.get("XSRF-TOKEN");
-if (xsrfCookie) {
-    pm.environment.set("xsrf_token", xsrfCookie);
-}
-```
-
-**Expected:**
-
-```json
-{
-    "message": "CSRF cookie set."
-}
-```
-
-- Status: `200 OK`
-- Cookie `XSRF-TOKEN` tersimpan
-- Cookie `laravel_session` tersimpan
-
----
-
-### ✅ 0.2 Login
+### ✅ 0.1 Login
 
 ```
 POST http://localhost:8000/api/auth/login
@@ -224,12 +185,22 @@ POST http://localhost:8000/api/auth/login
 Headers:
 Content-Type: application/json
 Accept: application/json
-X-XSRF-TOKEN: {{xsrf_token}}
 
 Body (raw JSON):
 {
   "email": "manager@test.com",
   "password": "password"
+}
+```
+
+**Postman Settings:**
+
+- Di tab "Tests", tambahkan script ini untuk auto-save token:
+
+```javascript
+var jsonData = pm.response.json();
+if (jsonData.data && jsonData.data.token) {
+    pm.environment.set("auth_token", jsonData.data.token);
 }
 ```
 
@@ -244,19 +215,26 @@ Body (raw JSON):
             "name": "Manager User",
             "email": "manager@test.com",
             "role": "manager"
-        }
+        },
+        "token": "1|abc123def456...",
+        "token_type": "Bearer",
+        "expires_in": 86400
     }
 }
 ```
 
-**Status:** `200 OK`
+- Status: `200 OK`
+- Token tersimpan di environment variable `auth_token`
 
 ---
 
-### ✅ 0.3 Verifikasi Session (Check Authentication)
+### ✅ 0.2 Verifikasi Token (Check Authentication)
 
 ```
 GET http://localhost:8000/api/auth/me
+
+Headers:
+Authorization: Bearer {{auth_token}}
 ```
 
 **Expected Response:**
@@ -277,13 +255,13 @@ GET http://localhost:8000/api/auth/me
 
 ---
 
-### 🚪 0.4 Logout
+### 🚪 0.3 Logout (Current Device)
 
 ```
 POST http://localhost:8000/api/auth/logout
 
 Headers:
-X-XSRF-TOKEN: {{xsrf_token}}
+Authorization: Bearer {{auth_token}}
 ```
 
 **Expected Response:**
@@ -296,7 +274,30 @@ X-XSRF-TOKEN: {{xsrf_token}}
 
 **Status:** `200 OK`
 
-- Cookies akan otomatis dihapus
+- Token di-revoke, tidak bisa dipakai lagi
+
+---
+
+### 🚪 0.4 Logout All Devices
+
+```
+POST http://localhost:8000/api/auth/logout-all
+
+Headers:
+Authorization: Bearer {{auth_token}}
+```
+
+**Expected Response:**
+
+```json
+{
+    "message": "Logout dari semua perangkat berhasil."
+}
+```
+
+**Status:** `200 OK`
+
+- Semua token di-revoke (semua perangkat)
 
 ---
 
@@ -344,7 +345,7 @@ POST http://localhost:8000/api/users
 
 Headers:
 Content-Type: application/json
-X-XSRF-TOKEN: {{xsrf_token}}
+Authorization: Bearer {{auth_token}}
 
 Body (raw JSON - pilih "JSON" di dropdown, BUKAN "Text"):
 {
@@ -384,7 +385,7 @@ PATCH http://localhost:8000/api/users/{id}
 
 Headers:
 Content-Type: application/json
-X-XSRF-TOKEN: {{xsrf_token}}
+Authorization: Bearer {{auth_token}}
 
 Body (raw JSON - pilih "JSON" di dropdown, BUKAN "Text"):
 {
@@ -420,7 +421,7 @@ Body (raw JSON - pilih "JSON" di dropdown, BUKAN "Text"):
 DELETE http://localhost:8000/api/users/{id}
 
 Headers:
-X-XSRF-TOKEN: {{xsrf_token}}
+Authorization: Bearer {{auth_token}}
 ```
 
 **Expected Response:**
@@ -546,7 +547,7 @@ GET http://localhost:8000/api/audit-logs
                 "role": "manager"
             },
             "action": {
-                "name": "successful_login",
+                "name": "login",
                 "label": "Login Berhasil",
                 "color": "secondary"
             },
@@ -672,7 +673,7 @@ GET http://localhost:8000/api/audit-logs
 POST http://localhost:8000/api/documents
 
 Headers:
-X-XSRF-TOKEN: {{xsrf_token}}
+Authorization: Bearer {{auth_token}}
 
 Body (form-data):
 - document_type: nilai
@@ -720,7 +721,7 @@ Body (form-data):
 POST http://localhost:8000/api/documents
 
 Headers:
-X-XSRF-TOKEN: {{xsrf_token}}
+Authorization: Bearer {{auth_token}}
 
 Body (form-data):
 - document_type: ijazah
@@ -762,7 +763,7 @@ Body (form-data):
 POST http://localhost:8000/api/documents
 
 Headers:
-X-XSRF-TOKEN: {{xsrf_token}}
+Authorization: Bearer {{auth_token}}
 
 Body (form-data):
 - document_type: berita_acara_sidang
@@ -835,7 +836,7 @@ Upload tanpa field required
 POST http://localhost:8000/api/documents
 
 Headers:
-X-XSRF-TOKEN: {{xsrf_token}}
+Authorization: Bearer {{auth_token}}
 
 Body (form-data):
 - document_type: nilai
@@ -933,7 +934,7 @@ PATCH http://localhost:8000/api/documents/{id}/verify
 
 Headers:
 Content-Type: application/json
-X-XSRF-TOKEN: {{xsrf_token}}
+Authorization: Bearer {{auth_token}}
 
 Body (raw JSON - pilih "JSON" di dropdown, BUKAN "Text"):
 {
@@ -969,7 +970,7 @@ PATCH http://localhost:8000/api/documents/{id}/verify
 
 Headers:
 Content-Type: application/json
-X-XSRF-TOKEN: {{xsrf_token}}
+Authorization: Bearer {{auth_token}}
 
 Body (raw JSON - pilih "JSON" di dropdown, BUKAN "Text"):
 {
@@ -1029,7 +1030,7 @@ PUT http://localhost:8000/api/documents/{id}
 
 Headers:
 Content-Type: application/json
-X-XSRF-TOKEN: {{xsrf_token}}
+Authorization: Bearer {{auth_token}}
 
 Body (raw JSON - pilih "JSON" di dropdown, BUKAN "Text"):
 {
@@ -1067,7 +1068,7 @@ Body (raw JSON - pilih "JSON" di dropdown, BUKAN "Text"):
 POST http://localhost:8000/api/documents/{id}
 
 Headers:
-X-XSRF-TOKEN: {{xsrf_token}}
+Authorization: Bearer {{auth_token}}
 
 Body (form-data):
 - _method: PUT
@@ -1087,7 +1088,7 @@ PUT http://localhost:8000/api/documents/{id_terverifikasi}
 
 Headers:
 Content-Type: application/json
-X-XSRF-TOKEN: {{xsrf_token}}
+Authorization: Bearer {{auth_token}}
 
 Body (raw JSON - pilih "JSON" di dropdown, BUKAN "Text"):
 {
@@ -1120,7 +1121,7 @@ Body (raw JSON - pilih "JSON" di dropdown, BUKAN "Text"):
 DELETE http://localhost:8000/api/documents/{id_rejected}
 
 Headers:
-X-XSRF-TOKEN: {{xsrf_token}}
+Authorization: Bearer {{auth_token}}
 ```
 
 **Expected Response:**
@@ -1141,7 +1142,7 @@ X-XSRF-TOKEN: {{xsrf_token}}
 DELETE http://localhost:8000/api/documents/{id_terverifikasi}
 
 Headers:
-X-XSRF-TOKEN: {{xsrf_token}}
+Authorization: Bearer {{auth_token}}
 ```
 
 **Expected:** 403 Forbidden (Dokumen terverifikasi tidak boleh dihapus)
@@ -1155,7 +1156,7 @@ X-XSRF-TOKEN: {{xsrf_token}}
 DELETE http://localhost:8000/api/documents/{id_milik_user_lain}
 
 Headers:
-X-XSRF-TOKEN: {{xsrf_token}}
+Authorization: Bearer {{auth_token}}
 ```
 
 **Expected:** 403 Forbidden (Uploader hanya bisa hapus dokumen miliknya)
@@ -1290,10 +1291,8 @@ Login sebagai Uploader, coba download
 | Generate Reports          | ✅      | ❌         | ❌     | ❌         |
 | Dashboard Stats           | ✅      | ❌         | ❌     | ❌         |
 
-\*Uploader hanya bisa update/delete dokumen miliknya sendiri  
-\*\*QC hanya bisa download dokumen pending (untuk verifikasi)  
-\*\*\*Uploader hanya bisa download dokumen miliknya sendiri  
-\*\*\*\*SBAP hanya bisa download dokumen terverifikasi
+\*Uploader hanya bisa update/delete dokumen miliknya sendiri
+\*\*SBAP hanya bisa download dokumen terverifikasi
 
 ---
 
@@ -1587,16 +1586,15 @@ Body: { "nip": "1234567890", ... }
 
 **Penyebab:**
 
-- Belum GET `/api/csrf-cookie`
-- Cookie tidak tersimpan
-- Session sudah expired
+- Token belum disertakan di header
+- Token sudah expired (24 jam)
+- Token sudah di-revoke (logout)
 
 **Solusi:**
 
-1. Hapus semua cookies di Postman
-2. GET `/api/csrf-cookie` terlebih dahulu
-3. Login ulang
-4. Pastikan Postman settings "Send cookies" aktif
+1. Pastikan header `Authorization: Bearer {{auth_token}}` ada
+2. Login ulang untuk mendapatkan token baru
+3. Cek environment variable `auth_token` terisi
 
 ---
 
@@ -1613,23 +1611,6 @@ Body: { "nip": "1234567890", ... }
 1. Check role user yang sedang login (GET `/api/auth/me`)
 2. Check ownership dokumen
 3. Check status dokumen (terverifikasi/pending/rejected)
-
----
-
-### Error 419 CSRF Token Mismatch
-
-**Penyebab:**
-
-- Header `X-XSRF-TOKEN` tidak ada
-- Token expired
-- Cookie hilang
-
-**Solusi:**
-
-1. Hapus semua cookies di Postman
-2. GET `/api/csrf-cookie` untuk mendapatkan token baru
-3. Pastikan header `X-XSRF-TOKEN` terisi dengan `{{xsrf_token}}`
-4. Pastikan environment variable `xsrf_token` ada
 
 ---
 
@@ -1654,30 +1635,12 @@ Body: { "nip": "1234567890", ... }
 
 - Content-Type header tidak diset `application/json`
 - Di Postman memilih "Text" bukan "JSON" di dropdown body type
-- Request body tidak ter-parse dengan benar
 
 **Solusi:**
 
 1. Di Postman, pilih body type **raw**
-2. Ubah dropdown di sebelah kanan dari **Text** menjadi **JSON**
-3. Atau tambahkan header secara manual: `Content-Type: application/json`
-4. Pastikan format JSON valid
-
----
-
-### Cookies Tidak Tersimpan
-
-**Penyebab:**
-
-- Postman settings salah
-- Domain/path tidak match
-
-**Solusi:**
-
-1. **Settings** → **General** → Enable "Automatically follow redirects"
-2. **Settings** → **General** → Enable "Send cookies"
-3. Restart Postman
-4. Clear cookies dan coba lagi
+2. Ubah dropdown dari **Text** menjadi **JSON**
+3. Atau tambahkan header: `Content-Type: application/json`
 
 ---
 
@@ -1688,15 +1651,14 @@ Body: { "nip": "1234567890", ... }
 - [ ] Server Laravel running (`php artisan serve`)
 - [ ] Database migrated (`php artisan migrate`)
 - [ ] **Data Seeded** (`php artisan db:seed --class=DocumentSeeder`)
-- [ ] Postman settings configured (cookies enabled)
-- [ ] Environment created with `xsrf_token` variable
+- [ ] Postman environment created with `auth_token` variable
 
 ### Authentication Flow:
 
-- [ ] GET `/api/csrf-cookie` → Save CSRF token
-- [ ] POST `/api/auth/login` → Login success
-- [ ] GET `/api/auth/me` → Verify session
-- [ ] POST `/api/auth/logout` → Logout success
+- [ ] POST `/api/auth/login` → Save Bearer Token
+- [ ] GET `/api/auth/me` → Verify token works
+- [ ] POST `/api/auth/logout` → Revoke token
+- [ ] POST `/api/auth/logout-all` → Revoke all tokens
 
 ### Core Features:
 
@@ -1716,25 +1678,20 @@ Body: { "nip": "1234567890", ... }
 
 ## ✅ Testing Selesai!
 
-**API Version:** v2.4 - Reports, Bulk Operations, Swagger Documentation  
-**Last Updated:** 9 Juli 2026  
-**Security Level:** Production-Ready 🔒  
-**Total Tests:** 60+ skenario untuk 15 Use Cases + Security Features  
+**API Version:** v3.0 - Token-Based Auth (Bearer Token)
+**Last Updated:** 23 Februari 2026
+**Security Level:** Production-Ready 🔒
+**Total Tests:** 50+ skenario untuk 12 Use Cases + Security Features
 **Performance:** ~40% smaller API responses
 
-### Key Improvements in v2.4:
+### Key Improvements in v3.0:
 
-- ✅ **Swagger Interactive Documentation** (`/api/documentation`)
-- ✅ **Report Generation** (PDF, XLSX, CSV)
-- ✅ **Bulk Operations** (Delete Multiple, Download ZIP)
-- ✅ **Statistics Endpoints** (Users, Documents)
-- ✅ **Document View Inline** (PDF Viewer)
+- ✅ **Token-Based Auth** (Bearer Token, stateless)
+- ✅ **Logout All Devices** (`/api/auth/logout-all`)
+- ✅ **Token Expiration** (24 jam, configurable)
 - ✅ Dashboard Statistics & Reporting
-- ✅ CSV Export for Audit Logs
-- ✅ Unique Data Validation (NIP, Email)
-- ✅ Sanctum Stateful API with HTTP-only cookies
 - ✅ Dual-Layer Rate Limiting (IP + Account-based)
 - ✅ Account Lockout Protection
 - ✅ Comprehensive Audit Logging
 
-**Security Features:** Rate Limit | Account Lockout | PDF Validation | Session-based Auth | CORS | Audit Logs | CSRF Protection
+**Security Features:** Rate Limit | Account Lockout | PDF Validation | Bearer Token Auth | CORS | Audit Logs

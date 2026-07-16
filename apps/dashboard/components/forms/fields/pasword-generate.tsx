@@ -64,7 +64,7 @@ export const PasswordGenerate = ({
     strict: true,
     excludeSimilarCharacters: true,
   });
-  const [randomPass, setRandomPass] = useState<string>(field.state.value);
+  const [randomPass, setRandomPass] = useState<string>(generatePassword);
 
   const leftAddon =
     icons?.left || (icon?.side === "left" ? icon.element : null);
@@ -132,7 +132,7 @@ export const PasswordGenerate = ({
             placeholder={
               resetPass ? placeholder : "Kata sandi tidak dapat dilihat"
             }
-            readOnly={!resetPass}
+            readOnly={mode === "edit" ? !resetPass : false}
             type={resetPass && showPassword ? "text" : type}
             autoComplete={autoComplete}
           />

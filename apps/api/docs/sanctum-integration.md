@@ -1,8 +1,8 @@
-# Laravel Sanctum Stateful API - Frontend Integration Guide
+# Laravel Sanctum Token-Based API - Frontend Integration Guide
 
 ## Overview
 
-API ini menggunakan **Laravel Sanctum Stateful Authentication** dengan **HTTP-only Cookies**. Ini adalah pendekatan yang aman untuk SPA (Single Page Application) yang di-host di domain yang sama atau subdomain.
+API ini menggunakan **Laravel Sanctum Token-Based Authentication** dengan **Bearer Token**. Ini adalah pendekatan stateless yang cocok untuk cross-domain SPA, mobile apps, dan third-party integrations.
 
 ## Architecture
 
@@ -12,39 +12,42 @@ sequenceDiagram
     participant API
     participant Database
 
-    Frontend->>API: GET /csrf-cookie
-    API-->>Frontend: Set XSRF-TOKEN cookie
-    
-    Frontend->>API: POST /auth/login (with CSRF token)
+    Frontend->>API: POST /auth/login (email, password)
     API->>Database: Verify credentials
     Database-->>API: User data
-    API-->>Frontend: Set laravel_session cookie + user data
-    
-    Frontend->>API: GET /auth/me (with cookies)
+    API-->>Frontend: { token, token_type, expires_in, user }
+
+    Note over Frontend: Simpan token di localStorage/memory
+
+    Frontend->>API: GET /auth/me (Authorization: Bearer <token>)
     API-->>Frontend: User data
-    
-    Frontend->>API: GET /documents (with cookies)
+
+    Frontend->>API: GET /documents (Authorization: Bearer <token>)
     API-->>Frontend: Documents data
-    
-    Frontend->>API: POST /auth/logout
-    API-->>Frontend: Clear cookies
+
+    Frontend->>API: POST /auth/logout (Authorization: Bearer <token>)
+    API-->>Frontend: Token revoked
 ```
 
 ## Key Concepts
 
-### 1. HTTP-only Cookies
-- Session disimpan di **HTTP-only cookie** yang tidak bisa diakses JavaScript
-- Lebih aman dari XSS attacks
-- Browser automatically sends cookies pada setiap request
+### 1. Bearer Token
 
-### 2. CSRF Protection
-- Frontend harus request CSRF cookie sebelum login
-- CSRF token dikirim di header `X-XSRF-TOKEN`
-- Laravel automatically validates token
+- Token diberikan saat login, dikirim via `Authorization` header
+- Tidak menggunakan cookies atau session
+- Setiap request harus menyertakan token
 
-### 3. Stateful vs Token-based
-- **Stateful**: Menggunakan cookies & session (approach kita)
-- **Token-based**: Menggunakan Bearer tokens di header
+### 2. Stateless API
+
+- Server tidak menyimpan session
+- Semua informasi auth ada di token
+- Cross-domain friendly — tidak ada masalah CORS cookies
+
+### 3. Token Lifecycle
+
+- **Created:** Saat login berhasil
+- **Expires:** Setelah 24 jam (configurable)
+- **Revoked:** Saat logout atau logout-all
 
 ---
 
@@ -55,31 +58,36 @@ sequenceDiagram
 #### Using Axios (Recommended)
 
 ```javascript
-import axios from 'axios';
+import axios from "axios";
 
 const api = axios.create({
-    baseURL: 'http://localhost:8000/api',
-    withCredentials: true, // CRITICAL: Enable cookies
+    baseURL: "http://localhost:8000/api",
     headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
+        Accept: "application/json",
+        "Content-Type": "application/json",
     },
 });
 
-// Interceptor untuk auto-include CSRF token
+// Interceptor untuk auto-include Bearer Token
 api.interceptors.request.use((config) => {
-    // Get CSRF token from cookie
-    const token = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('XSRF-TOKEN='))
-        ?.split('=')[1];
-    
+    const token = localStorage.getItem("auth_token");
     if (token) {
-        config.headers['X-XSRF-TOKEN'] = decodeURIComponent(token);
+        config.headers["Authorization"] = `Bearer ${token}`;
     }
-    
     return config;
 });
+
+// Interceptor untuk handle 401 (token expired/invalid)
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            localStorage.removeItem("auth_token");
+            window.location.href = "/login";
+        }
+        return Promise.reject(error);
+    },
+);
 
 export default api;
 ```
@@ -87,29 +95,25 @@ export default api;
 #### Using Fetch
 
 ```javascript
-// Helper to get CSRF token from cookie
-function getCsrfToken() {
-    return document.cookie
-        .split('; ')
-        .find(row => row.startsWith('XSRF-TOKEN='))
-        ?.split('=')[1];
-}
-
-// Wrapper for fetch with credentials
+// Helper for authenticated fetch
 async function apiFetch(url, options = {}) {
-    const csrfToken = getCsrfToken();
-    
+    const token = localStorage.getItem("auth_token");
+
     const response = await fetch(`http://localhost:8000/api${url}`, {
         ...options,
-        credentials: 'include', // CRITICAL: Enable cookies
         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'X-XSRF-TOKEN': csrfToken ? decodeURIComponent(csrfToken) : '',
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
             ...options.headers,
         },
     });
-    
+
+    if (response.status === 401) {
+        localStorage.removeItem("auth_token");
+        window.location.href = "/login";
+    }
+
     return response;
 }
 ```
@@ -119,50 +123,59 @@ async function apiFetch(url, options = {}) {
 ### Step 2: Login Flow
 
 ```javascript
-// 1. Get CSRF Cookie FIRST (before login)
-async function getCsrfCookie() {
-    await api.get('/csrf-cookie');
-}
-
-// 2. Login
+// Login — mendapat Bearer Token
 async function login(email, password) {
     try {
-        // IMPORTANT: Get CSRF cookie first
-        await getCsrfCookie();
-        
-        // Then login
-        const response = await api.post('/auth/login', {
-            email,
-            password,
-        });
-        
-        // Session cookie is automatically set by browser
-        console.log('Login berhasil:', response.data);
+        const response = await api.post("/auth/login", { email, password });
+
+        const { token, token_type, expires_in } = response.data.data;
+
+        // Simpan token
+        localStorage.setItem("auth_token", token);
+
+        // Optional: simpan expiration time
+        const expiresAt = Date.now() + expires_in * 1000;
+        localStorage.setItem("token_expires_at", expiresAt);
+
+        console.log("Login berhasil:", response.data.data.user);
         return response.data;
     } catch (error) {
-        console.error('Login gagal:', error.response?.data);
+        console.error("Login gagal:", error.response?.data);
         throw error;
     }
 }
 
-// 3. Check if authenticated
+// Check if authenticated
 async function getCurrentUser() {
     try {
-        const response = await api.get('/auth/me');
+        const response = await api.get("/auth/me");
         return response.data.data;
     } catch (error) {
-        // Not authenticated
-        return null;
+        return null; // Not authenticated
     }
 }
 
-// 4. Logout
+// Logout (current device)
 async function logout() {
     try {
-        await api.post('/auth/logout');
-        // Cookies are automatically cleared
+        await api.post("/auth/logout");
     } catch (error) {
-        console.error('Logout gagal:', error);
+        console.error("Logout error:", error);
+    } finally {
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("token_expires_at");
+    }
+}
+
+// Logout all devices
+async function logoutAll() {
+    try {
+        await api.post("/auth/logout-all");
+    } catch (error) {
+        console.error("Logout all error:", error);
+    } finally {
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("token_expires_at");
     }
 }
 ```
@@ -172,27 +185,25 @@ async function logout() {
 ### Step 3: Making Authenticated Requests
 
 ```javascript
-// Setelah login, semua request automatically authenticated via cookies
+// Semua request authenticated via Authorization header (auto by interceptor)
 
 // Get documents
 async function getDocuments(params = {}) {
-    const response = await api.get('/documents', { params });
+    const response = await api.get("/documents", { params });
     return response.data;
 }
 
 // Upload document
 async function uploadDocument(formData) {
-    const response = await api.post('/documents', formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
+    const response = await api.post("/documents", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
 }
 
 // Get users (manager only)
 async function getUsers(params = {}) {
-    const response = await api.get('/users', { params });
+    const response = await api.get("/users", { params });
     return response.data;
 }
 ```
@@ -205,13 +216,12 @@ async function getUsers(params = {}) {
 
 ```env
 APP_URL=http://localhost:8000
-FRONTEND_URL=http://localhost:3000
 
-SESSION_DRIVER=database
-SESSION_LIFETIME=120
-SESSION_DOMAIN=localhost
+# Token expiration in minutes (default: 1440 = 24 hours)
+SANCTUM_TOKEN_EXPIRATION=1440
 
-SANCTUM_STATEFUL_DOMAINS=localhost:3000,localhost,127.0.0.1,127.0.0.1:3000
+# CORS - allowed frontend origins
+CORS_ALLOWED_ORIGINS=http://localhost:3000
 ```
 
 ### Frontend (.env)
@@ -222,58 +232,23 @@ VITE_API_URL=http://localhost:8000/api
 
 ---
 
-## Response Format Changes
+## Login Response Format
 
-### ✅ Simplified User References
-
-**SEBELUM** (Redundant):
 ```json
 {
-  "id": 1,
-  "uploaded_by": {
-    "id": 5,
-    "name": "John Doe",
-    "email": "john@example.com"
-  },
-  "verified_by": {
-    "id": 3,
-    "name": "Jane Admin",
-    "email": "jane@example.com"
-  }
+    "message": "Login berhasil.",
+    "data": {
+        "user": {
+            "id": 1,
+            "name": "Admin Manager",
+            "email": "manager@example.com",
+            "role": "manager"
+        },
+        "token": "1|abc123def456...",
+        "token_type": "Bearer",
+        "expires_in": 86400
+    }
 }
-```
-
-**SESUDAH** (Clean):
-```json
-{
-  "id": 1,
-  "uploaded_by_name": "John Doe",
-  "verified_by_name": "Jane Admin"
-}
-```
-
-### Frontend Migration
-
-Update your frontend code:
-
-```javascript
-// OLD
-<p>Uploaded by: {document.uploaded_by.name}</p>
-<p>Verified by: {document.verified_by?.name}</p>
-
-// NEW
-<p>Uploaded by: {document.uploaded_by_name}</p>
-<p>Verified by: {document.verified_by_name}</p>
-```
-
-**For Audit Logs:**
-
-```javascript
-// OLD
-<p>User: {log.user.name}</p>
-
-// NEW
-<p>User: {log.user_name}</p>
 ```
 
 ---
@@ -282,122 +257,58 @@ Update your frontend code:
 
 ### Issue: "Unauthenticated" on protected routes
 
-**Solution**:
-1. Pastikan `withCredentials: true` di axios config
-2. Pastikan CSRF cookie sudah diambil sebelum login
-3. Check browser cookies (harus ada `laravel_session` dan `XSRF-TOKEN`)
+**Solution:**
 
-### Issue: "CSRF token mismatch"
-
-**Solution**:
-1. Call `/csrf-cookie` before login
-2. Pastikan header `X-XSRF-TOKEN` included di request
-3. Pastikan cookie `XSRF-TOKEN` tidak expired
+1. Pastikan header `Authorization: Bearer <token>` disertakan
+2. Cek apakah token sudah expired (24 jam)
+3. Cek apakah token sudah di-revoke (logout)
 
 ### Issue: CORS errors
 
-**Solution**:
-1. Pastikan backend `.env` memiliki `SANCTUM_STATEFUL_DOMAINS`
-2. Pastikan frontend domain ada di daftar
-3. Check `config/cors.php` - harus ada `'supports_credentials' => true`
+**Solution:**
 
-### Issue: Login berhasil tapi subsequent requests tidak authenticated
+1. Pastikan `CORS_ALLOWED_ORIGINS` di backend `.env` include domain frontend
+2. Check `config/cors.php`
 
-**Solution**:
-1. Check `SESSION_DOMAIN` di `.env`
-2. Untuk localhost, set ke `localhost` (tanpa port)
-3. Pastikan frontend dan backend di domain yang sama
+### Issue: Token expired
+
+**Solution:**
+
+1. Implement auto-refresh: redirect ke login page saat 401
+2. Simpan `expires_in` dan cek sebelum request
 
 ---
 
 ## Security Best Practices
 
 1. ✅ Always use HTTPS in production
-2. ✅ Set `SESSION_SECURE_COOKIE=true` in production
-3. ✅ Configure proper `SESSION_DOMAIN` for your environment
-4. ✅ Implement rate limiting on sensitive endpoints (sudah ada di login)
-5. ✅ Validate all inputs on backend (sudah ada Form Requests)
-6. ✅ Use CSRF protection (automatically handled by Sanctum)
+2. ✅ Store token securely (httpOnly cookie or secure storage)
+3. ✅ Implement token expiration check on frontend
+4. ✅ Handle 401 responses gracefully (redirect to login)
+5. ✅ Use `logout-all` for security emergencies
+6. ✅ Don't expose token in URLs or logs
 
 ---
 
-## Testing with Postman
+## Migration Checklist for Frontend (dari Cookie ke Token)
 
-### 1. Get CSRF Cookie
-```
-GET http://localhost:8000/api/csrf-cookie
-```
-
-Save the `XSRF-TOKEN` from cookies.
-
-### 2. Login (send cookies)
-```
-POST http://localhost:8000/api/auth/login
-Headers:
-  Content-Type: application/json
-  X-XSRF-TOKEN: <token-from-cookie>
-  
-Body:
-{
-  "email": "admin@example.com",
-  "password": "password"
-}
-
-Postman Settings:
-  ✅ Enable "Automatically follow redirects"
-  ✅ Enable "Send cookies"
-```
-
-### 3. Test Authenticated Endpoint
-```
-GET http://localhost:8000/api/auth/me
-(Cookies automatically sent by Postman)
-```
+- [ ] Hapus `withCredentials: true` dari axios config
+- [ ] Hapus CSRF cookie request (`/csrf-cookie`)
+- [ ] Hapus header `X-XSRF-TOKEN` dari requests
+- [ ] Tambah interceptor untuk `Authorization: Bearer <token>`
+- [ ] Simpan token dari login response ke localStorage
+- [ ] Handle 401 response (redirect ke login)
+- [ ] Implementasi `logout-all` di UI (opsional)
+- [ ] Test login → authenticated request → logout flow
 
 ---
 
-## Endpoints Summary
+## Benefits (Token vs Cookie)
 
-### Public Endpoints
-- `GET /api/csrf-cookie` - Get CSRF cookie
-- `POST /api/auth/login` - Login (with CSRF token)
-
-### Protected Endpoints (require auth:sanctum)
-- `GET /api/auth/me` - Get current user
-- `POST /api/auth/logout` - Logout
-- `GET /api/users` - List users (Manager only)
-- `POST /api/users` - Create user (Manager only)
-- `GET /api/documents` - List documents
-- `POST /api/documents` - Upload document
-- `PATCH /api/documents/{id}` - Update document
-- `DELETE /api/documents/{id}` - Delete document
-- `GET /api/documents/pending` - Pending documents (QC/Manager only)
-- `PATCH /api/documents/{id}/verify` - Verify document (QC/Manager only)
-- `GET /api/documents/{id}/download` - Download document
-- `GET /api/audit-logs` - Audit logs (Manager only)
-- `GET /api/audit-logs/statistics` - Audit statistics (Manager only)
-
----
-
-## Migration Checklist for Frontend
-
-- [ ] Update axios/fetch configuration with `withCredentials: true`
-- [ ] Implementasi CSRF cookie request sebelum login
-- [ ] Update login flow untuk call `/csrf-cookie` first
-- [ ] Update semua references dari `uploaded_by.name` ke `uploaded_by_name`
-- [ ] Update semua references dari `verified_by?.name` ke `verified_by_name`
-- [ ] Update semua references dari `user.name` ke `user_name` (audit logs)
-- [ ] Test login flow end-to-end
-- [ ] Test authenticated requests
-- [ ] Test logout flow
-- [ ] Verify cookies di browser DevTools
-
----
-
-## Benefits
-
-✅ **Security**: Proper HTTP-only cookie authentication  
-✅ **Performance**: ~40% smaller API responses  
-✅ **Maintainability**: Cleaner, simpler code  
-✅ **Best Practices**: Following Laravel Sanctum official docs  
-✅ **Developer Experience**: Better frontend integration
+| Aspect       |   Cookie (Before)    |    Token (Now)     |
+| ------------ | :------------------: | :----------------: |
+| Cross-Domain |     ❌ Kompleks      |     ✅ Simple      |
+| Mobile App   |       ❌ Sulit       |      ✅ Mudah      |
+| Stateless    | ❌ Session di server | ✅ Fully stateless |
+| CSRF         |    ❌ Perlu token    |   ✅ Tidak perlu   |
+| Multi-Device |     ❌ 1 session     | ✅ Multiple tokens |

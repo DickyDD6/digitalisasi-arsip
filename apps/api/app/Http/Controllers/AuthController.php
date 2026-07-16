@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\AuditAction;
 use App\Http\Requests\LoginRequest;
 use App\Models\AuditLog;
 use App\Services\LoginAttemptService;
@@ -141,8 +142,8 @@ class AuthController extends Controller
 
             // Log failed login attempt for security monitoring
             AuditLog::log(
-                action: 'failed_login_attempt',
-                description: "Login gagal untuk email: {$request->email}",
+                action: AuditAction::LOGIN->value,
+                description: "Login gagal untuk email: {$request->email}.",
                 metadata: [
                     'email' => $request->email,
                     'ip_address' => $request->ip(),
@@ -158,21 +159,24 @@ class AuthController extends Controller
                         'Email atau password salah.'
                     ],
                 ],
-                'remaining_attempts' => $remaining, // How many attempts left before lockout
+                'remaining_attempts' => $remaining,
             ], 422);
         }
 
         // Clear attempts on successful login
         app(LoginAttemptService::class)->clearAttempts($request->email);
 
-        // Regenerate session to prevent session fixation attacks
-        $request->session()->regenerate();
-
         $user = Auth::user();
+
+        // Revoke existing tokens with the same name (prevent token sprawl)
+        $user->tokens()->where('name', 'auth_token')->delete();
+
+        // Issue new Personal Access Token with expiration
+        $token = $user->createToken('auth_token');
 
         // Log successful login
         AuditLog::log(
-            action: 'successful_login',
+            action: AuditAction::LOGIN->value,
             description: "User {$user->name} berhasil login.",
             metadata: [
                 'user_id' => $user->id,
@@ -192,12 +196,16 @@ class AuthController extends Controller
                     'email' => $user->email,
                     'role' => $user->role->value,
                 ],
+                'token' => $token->plainTextToken,
+                'token_type' => 'Bearer',
+                'expires_in' => config('sanctum.expiration', 1440) * 60, // seconds
             ],
         ], 200);
     }
 
     /**
      * Handle logout request.
+     * Revokes the current access token.
      *
      * @param Request $request
      * @return JsonResponse
@@ -224,13 +232,41 @@ class AuthController extends Controller
     )]
     public function logout(Request $request): JsonResponse
     {
-        Auth::guard('web')->logout();
+        $user = $request->user();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        // Log logout before revoking token
+        AuditLog::log(
+            action: AuditAction::LOGOUT->value,
+            description: "User {$user->name} logout.",
+            metadata: [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'ip_address' => $request->ip(),
+            ],
+            userId: $user->id
+        );
+
+        // Revoke the token used for this request
+        $user->currentAccessToken()->delete();
 
         return response()->json([
             'message' => 'Logout berhasil.',
+        ], 200);
+    }
+
+    /**
+     * Logout from all devices.
+     * Revokes ALL access tokens for the authenticated user.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function logoutAll(Request $request): JsonResponse
+    {
+        $request->user()->tokens()->delete();
+
+        return response()->json([
+            'message' => 'Logout dari semua perangkat berhasil.',
         ], 200);
     }
 

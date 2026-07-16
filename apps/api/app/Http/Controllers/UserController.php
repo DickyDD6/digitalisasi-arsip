@@ -10,6 +10,7 @@ use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -234,7 +235,7 @@ class UserController extends Controller
     public function destroy(User $user): JsonResponse
     {
         // Check if trying to delete self
-        if (auth()->id() === $user->id) {
+        if (Auth::user()?->id === $user->id) {
             return response()->json([
                 'message' => 'Tidak dapat menghapus akun sendiri.',
                 'errors' => [
