@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use ZipArchive;
+use OpenApi\Attributes as OA;
 
 class DocumentController extends Controller
 {
@@ -28,6 +29,29 @@ class DocumentController extends Controller
     /**
      * Display a listing of documents.
      */
+    #[OA\Get(
+        path: '/api/documents',
+        operationId: 'listDocuments',
+        summary: 'List Documents',
+        description: 'Mengambil daftar dokumen',
+        security: [['cookieAuth' => []]],
+        tags: ['Documents'],
+        parameters: [
+            new OA\Parameter(name: 'document_type', in: 'query', description: 'Filter berdasarkan tipe dokumen', schema: new OA\Schema(type: 'string', enum: ['nilai', 'transkrip', 'ijazah', 'berita_acara_sidang'])),
+            new OA\Parameter(name: 'status', in: 'query', description: 'Filter berdasarkan status', schema: new OA\Schema(type: 'string', enum: ['menunggu_verifikasi', 'terverifikasi', 'tidak_terverifikasi'])),
+            new OA\Parameter(name: 'prodi', in: 'query', description: 'Filter berdasarkan program studi', schema: new OA\Schema(type: 'string')),
+            new OA\Parameter(name: 'search', in: 'query', description: 'Cari berdasarkan nama file', schema: new OA\Schema(type: 'string')),
+            new OA\Parameter(name: 'sort_by', in: 'query', description: 'Kolom untuk sorting (default: created_at)', schema: new OA\Schema(type: 'string', default: 'created_at', enum: ['created_at', 'updated_at', 'tahun_lulus', 'status', 'document_type', 'prodi', 'file_name'])),
+            new OA\Parameter(name: 'sort_direction', in: 'query', description: 'Arah sorting (asc/desc, default: desc)', schema: new OA\Schema(type: 'string', default: 'desc', enum: ['asc', 'desc'])),
+            new OA\Parameter(name: 'per_page', in: 'query', description: 'Jumlah data per halaman', schema: new OA\Schema(type: 'integer', default: 15)),
+            new OA\Parameter(name: 'page', in: 'query', description: 'Nomor halaman', schema: new OA\Schema(type: 'integer', default: 1)),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Daftar dokumen berhasil diambil', content: new OA\JsonContent(ref: '#/components/schemas/DocumentListResponse')),
+            new OA\Response(response: 401, description: 'Unauthenticated', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')])),
+            new OA\Response(response: 403, description: 'Forbidden', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'This action is unauthorized.')])),
+        ]
+    )]
     public function index(Request $request): JsonResponse
     {
         $this->authorize('viewAny', Document::class);
@@ -94,6 +118,39 @@ class DocumentController extends Controller
     /**
      * Store a newly uploaded document.
      */
+    #[OA\Post(
+        path: '/api/documents',
+        operationId: 'uploadDocument',
+        summary: 'Upload Document (UC-04)',
+        description: "Upload dokumen baru (Manager & Uploader only).\n\n**Tipe dokumen dan field yang diperlukan:**\n- `nilai`: prodi, tahun_ajaran, mata_kuliah, kelas\n- `ijazah` / `transkrip` / `berita_acara_sidang`: prodi, tahun_lulus, npm",
+        security: [['cookieAuth' => []]],
+        tags: ['Documents'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\MediaType(
+                mediaType: 'multipart/form-data',
+                schema: new OA\Schema(ref: '#/components/schemas/UploadDocumentRequest')
+            )
+        ),
+        responses: [
+            new OA\Response(response: 201, description: 'Dokumen berhasil diunggah', content: new OA\JsonContent(ref: '#/components/schemas/DocumentResponse')),
+            new OA\Response(response: 401, description: 'Unauthenticated', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')])),
+            new OA\Response(response: 403, description: 'Forbidden', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'This action is unauthorized.')])),
+            new OA\Response(
+                response: 409,
+                description: 'Dokumen duplikat terdeteksi',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Dokumen duplikat terdeteksi.'),
+                        new OA\Property(property: 'errors', type: 'object', properties: [
+                            new OA\Property(property: 'duplicate', type: 'array', items: new OA\Items(type: 'string')),
+                        ]),
+                    ]
+                )
+            ),
+            new OA\Response(response: 422, description: 'Validation Error', content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')),
+        ]
+    )]
     public function store(UploadDocumentRequest $request): JsonResponse
     {
         $this->authorize('create', Document::class);
@@ -122,6 +179,23 @@ class DocumentController extends Controller
     /**
      * Display the specified document.
      */
+    #[OA\Get(
+        path: '/api/documents/{id}',
+        operationId: 'getDocument',
+        summary: 'Get Document Detail',
+        description: 'Mengambil detail dokumen berdasarkan ID',
+        security: [['cookieAuth' => []]],
+        tags: ['Documents'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, description: 'Document ID', schema: new OA\Schema(type: 'integer', example: 1)),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Detail dokumen berhasil diambil', content: new OA\JsonContent(ref: '#/components/schemas/DocumentResponse')),
+            new OA\Response(response: 401, description: 'Unauthenticated', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')])),
+            new OA\Response(response: 403, description: 'Forbidden', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'This action is unauthorized.')])),
+            new OA\Response(response: 404, description: 'Not Found', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Not Found.')])),
+        ]
+    )]
     public function show(Document $document): JsonResponse
     {
         $this->authorize('view', $document);
@@ -137,12 +211,29 @@ class DocumentController extends Controller
     /**
      * Download the specified document.
      */
+    #[OA\Get(
+        path: '/api/documents/{id}/download',
+        operationId: 'downloadDocument',
+        summary: 'Download Document (UC-10)',
+        description: "Download file dokumen.\n\n**Aturan akses download:**\n- Dokumen **terverifikasi**: semua role bisa download\n- Dokumen **belum terverifikasi**:\n  - Manager: bisa download semua dokumen\n  - Uploader: hanya dokumen miliknya sendiri\n  - QC: hanya dokumen pending (untuk verifikasi)\n  - SBAP: tidak bisa download",
+        security: [['cookieAuth' => []]],
+        tags: ['Documents'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, description: 'Document ID', schema: new OA\Schema(type: 'integer', example: 1)),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'File PDF', content: new OA\MediaType(mediaType: 'application/pdf', schema: new OA\Schema(type: 'string', format: 'binary'))),
+            new OA\Response(response: 401, description: 'Unauthenticated', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')])),
+            new OA\Response(response: 403, description: 'Forbidden', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'This action is unauthorized.')])),
+            new OA\Response(response: 404, description: 'Not Found', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Not Found.')])),
+        ]
+    )]
     public function download(Document $document)
     {
         $this->authorize('download', $document);
 
         // Check if file exists
-        if (!Storage::exists($document->file_path)) {
+        if (!Storage::disk('public')->exists($document->file_path)) {
             abort(404, 'File tidak ditemukan.');
         }
 
@@ -173,6 +264,21 @@ class DocumentController extends Controller
     /**
      * Download multiple documents as ZIP
      */
+    #[OA\Post(
+        path: '/api/documents/download-multiple',
+        operationId: 'downloadMultipleDocuments',
+        summary: 'Download Multiple Documents (ZIP)',
+        description: "Download beberapa dokumen sekaligus dalam format ZIP.\n\nAkses download sesuai dengan policy:\n- Manager: semua dokumen\n- Uploader: dokumen milik sendiri\n- QC: dokumen pending (untuk verifikasi)\n- SBAP: dokumen terverifikasi saja",
+        security: [['cookieAuth' => []]],
+        tags: ['Documents'],
+        requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(ref: '#/components/schemas/DeleteMultipleRequest')),
+        responses: [
+            new OA\Response(response: 200, description: 'File ZIP berisi dokumen', content: new OA\MediaType(mediaType: 'application/zip', schema: new OA\Schema(type: 'string', format: 'binary'))),
+            new OA\Response(response: 401, description: 'Unauthenticated', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')])),
+            new OA\Response(response: 403, description: 'Forbidden', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'This action is unauthorized.')])),
+            new OA\Response(response: 422, description: 'Validation Error', content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')),
+        ]
+    )]
     public function downloadMultiple(Request $request)
     {
         $request->validate([
@@ -240,12 +346,29 @@ class DocumentController extends Controller
     /**
      * View the specified document inline (PDF Viewer).
      */
+    #[OA\Get(
+        path: '/api/documents/{id}/view',
+        operationId: 'viewDocument',
+        summary: 'View Document Inline (PDF Viewer)',
+        description: "Menampilkan file dokumen secara inline (untuk PDF viewer di browser).\n\nSemua user yang terautentikasi dapat melihat dokumen.",
+        security: [['cookieAuth' => []]],
+        tags: ['Documents'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, description: 'Document ID', schema: new OA\Schema(type: 'integer', example: 1)),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'File PDF inline', content: new OA\MediaType(mediaType: 'application/pdf', schema: new OA\Schema(type: 'string', format: 'binary'))),
+            new OA\Response(response: 401, description: 'Unauthenticated', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')])),
+            new OA\Response(response: 403, description: 'Forbidden', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'This action is unauthorized.')])),
+            new OA\Response(response: 404, description: 'Not Found', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Not Found.')])),
+        ]
+    )]
     public function view(Document $document)
     {
         $this->authorize('view', $document);
 
         // Check if file exists
-        if (!Storage::exists($document->file_path)) {
+        if (!Storage::disk('public')->exists($document->file_path)) {
             abort(404, 'File tidak ditemukan.');
         }
 
@@ -278,6 +401,23 @@ class DocumentController extends Controller
     /**
      * Remove the specified document.
      */
+    #[OA\Delete(
+        path: '/api/documents/{id}',
+        operationId: 'deleteDocument',
+        summary: 'Delete Document (UC-07)',
+        description: "Menghapus dokumen (hanya untuk dokumen dengan status `tidak_terverifikasi`).\n\nManager dapat menghapus semua dokumen rejected.\nUploader hanya dapat menghapus dokumen miliknya sendiri.",
+        security: [['cookieAuth' => []]],
+        tags: ['Documents'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, description: 'Document ID', schema: new OA\Schema(type: 'integer', example: 1)),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Dokumen berhasil dihapus', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Dokumen berhasil dihapus.')])),
+            new OA\Response(response: 401, description: 'Unauthenticated', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')])),
+            new OA\Response(response: 403, description: 'Tidak memiliki izin atau dokumen sudah terverifikasi', content: new OA\JsonContent(ref: '#/components/schemas/ErrorResponse')),
+            new OA\Response(response: 404, description: 'Not Found', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Not Found.')])),
+        ]
+    )]
     public function destroy(Document $document): JsonResponse
     {
         $this->authorize('delete', $document);
@@ -292,6 +432,30 @@ class DocumentController extends Controller
     /**
      * Remove multiple documents.
      */
+    #[OA\Post(
+        path: '/api/documents/delete-multiple',
+        operationId: 'deleteMultipleDocuments',
+        summary: 'Delete Multiple Documents',
+        description: "Menghapus beberapa dokumen sekaligus.\n\nHanya dokumen dengan status `tidak_terverifikasi` yang dapat dihapus.\nManager dapat menghapus semua dokumen rejected. Uploader hanya dokumen miliknya.",
+        security: [['cookieAuth' => []]],
+        tags: ['Documents'],
+        requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(ref: '#/components/schemas/DeleteMultipleRequest')),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Dokumen berhasil dihapus',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: '3 dokumen berhasil dihapus.'),
+                        new OA\Property(property: 'deleted_count', type: 'integer', example: 3),
+                    ]
+                )
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')])),
+            new OA\Response(response: 403, description: 'Forbidden', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'This action is unauthorized.')])),
+            new OA\Response(response: 422, description: 'Validation Error', content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')),
+        ]
+    )]
     public function destroyMultiple(Request $request): JsonResponse
     {
         $request->validate([
@@ -319,6 +483,25 @@ class DocumentController extends Controller
     /**
      * Update the specified document.
      */
+    #[OA\Put(
+        path: '/api/documents/{id}',
+        operationId: 'updateDocument',
+        summary: 'Update Document (UC-06)',
+        description: "Update metadata dokumen (hanya untuk dokumen dengan status `tidak_terverifikasi`).\n\nSetelah update, status akan direset ke `menunggu_verifikasi`.\nFile dan document_type tidak dapat diubah.",
+        security: [['cookieAuth' => []]],
+        tags: ['Documents'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, description: 'Document ID', schema: new OA\Schema(type: 'integer', example: 1)),
+        ],
+        requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(ref: '#/components/schemas/UpdateDocumentRequest')),
+        responses: [
+            new OA\Response(response: 200, description: 'Dokumen berhasil diperbarui', content: new OA\JsonContent(ref: '#/components/schemas/DocumentResponse')),
+            new OA\Response(response: 401, description: 'Unauthenticated', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')])),
+            new OA\Response(response: 403, description: 'Forbidden', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'This action is unauthorized.')])),
+            new OA\Response(response: 404, description: 'Not Found', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Not Found.')])),
+            new OA\Response(response: 422, description: 'Dokumen yang sudah terverifikasi tidak dapat diperbarui', content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')),
+        ]
+    )]
     public function update(
         \App\Http\Requests\UpdateDocumentRequest $request,
         Document $document
@@ -347,6 +530,23 @@ class DocumentController extends Controller
     /**
      * Display pending documents awaiting verification.
      */
+    #[OA\Get(
+        path: '/api/documents/pending',
+        operationId: 'listPendingDocuments',
+        summary: 'List Pending Documents (UC-08)',
+        description: 'Mengambil daftar dokumen yang menunggu verifikasi (Manager & QC only)',
+        security: [['cookieAuth' => []]],
+        tags: ['Documents'],
+        parameters: [
+            new OA\Parameter(name: 'per_page', in: 'query', description: 'Jumlah data per halaman', schema: new OA\Schema(type: 'integer', default: 15)),
+            new OA\Parameter(name: 'page', in: 'query', description: 'Nomor halaman', schema: new OA\Schema(type: 'integer', default: 1)),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Daftar dokumen pending berhasil diambil', content: new OA\JsonContent(ref: '#/components/schemas/DocumentListResponse')),
+            new OA\Response(response: 401, description: 'Unauthenticated', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')])),
+            new OA\Response(response: 403, description: 'Forbidden', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'This action is unauthorized.')])),
+        ]
+    )]
     public function pending(Request $request): JsonResponse
     {
         $this->authorize('viewPending', Document::class);
@@ -374,6 +574,25 @@ class DocumentController extends Controller
     /**
      * Verify or reject a document.
      */
+    #[OA\Patch(
+        path: '/api/documents/{id}/verify',
+        operationId: 'verifyDocument',
+        summary: 'Verify Document (UC-08)',
+        description: "Verifikasi atau tolak dokumen (Manager & QC only).\n\nDokumen yang sudah terverifikasi sebelumnya tidak dapat diverifikasi ulang.",
+        security: [['cookieAuth' => []]],
+        tags: ['Documents'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, description: 'Document ID', schema: new OA\Schema(type: 'integer', example: 1)),
+        ],
+        requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(ref: '#/components/schemas/VerifyDocumentRequest')),
+        responses: [
+            new OA\Response(response: 200, description: 'Dokumen berhasil diverifikasi/ditolak', content: new OA\JsonContent(ref: '#/components/schemas/DocumentResponse')),
+            new OA\Response(response: 401, description: 'Unauthenticated', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')])),
+            new OA\Response(response: 403, description: 'Forbidden', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'This action is unauthorized.')])),
+            new OA\Response(response: 404, description: 'Not Found', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Not Found.')])),
+            new OA\Response(response: 422, description: 'Dokumen sudah diverifikasi sebelumnya', content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')),
+        ]
+    )]
     public function verify(
         \App\Http\Requests\VerifyDocumentRequest $request,
         Document $document
@@ -407,6 +626,19 @@ class DocumentController extends Controller
     /**
      * Get document statistics.
      */
+    #[OA\Get(
+        path: '/api/documents/statistics',
+        operationId: 'getDocumentStatistics',
+        summary: 'Get Document Statistics',
+        description: 'Mengambil statistik dokumen: total, verified, pending, rejected (Manager only)',
+        security: [['cookieAuth' => []]],
+        tags: ['Statistics'],
+        responses: [
+            new OA\Response(response: 200, description: 'Statistik dokumen berhasil diambil', content: new OA\JsonContent(ref: '#/components/schemas/DocumentStatisticsResponse')),
+            new OA\Response(response: 401, description: 'Unauthenticated', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')])),
+            new OA\Response(response: 403, description: 'Forbidden', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'This action is unauthorized.')])),
+        ]
+    )]
     public function statistics(): JsonResponse
     {
         $this->authorize('viewAny', Document::class);

@@ -10,17 +10,125 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use OpenApi\Attributes as OA;
 
 class AuthController extends Controller
 {
     /**
-     * Handle login request for Sanctum Token-Based API.
-     * Issues a Personal Access Token on successful authentication.
+     * Get CSRF Cookie.
+     */
+    #[OA\Get(
+        path: '/api/csrf-cookie',
+        operationId: 'getCsrfCookie',
+        summary: 'Get CSRF Cookie',
+        description: 'Mengambil CSRF cookie yang diperlukan untuk autentikasi. Cookie `XSRF-TOKEN` akan otomatis tersimpan.',
+        tags: ['Authentication'],
+        responses: [
+            new OA\Response(response: 204, description: 'No Content - CSRF cookie berhasil disimpan'),
+        ]
+    )]
+    public function csrfCookie(): void
+    {
+        // This method is handled by Sanctum directly.
+        // The annotation is placed here for documentation purposes only.
+    }
+
+    /**
+     * Check if email is available.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    #[OA\Post(
+        path: '/api/auth/check-email',
+        operationId: 'checkEmail',
+        summary: 'Check Email Availability (UC-12)',
+        description: 'Cek apakah email sudah terdaftar (Public).',
+        tags: ['Authentication'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['email'],
+                properties: [
+                    new OA\Property(property: 'email', type: 'string', format: 'email', example: 'new.user@example.com'),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Email tersedia',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'available', type: 'boolean', example: true),
+                        new OA\Property(property: 'message', type: 'string', example: 'Email tersedia.'),
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Email sudah terdaftar atau tidak valid',
+                content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')
+            ),
+        ]
+    )]
+    public function checkEmail(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+        ]);
+
+        $exists = \App\Models\User::where('email', $request->email)->exists();
+
+        return response()->json([
+            'available' => !$exists,
+            'message' => $exists ? 'Email sudah digunakan.' : 'Email tersedia.',
+        ]);
+    }
+
+    /**
+     * Handle login request for Sanctum Stateful API.
+     * Uses HTTP-only cookies for authentication.
      *
      * @param LoginRequest $request
      * @return JsonResponse
      * @throws ValidationException
      */
+    #[OA\Post(
+        path: '/api/auth/login',
+        operationId: 'login',
+        summary: 'Login',
+        description: 'Login dengan email dan password',
+        tags: ['Authentication'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/LoginRequest')
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Login berhasil',
+                content: new OA\JsonContent(ref: '#/components/schemas/LoginResponse')
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Validation error - Kredensial salah atau field tidak valid',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Email atau password salah.'),
+                        new OA\Property(
+                            property: 'errors',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'email', type: 'array', items: new OA\Items(type: 'string'), example: ['Email atau password salah.']),
+                            ]
+                        ),
+                        new OA\Property(property: 'remaining_attempts', type: 'integer', description: 'Sisa percobaan login sebelum akun dikunci', example: 4),
+                    ]
+                )
+            ),
+        ]
+    )]
     public function login(LoginRequest $request): JsonResponse
     {
         $credentials = $request->only('email', 'password');
@@ -102,6 +210,26 @@ class AuthController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
+    #[OA\Post(
+        path: '/api/auth/logout',
+        operationId: 'logout',
+        summary: 'Logout',
+        description: 'Logout dan invalidate session',
+        security: [['cookieAuth' => []]],
+        tags: ['Authentication'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Logout berhasil',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Logout berhasil.'),
+                    ]
+                )
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')])),
+        ]
+    )]
     public function logout(Request $request): JsonResponse
     {
         $user = $request->user();
@@ -148,6 +276,22 @@ class AuthController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
+    #[OA\Get(
+        path: '/api/auth/me',
+        operationId: 'getCurrentUser',
+        summary: 'Get Current User',
+        description: 'Mengambil data user yang sedang login',
+        security: [['cookieAuth' => []]],
+        tags: ['Authentication'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Data user berhasil diambil',
+                content: new OA\JsonContent(ref: '#/components/schemas/UserResponse')
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')])),
+        ]
+    )]
     public function me(Request $request): JsonResponse
     {
         $user = $request->user();
@@ -167,25 +311,5 @@ class AuthController extends Controller
                 'role' => $user->role->value,
             ],
         ], 200);
-    }
-
-    /**
-     * Check if email is available.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function checkEmail(Request $request): JsonResponse
-    {
-        $request->validate([
-            'email' => ['required', 'email'],
-        ]);
-
-        $exists = \App\Models\User::where('email', $request->email)->exists();
-
-        return response()->json([
-            'available' => !$exists,
-            'message' => $exists ? 'Email sudah digunakan.' : 'Email tersedia.',
-        ]);
     }
 }

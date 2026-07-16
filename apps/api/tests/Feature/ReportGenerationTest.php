@@ -61,13 +61,17 @@ class ReportGenerationTest extends TestCase
 
     public function test_staff_cannot_generate_report()
     {
-        // Assuming only Manager can generate based on comment in api.php
-        // Check Policy or Middleware if implemented. Currently api.php route group doesn't specify role
-        // validation logic other than auth:sanctum. 
-        // If we strictly follow the comment "Only accessible by manager", we might need to add a check.
-        // For now, let's just test basic auth.
+        $uploader = User::factory()->create(['role' => UserRole::UPLOADER]);
 
-        $this->markTestSkipped('Role middleware not yet implemented on this route group');
+        $response = $this->actingAs($uploader)
+            ->postJson('/api/reports/generate', [
+                'period_start' => now()->subMonth()->toDateString(),
+                'period_end' => now()->toDateString(),
+                'format' => 'pdf',
+                'type' => 'monthly',
+            ]);
+
+        $response->assertStatus(403);
     }
 
     public function test_validation_errors()
