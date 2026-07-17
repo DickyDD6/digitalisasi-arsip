@@ -7,6 +7,7 @@ use App\Enums\AuditAction;
 use App\Enums\ModelType;
 use App\Models\AuditLog;
 use App\Models\Document;
+use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -47,7 +48,7 @@ class DocumentService
                 'kelas' => $data['kelas'] ?? null,
                 'tahun_lulus' => $data['tahun_lulus'] ?? null,
                 'npm' => $data['npm'] ?? null,
-                'status' => \App\Enums\DocumentStatus::PENDING->value,
+                'status' => DocumentStatus::PENDING->value,
                 'uploaded_by' => $userId,
             ]);
 
@@ -287,7 +288,7 @@ class DocumentService
     ): Document {
         // Check if document can be updated (only rejected documents can be updated by uploader)
         // Manager can update any document, so we check the user role
-        $user = \App\Models\User::find($userId);
+        $user = User::find($userId);
         if ($user && $user->hasRole('uploader') && $document->status !== DocumentStatus::REJECTED) {
             $statusMessage = $document->status === DocumentStatus::VERIFIED
                 ? 'Dokumen yang sudah terverifikasi tidak dapat diperbarui.'
@@ -337,7 +338,7 @@ class DocumentService
             // Update document metadata and reset verification status
             $updatePayload = array_merge($data, [
                 'duplicate_key' => $newDuplicateKey,
-                'status' => \App\Enums\DocumentStatus::PENDING->value,
+                'status' => DocumentStatus::PENDING->value,
                 'verified_by' => null,
                 'verified_at' => null,
                 'verification_note' => null,
@@ -377,7 +378,7 @@ class DocumentService
                 'document_type' => $document->document_type->value,
                 'updated_by' => $userId,
                 'updated_fields' => $updatedFields,
-                'status_reset' => \App\Enums\DocumentStatus::PENDING->value,
+                'status_reset' => DocumentStatus::PENDING->value,
             ],
             modelType: ModelType::DOCUMENT->value,
             modelId: $document->id,

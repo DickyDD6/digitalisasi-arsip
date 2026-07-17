@@ -8,6 +8,7 @@ use App\Enums\ModelType;
 use App\Models\AuditLog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use OpenApi\Attributes as OA;
 
@@ -138,7 +139,7 @@ class AuditLogController extends Controller
                 ->where('action', AuditAction::REJECT_DOCUMENT->value)
                 ->count(),
             'by_action' => AuditLog::whereBetween('created_at', [$startDate, $endDate])
-                ->select('action', \DB::raw('count(*) as count'))
+                ->select('action', DB::raw('count(*) as count'))
                 ->groupBy('action')
                 ->get()
                 ->mapWithKeys(function ($item) {

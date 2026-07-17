@@ -177,14 +177,13 @@ class ReportService
 
     protected function generateExcel(array $data)
     {
-        // Implementation for excel
-        // For now return dummy response or implement basic export
-        return response()->json(['message' => 'Excel generation not yet fully implemented']);
+        // TODO: Implement Excel export using Maatwebsite\Excel
+        throw new \BadMethodCallException('Format laporan XLSX belum diimplementasi.');
     }
 
     protected function generateCsv(array $data)
     {
-        // Implementation for csv
-        return response()->json(['message' => 'CSV generation not yet fully implemented']);
+        // TODO: Implement CSV export
+        throw new \BadMethodCallException('Format laporan CSV belum diimplementasi.');
     }
 }

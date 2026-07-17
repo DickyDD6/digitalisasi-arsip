@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Enums\AuditAction;
+use App\Enums\ModelType;
 use App\Models\AuditLog;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -24,14 +26,14 @@ class UserService
 
         // Log activity
         AuditLog::log(
-            action: 'create_user',
+            action: AuditAction::CREATE_USER->value,
             description: "Pengguna {$user->name} ({$user->email}) dibuat dengan role {$user->role->value}.",
             metadata: [
                 'target_user_id' => $user->id,
                 'target_email' => $user->email,
                 'role' => $user->role->value,
             ],
-            modelType: User::class,
+            modelType: ModelType::USER->value,
             modelId: $user->id
         );
 
@@ -93,10 +95,10 @@ class UserService
         }
 
         AuditLog::log(
-            action: 'update_user',
+            action: AuditAction::UPDATE_USER->value,
             description: $description,
             metadata: $metadata,
-            modelType: User::class,
+            modelType: ModelType::USER->value,
             modelId: $user->id
         );
 
@@ -122,14 +124,14 @@ class UserService
         if ($deleted) {
             // Log activity
             AuditLog::log(
-                action: 'delete_user',
+                action: AuditAction::DELETE_USER->value,
                 description: "Pengguna {$userName} ({$userEmail}) dengan role {$userRole->value} dihapus.",
                 metadata: [
                     'target_user_id' => $userId,
                     'target_email' => $userEmail,
                     'role' => $userRole->value,
                 ],
-                modelType: User::class,
+                modelType: ModelType::USER->value,
                 modelId: $userId
             );
         }

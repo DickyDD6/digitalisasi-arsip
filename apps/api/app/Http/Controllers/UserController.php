@@ -234,8 +234,12 @@ class UserController extends Controller
     )]
     public function destroy(User $user): JsonResponse
     {
-        // Check if trying to delete self
-        if (Auth::user()?->id === $user->id) {
+        // Authorize first — non-managers get 403 before any other check
+        $this->authorize('delete', $user);
+
+        // Check if trying to delete self (policy also checks this,
+        // but we return a descriptive 422 instead of generic 403)
+        if (auth()->id() === $user->id) {
             return response()->json([
                 'message' => 'Tidak dapat menghapus akun sendiri.',
                 'errors' => [
@@ -243,8 +247,6 @@ class UserController extends Controller
                 ],
             ], 422);
         }
-
-        $this->authorize('delete', $user);
 
         $this->userService->deleteUser($user);
 
@@ -288,6 +290,17 @@ class UserController extends Controller
         ]);
 
         $userIds = $request->input('ids');
+
+        // Prevent self-deletion in bulk operation
+        if (in_array(auth()->id(), $userIds)) {
+            return response()->json([
+                'message' => 'Tidak dapat menghapus akun sendiri.',
+                'errors' => [
+                    'ids' => ['Anda tidak dapat menyertakan akun Anda sendiri dalam penghapusan massal.'],
+                ],
+            ], 422);
+        }
+
         $users = User::whereIn('id', $userIds)->get();
 
         foreach ($users as $user) {
