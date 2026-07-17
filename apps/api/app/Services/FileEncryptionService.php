@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class FileEncryptionService
@@ -20,7 +21,7 @@ class FileEncryptionService
             $encryptedContent = Crypt::encrypt($content);
             return Storage::put($path, $encryptedContent);
         } catch (\Exception $e) {
-            \Log::error('File encryption failed', [
+            Log::error('File encryption failed', [
                 'path' => $path,
                 'error' => $e->getMessage(),
             ]);
@@ -44,7 +45,7 @@ class FileEncryptionService
             $encryptedContent = Storage::get($path);
             return Crypt::decrypt($encryptedContent);
         } catch (\Exception $e) {
-            \Log::error('File decryption failed', [
+            Log::error('File decryption failed', [
                 'path' => $path,
                 'error' => $e->getMessage(),
             ]);

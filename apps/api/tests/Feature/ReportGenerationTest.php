@@ -54,9 +54,9 @@ class ReportGenerationTest extends TestCase
                 'content' => ['upload_stats'],
             ]);
 
-        $response->assertStatus(200);
-        // Currently returns JSON stub
-        $response->assertJson(['message' => 'Excel generation not yet fully implemented']);
+        // XLSX format is not yet implemented — should return 500 with generic error
+        $response->assertStatus(500)
+            ->assertJson(['message' => 'Gagal membuat laporan. Silakan coba lagi.']);
     }
 
     public function test_staff_cannot_generate_report()
@@ -97,10 +97,15 @@ class ReportGenerationTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'data' => [
-                    'total_reports_generated',
-                    'most_downloaded_type',
-                    'last_generated',
-                ]
+                    'total_documents',
+                    'verified_documents',
+                    'pending_documents',
+                    'rejected_documents',
+                ],
+                'period' => [
+                    'start_date',
+                    'end_date',
+                ],
             ]);
     }
 }

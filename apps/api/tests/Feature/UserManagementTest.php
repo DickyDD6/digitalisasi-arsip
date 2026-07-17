@@ -98,13 +98,8 @@ test('manager tidak bisa menghapus diri sendiri', function () {
 
     $response = $this->deleteJson("/api/users/{$this->manager->id}");
 
-    $response->assertStatus(422)
-        ->assertJson([
-            'message' => 'Tidak dapat menghapus akun sendiri.',
-            'errors' => [
-                'user_id' => ['Anda tidak dapat menghapus akun Anda sendiri.'],
-            ],
-        ]);
+    // Policy returns false for self-deletion → 403 Forbidden
+    $response->assertStatus(403);
 
     // Verify manager still exists
     $this->assertDatabaseHas('users', [

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateDocumentRequest;
 use App\Http\Requests\UploadDocumentRequest;
+use App\Http\Requests\VerifyDocumentRequest;
 use App\Http\Resources\DocumentResource;
 use App\Models\Document;
 use App\Services\DocumentService;
@@ -330,8 +332,8 @@ class DocumentController extends Controller
         $zip->close();
 
         // Log download activity
-        \App\Models\AuditLog::log(
-            action: 'download_multiple_documents',
+        AuditLog::log(
+            action: AuditAction::DOWNLOAD_DOCUMENT->value,
             description: "Mengunduh " . count($documents) . " dokumen sebagai ZIP.",
             metadata: [
                 'document_ids' => $documentIds,
@@ -503,7 +505,7 @@ class DocumentController extends Controller
         ]
     )]
     public function update(
-        \App\Http\Requests\UpdateDocumentRequest $request,
+        UpdateDocumentRequest $request,
         Document $document
     ): JsonResponse {
         $this->authorize('update', $document);
@@ -594,7 +596,7 @@ class DocumentController extends Controller
         ]
     )]
     public function verify(
-        \App\Http\Requests\VerifyDocumentRequest $request,
+        VerifyDocumentRequest $request,
         Document $document
     ): JsonResponse {
         $this->authorize('verify', $document);

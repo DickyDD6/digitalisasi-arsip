@@ -14,7 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Token-based API — no session/cookie middleware needed
+        // statefulApi() already registers: EncryptCookies, AddQueuedCookiesToResponse,
+        // StartSession, and EnsureFrontendRequestsAreStateful for API routes.
+        // Do NOT add them again via api(prepend:) — that causes double execution.
+        $middleware->statefulApi();
         // Register custom middleware aliases
         $middleware->alias([
             'throttle.login.attempts' => \App\Http\Middleware\ThrottleLoginAttempts::class,

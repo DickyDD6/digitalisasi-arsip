@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditLog;
+use App\Models\Document;
+use App\Enums\DocumentStatus;
 use App\Services\ReportService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Illuminate\Support\Facades\Log;
 use OpenApi\Attributes as OA;
 
 class ReportController extends Controller
@@ -45,8 +49,7 @@ class ReportController extends Controller
                 description: 'Gagal membuat laporan',
                 content: new OA\JsonContent(
                     properties: [
-                        new OA\Property(property: 'message', type: 'string', example: 'Gagal membuat laporan.'),
-                        new OA\Property(property: 'error', type: 'string', example: 'Internal error message'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Gagal membuat laporan. Silakan coba lagi.'),
                     ]
                 )
             ),
@@ -54,7 +57,7 @@ class ReportController extends Controller
     )]
     public function generate(Request $request)
     {
-        $this->authorize('viewAny', \App\Models\AuditLog::class);
+        $this->authorize('viewAny', AuditLog::class);
 
         // Validate request
         $request->validate([
@@ -71,13 +74,18 @@ class ReportController extends Controller
             $params = $request->all();
 
             // Generate the report
-            // returns a download response or file path
             return $this->reportService->generate($params);
 
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Gagal membuat laporan.',
+            // Log the full error for debugging, but don't expose internals to client
+            Log::error('Report generation failed', [
+                'params' => $request->only(['period_start', 'period_end', 'format', 'type']),
                 'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'message' => 'Gagal membuat laporan. Silakan coba lagi.',
             ], 500);
         }
     }
@@ -107,36 +115,29 @@ class ReportController extends Controller
     )]
     public function dashboardStats(Request $request): JsonResponse
     {
-        $this->authorize('viewAny', \App\Models\AuditLog::class);
+        $this->authorize('viewAny', AuditLog::class);
 
-        $start = $request->input('start_date') ? \Carbon\Carbon::parse($request->input('start_date')) : now()->startOfMonth();
-        $end = $request->input('end_date') ? \Carbon\Carbon::parse($request->input('end_date')) : now();
+        $start = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : now()->startOfMonth();
+        $end = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : now();
 
-        // Re-use service methods or minimal logic here for the top cards
-        // For simplicity, we can fetch basic stats
-
+        // Real statistics from database
         $stats = [
-            'total_reports_generated' => 0, // Placeholder if we track generated reports
-            'most_downloaded_type' => 'Bulanan',
-            'last_generated' => now()->subHours(2)->format('Y-m-d H:i'),
+            'total_documents' => Document::whereBetween('created_at', [$start, $end])->count(),
+            'verified_documents' => Document::whereBetween('created_at', [$start, $end])
+                ->where('status', DocumentStatus::VERIFIED)->count(),
+            'pending_documents' => Document::whereBetween('created_at', [$start, $end])
+                ->where('status', DocumentStatus::PENDING)->count(),
+            'rejected_documents' => Document::whereBetween('created_at', [$start, $end])
+                ->where('status', DocumentStatus::REJECTED)->count(),
         ];
 
         return response()->json([
             'message' => 'Statistik dashboard berhasil diambil.',
             'data' => $stats,
+            'period' => [
+                'start_date' => $start->toDateString(),
+                'end_date' => $end->toDateString(),
+            ],
         ], 200);
-    }
-
-    /**
-     * Download a previously generated report (if stored).
-     * 
-     * @param string $filename
-     * @return BinaryFileResponse
-     */
-    public function download($filename)
-    {
-        // Logic to retrieve stored file if we save them
-        // For now, generate() handles direct download streams
-        return response()->json(['message' => 'Fitur download arsip belum tersedia.'], 501);
     }
 }
