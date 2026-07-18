@@ -87,8 +87,9 @@ class AuthController extends Controller
     }
 
     /**
-     * Handle login request for Sanctum Stateful API.
-     * Uses HTTP-only cookies for authentication.
+     * Handle login request for Sanctum Stateful (Session-Based) API.
+     * Authentication is managed via HTTP-only session cookies.
+     * No tokens are issued — the session cookie IS the credential.
      *
      * @param LoginRequest $request
      * @return JsonResponse
@@ -98,7 +99,7 @@ class AuthController extends Controller
         path: '/api/auth/login',
         operationId: 'login',
         summary: 'Login',
-        description: 'Login dengan email dan password',
+        description: 'Login dengan email dan password. Autentikasi menggunakan session cookie (bukan token).',
         tags: ['Authentication'],
         requestBody: new OA\RequestBody(
             required: true,
@@ -166,13 +167,10 @@ class AuthController extends Controller
         // Clear attempts on successful login
         app(LoginAttemptService::class)->clearAttempts($request->email);
 
+        // Regenerate session to prevent session fixation attacks
+        $request->session()->regenerate();
+
         $user = Auth::user();
-
-        // Revoke existing tokens with the same name (prevent token sprawl)
-        $user->tokens()->where('name', 'auth_token')->delete();
-
-        // Issue new Personal Access Token with expiration
-        $token = $user->createToken('auth_token');
 
         // Log successful login
         AuditLog::log(
@@ -196,16 +194,13 @@ class AuthController extends Controller
                     'email' => $user->email,
                     'role' => $user->role->value,
                 ],
-                'token' => $token->plainTextToken,
-                'token_type' => 'Bearer',
-                'expires_in' => config('sanctum.expiration', 1440) * 60, // seconds
             ],
         ], 200);
     }
 
     /**
      * Handle logout request.
-     * Revokes the current access token.
+     * Invalidates the current session and regenerates the CSRF token.
      *
      * @param Request $request
      * @return JsonResponse
@@ -234,7 +229,7 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
-        // Log logout before revoking token
+        // Log logout before invalidating session
         AuditLog::log(
             action: AuditAction::LOGOUT->value,
             description: "User {$user->name} logout.",
@@ -246,27 +241,15 @@ class AuthController extends Controller
             userId: $user->id
         );
 
-        // Revoke the token used for this request
-        $user->currentAccessToken()->delete();
+        // Logout: clear auth state
+        Auth::guard('web')->logout();
+
+        // Invalidate session and regenerate CSRF token
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return response()->json([
             'message' => 'Logout berhasil.',
-        ], 200);
-    }
-
-    /**
-     * Logout from all devices.
-     * Revokes ALL access tokens for the authenticated user.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function logoutAll(Request $request): JsonResponse
-    {
-        $request->user()->tokens()->delete();
-
-        return response()->json([
-            'message' => 'Logout dari semua perangkat berhasil.',
         ], 200);
     }
 
