@@ -16,7 +16,6 @@ Route::post('/auth/check-email', [AuthController::class, 'checkEmail']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
-    Route::post('/auth/logout-all', [AuthController::class, 'logoutAll']);
     Route::get('/auth/me', [AuthController::class, 'me']);
 
     // User Management (UC-01) - Only accessible by manager
