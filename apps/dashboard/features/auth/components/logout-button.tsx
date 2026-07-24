@@ -27,7 +27,6 @@ export const LogoutButton = ({
       toast.info("Sedang keluar...", { id: "logout-toast" });
       await logout();
     } catch {
-      Client cleanup is performed automatically in useAuth mutation callbacks
       if (typeof window !== "undefined") {
         document.documentElement.setAttribute("data-role", "default");
         window.location.href = "/login";

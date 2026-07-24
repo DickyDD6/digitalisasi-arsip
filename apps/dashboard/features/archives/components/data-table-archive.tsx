@@ -78,7 +78,6 @@ export function DataTableArchive<TData extends ArchiveDocument, TValue>({
 
   const pageCount = Math.ceil(totalItems / localPagination.pageSize);
 
-  eslint - disable - next - line react - hooks / incompatible - library
   const table = useReactTable({
     data,
     columns,

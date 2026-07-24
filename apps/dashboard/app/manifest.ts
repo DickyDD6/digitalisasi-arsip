@@ -11,7 +11,6 @@ export default function manifest(): MetadataRoute.Manifest {
     background_color: "#ffffff",
     theme_color: "#000000",
     icons: [
-      Android Icons
       {
         src: "/img/favicon/android-icon-36x36.png",
         sizes: "36x36",
@@ -43,7 +42,6 @@ export default function manifest(): MetadataRoute.Manifest {
         type: "image/png",
       },
 
-      Apple Icons
       {
         src: "/img/favicon/apple-icon-57x57.png",
         sizes: "57x57",
@@ -90,7 +88,6 @@ export default function manifest(): MetadataRoute.Manifest {
         type: "image/png",
       },
 
-      Microsoft Icons
       {
         src: "/img/favicon/ms-icon-70x70.png",
         sizes: "70x70",
@@ -112,7 +109,6 @@ export default function manifest(): MetadataRoute.Manifest {
         type: "image/png",
       },
 
-      Standard Favicon
       {
         src: "/img/favicon/favicon-16x16.png",
         sizes: "16x16",
