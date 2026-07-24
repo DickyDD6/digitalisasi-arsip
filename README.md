@@ -64,7 +64,7 @@ Sistem ini membantu memecahkan masalah degradasi arsip fisik kertas, mempercepat
   - **Manager Arsip**: Dashboard analitik global, manajemen akun pengguna, log aktivitas, dan laporan statistik.
   - **Quality Control (QC)**: Antrean verifikasi dokumen, persetujuan (*approve*), dan penolakan (*reject*) arsip.
   - **Tim Uploader**: Pengunggahan file PDF arsip, pengisian metadata (Prodi, Matkul, NPM), dan lini masa riwayat upload.
-  - **Staff Biro Akademik (SBAP)**: Pencarian arsip terverifikasi, pengunduhan file, dan persiapan cetak transkrip.
+  - **Staff Biro Akademik Pasundan (SBAP)**: Pencarian arsip terverifikasi, pengunduhan file, dan persiapan cetak transkrip.
 - 🔍 **Advanced Live Search & Command Palette**: Pencarian arsip cepat berdasarkan nama dokumen, NPM, atau mata kuliah dengan shortcut `Cmd+K` / `Ctrl+K`.
 - 📑 **Direct PDF Viewer & Secure Download**: Pratinjau dokumen PDF langsung di browser tanpa berpindah halaman dan pengunduhan aman via blob streaming.
 - 📊 **Monitoring & Audit Logs**: Tracking kronologis aktivitas pengguna serta grafik distribusi dokumen berbasis Recharts.
@@ -113,7 +113,7 @@ Sebelum memulai, pastikan perangkat Anda telah terpasang dependensi berikut:
 
 - **Node.js**: versi `>= 22.0.0`
 - **pnpm**: versi `>= 10.0.0`
-- **PHP**: versi `>= 8.2`
+- **PHP**: versi `>= 8.4`
 - **Composer**: versi `>= 2.0`
 - **MySQL**: versi `>= 8.0` atau MariaDB
 
