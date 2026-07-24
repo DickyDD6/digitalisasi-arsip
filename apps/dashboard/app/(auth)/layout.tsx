@@ -1,18 +1,18 @@
 "use client";
 
+import type React from "react";
 import { GuestGuard } from "@/components/guest-guard";
-import React from "react";
 
 export default function AuthLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-  return (
-    <GuestGuard>
-      <div className="min-h-screen place-items-center place-content-center">
-        {children}
-      </div>
-    </GuestGuard>
-  );
+	return (
+		<GuestGuard>
+			<div className="min-h-screen flex items-center justify-center">
+				{children}
+			</div>
+		</GuestGuard>
+	);
 }
