@@ -16,14 +16,14 @@
   <a href="https://github.com/aldiipratama/digital-arsip-agy/issues">Request a feature</a>
 </p>
 
-<center>
+<div align="center">
 
-![CI](https://img.shields.io/github/actions/workflow/status/aldiipratama/digital-arsip-agy/ci.yml?style=flat-square)
-![stars](https://img.shields.io/github/stars/aldiipratama/digital-arsip-agy?style=flat-square)
-![fork](https://img.shields.io/github/forks/aldiipratama/digital-arsip-agy?style=flat-square)
-![license](https://img.shields.io/github/license/aldiipratama/digital-arsip-agy?style=flat-square)
+![CI](https://img.shields.io/github/actions/workflow/status/Fakultas-Teknik-Universitas-Pasundan/digitalisasi-arsip/ci.yml?style=flat-square)
+![stars](https://img.shields.io/github/stars/Fakultas-Teknik-Universitas-Pasundan/digitalisasi-arsip?style=flat-square)
+![fork](https://img.shields.io/github/forks/Fakultas-Teknik-Universitas-Pasundan/digitalisasi-arsip?style=flat-square)
+![license](https://img.shields.io/github/license/Fakultas-Teknik-Universitas-Pasundan/digitalisasi-arsip?style=flat-square)
 
-</center>
+</div>
 
 ---
 
@@ -247,13 +247,13 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 
 ---
 
-<center>
+<div align="center">
 
 | | CONTRIBUTORS | |
 | :---: | :---: | :---: |
 | [![@FTUnpas](https://github.com/Fakultas-Teknik-Universitas-Pasundan.png?size=150)](https://github.com/Fakultas-Teknik-Universitas-Pasundan) | [![@aldiipratama](https://github.com/aldiipratama.png?size=150)](https://github.com/aldiipratama) | [![@dickydd66](https://github.com/DickyDD6.png?size=150)](https://github.com/DickyDD6) |
 
-</center>
+</div>
 
 ---
 
