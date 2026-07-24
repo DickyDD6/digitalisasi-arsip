@@ -1,47 +1,34 @@
 "use client";
 
-import { AUTH_QUERY } from "@/queries/auth.query";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { RoleThemeProvider } from "@/features/auth/components/role-theme-provider";
+import { authQueries } from "@/features/auth/queries/auth.queries";
 import { Flasher } from "./flasher";
-
-// TODO: Pindah ke .env
-const TOKEN_KEY = "token";
 
 export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
-  const [ready, setReady] = React.useState(false);
-  const [token, setToken] = React.useState<string | null>(null);
+
+  const {
+    data: user,
+    isLoading,
+    isError,
+  } = useQuery(authQueries.userMe());
 
   React.useEffect(() => {
-    setToken(window.localStorage.getItem(TOKEN_KEY));
-    setReady(true);
-  }, []);
-
-  const currentUserQuery = useQuery({
-    ...AUTH_QUERY.userMeQuery(),
-    enabled: ready && !!token,
-    retry: false,
-  });
-
-  React.useEffect(() => {
-    if (!ready) return;
-
-    if (!token) {
-      router.replace("/login");
-      return;
-    }
-
-    if (currentUserQuery.isError) {
-      window.localStorage.removeItem(TOKEN_KEY);
+    if (!isLoading && (isError || user === null)) {
       router.replace("/login");
     }
-  }, [ready, token, currentUserQuery.isError, router]);
+  }, [isLoading, isError, user, router]);
 
-  if (!ready || !token || currentUserQuery.isLoading) {
+  if (isLoading) {
     return <Flasher />;
   }
 
-  return <>{children}</>;
+  if (!user) {
+    return <Flasher />;
+  }
+
+  return <RoleThemeProvider role={user.role}>{children}</RoleThemeProvider>;
 };

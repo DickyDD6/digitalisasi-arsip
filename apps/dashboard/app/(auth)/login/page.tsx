@@ -13,8 +13,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { FieldSet } from "@/components/ui/field";
-import { useLogin } from "@/hooks/auth/use-login";
-import { useTimeAgo } from "@/hooks/use-time-ago";
+import { useLogin } from "@/features/auth/hooks/use-login";
+import { useTimeAgo } from "@/lib/hooks/use-time-ago";
 import { isAxiosError } from "axios";
 import Image from "next/image";
 import { useRouter } from "nextjs-toploader/app";
@@ -27,53 +27,51 @@ export default function LoginPage() {
 
   const form = useAppForm({
     ...loginFormOptions,
-    onSubmit: async ({ value }) =>
-      await mutateAsync(
-        {
+    onSubmit: async ({ value }) => {
+      try {
+        await mutateAsync({
           email: value.email,
           password: value.password,
-        },
-        {
-          onSuccess: () => {
-            toast.success("Login berhasil!");
-            router.replace("/");
-          },
-          onError: (err) => {
-            if (isAxiosError(err)) {
-              const lockedUntil = err?.response?.data?.locked_until;
+        });
 
-              switch (err.status) {
-                case 401:
-                  toast.error("Login gagal", {
-                    description: `${err?.response?.data?.message || "Terjadi kesalahan saat login."}. Silahkan Coba Lagi ${lockedUntil ? `${timeAgo(lockedUntil)}` : ""}`,
-                  });
-                  router.replace("/login");
-                  break;
-                case 403:
-                  toast.error("Akun Anda tidak memiliki akses.", {
-                    description:
-                      "Silakan hubungi administrator untuk mendapatkan akses.",
-                  });
-                  break;
-                case 500:
-                  toast.error(
-                    "Terjadi kesalahan server. Silakan coba lagi nanti.",
-                    {
-                      description:
-                        "Jika masalah berlanjut, silakan hubungi dukungan teknis.",
-                    },
-                  );
-                  break;
-              }
-            }
-          },
-        },
-      ),
+        toast.success("Login Berhasil", {
+          description: "Selamat datang di Sistem Digital Arsip FT Unpas.",
+        });
+        router.replace("/");
+      } catch (err) {
+        if (isAxiosError(err)) {
+          const status = err.response?.status;
+          const backendMsg = err.response?.data?.message;
+          const lockedUntil = err.response?.data?.locked_until;
+
+          const errorMsg =
+            backendMsg || "Email atau password salah. Silakan periksa kembali credentials Anda.";
+
+          if (status === 401 || status === 422 || status === 400) {
+            toast.error("Login Gagal", {
+              description: `${errorMsg}${lockedUntil ? `. Silakan coba lagi ${timeAgo(lockedUntil)}` : ""}`,
+            });
+          } else if (status === 403) {
+            toast.error("Akses Ditolak", {
+              description: "Akun Anda tidak memiliki akses ke sistem.",
+            });
+          } else {
+            toast.error("Terjadi Kesalahan Server", {
+              description: errorMsg || "Silakan coba beberapa saat lagi.",
+            });
+          }
+        } else {
+          toast.error("Login Gagal", {
+            description: "Email atau password salah. Silakan coba lagi.",
+          });
+        }
+      }
+    },
   });
 
   return (
     <Card className="w-full lg:w-300 py-0 overflow-hidden lg:grid lg:grid-cols-2">
-      <div className="bg-[url('/img/login-bg-card.png')] hidden lg:block bg-cover bg-center h-150">
+      <div className="bg-[url('/img/login-bg-card.png')] hidden lg:block bg-[#F54A00]/5 bg-cover bg-center h-150">
         <div className="bg-black/30 h-full py-6 px-4">
           <div className="flex items-center gap-2">
             <Image
@@ -110,6 +108,7 @@ export default function LoginPage() {
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
+            form.handleSubmit();
           }}
         >
           <FieldSet>

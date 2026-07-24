@@ -3,7 +3,7 @@ import {
   PageHeader,
   PageTitle,
 } from "@/components/page-header";
-import { ManagementUserContent } from "./_components/manage-user-content";
+import { ManagementUserContent } from "@/features/users/components/manage-user-content";
 
 export default function ManagementUserPage() {
   return (

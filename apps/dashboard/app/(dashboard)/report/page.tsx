@@ -3,7 +3,7 @@ import {
   PageHeader,
   PageTitle,
 } from "@/components/page-header";
-import { ReportContent } from "./_components/report-content";
+import { ReportContent } from "@/features/reports/components/report-content";
 
 export default function ReportPage() {
   return (

@@ -16,7 +16,7 @@ export function ConsoleSecurity() {
     );
 
     const handleThemeChange = () => {
-      // Re-display console warning when theme changes
+      Re - display console warning when theme changes
       displayConsoleWarning();
     };
 

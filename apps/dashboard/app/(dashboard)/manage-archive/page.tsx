@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { FileText } from "lucide-react";
 import { Metadata } from "next";
-import { ArchiveDataContent } from "./_components/archive-data-content";
+import { ArchiveDataContent } from "@/features/archives/components/archive-data-content";
 
 export const metadata: Metadata = {
   title: "Management Arsip",

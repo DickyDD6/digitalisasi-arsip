@@ -13,7 +13,7 @@ export const displayConsoleWarning = () => {
     text: isDarkMode ? "#e0e0e0" : "#1a1a1a",
     textMuted: isDarkMode ? "#aaa" : "#666",
     link: isDarkMode ? "#66b3ff" : "#0066cc",
-    warning: "#ff3b30", // Red that works in both themes
+    warning: "#ff3b30",
     warningBg: isDarkMode ? "rgba(255, 59, 48, 0.15)" : "#fff3e0",
     warningBorder: "#ff6b00",
     info: isDarkMode ? "#64b5f6" : "#2196f3",
@@ -105,7 +105,6 @@ export const monitorConsoleActivity = () => {
   const warningText = "#fff";
   const warningSecondary = isDarkMode ? "#ff5252" : "#d32f2f";
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   console.log = function (...args: any[]) {
     const message = args.join(" ");
     const isSuspicious = suspiciousPatterns.some((pattern) =>

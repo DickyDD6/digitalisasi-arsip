@@ -30,7 +30,7 @@ import {
   Shield,
 } from "lucide-react";
 
-// TODO: pindahkan ke file constant berbeda atau ambil dari db jika ada. dan buat type declaration untuk faq item
+TODO: pindahkan ke file constant berbeda atau ambil dari db jika ada.dan buat type declaration untuk faq item
 const faqItems = [
   {
     id: "item-1",

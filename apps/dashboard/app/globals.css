@@ -4,7 +4,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
-:root {
+:root,
+[data-role="manager"],
+[data-role="default"] {
   --background: oklch(0.922 0 0);
   --foreground: oklch(0.205 0 0);
   --card: oklch(0.97 0 0);
@@ -92,6 +94,24 @@
   --downloaded-foreground: var(--color-purple-600);
   --uploaded: var(--color-blue-100);
   --uploaded-foreground: var(--color-blue-600);
+}
+
+[data-role="qc"] {
+  --primary: oklch(0.65 0.18 145);
+  --sidebar-primary: oklch(0.65 0.18 145);
+  --ring: oklch(0.65 0.18 145);
+}
+
+[data-role="uploader"] {
+  --primary: oklch(0.60 0.18 245);
+  --sidebar-primary: oklch(0.60 0.18 245);
+  --ring: oklch(0.60 0.18 245);
+}
+
+[data-role="sbap"] {
+  --primary: oklch(0.60 0.20 300);
+  --sidebar-primary: oklch(0.60 0.20 300);
+  --ring: oklch(0.60 0.20 300);
 }
 
 .dark {

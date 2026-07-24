@@ -16,7 +16,9 @@ function makeQueryClient() {
         retry: false,
       },
       dehydrate: {
-        shouldDehydrateQuery: defaultShouldDehydrateQuery,
+        shouldDehydrateQuery: (query) =>
+          defaultShouldDehydrateQuery(query) ||
+          query.state.status === "pending",
       },
     },
   });

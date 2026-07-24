@@ -1,48 +1,36 @@
 "use client";
 
-import { AUTH_QUERY } from "@/queries/auth.query";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { authQueries } from "@/features/auth/queries/auth.queries";
 import { Flasher } from "./flasher";
 
-// TODO: Pindah ke .env
-const TOKEN_KEY = "token";
-
 export const GuestGuard = ({ children }: { children: React.ReactNode }) => {
-  const router = useRouter();
-  const [token, setToken] = React.useState<string | null | undefined>(
-    undefined,
-  );
+	const router = useRouter();
 
-  React.useEffect(() => {
-    setToken(window.localStorage.getItem(TOKEN_KEY));
-  }, []);
+	const {
+		data: user,
+		isLoading,
+		isSuccess,
+	} = useQuery({
+		...authQueries.userMe(),
+		retry: false,
+	});
 
-  const hasToken = !!token;
+	React.useEffect(() => {
+		if (isSuccess && user) {
+			router.replace("/");
+		}
+	}, [isSuccess, user, router]);
 
-  const meQuery = useQuery({
-    ...AUTH_QUERY.userMeQuery(),
-    enabled: hasToken,
-    retry: false,
-  });
+	if (isLoading) {
+		return <Flasher />;
+	}
 
-  React.useEffect(() => {
-    if (token === undefined) return;
-    if (!hasToken) return;
+	if (user) {
+		return null;
+	}
 
-    if (meQuery.isSuccess) {
-      router.replace("/");
-      return;
-    }
-
-    if (meQuery.isError) {
-      window.localStorage.removeItem(TOKEN_KEY);
-      setToken(null);
-    }
-  }, [token, meQuery.isSuccess, meQuery.isError, router, hasToken]);
-
-  if (hasToken || token === undefined) return <Flasher />;
-
-  return <>{children}</>;
+	return <>{children}</>;
 };
