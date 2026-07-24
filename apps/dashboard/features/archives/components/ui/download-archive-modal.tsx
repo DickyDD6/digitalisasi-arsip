@@ -71,7 +71,6 @@ export const DownloadArchiveModal = ({ id }: { id: number | number[] }) => {
     enabled: !Array.isArray(id) && !!id,
   });
 
-  eslint - disable - next - line react - hooks / incompatible - library
   const dataTableDetail = useReactTable({
     data: multipleQuery || [],
     columns: [

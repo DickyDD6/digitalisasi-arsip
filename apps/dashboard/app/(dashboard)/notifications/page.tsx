@@ -46,7 +46,6 @@ export default function NotificationsPage() {
   const [readIds, setReadIds] = useState<number[]>([]);
   const [deletedIds, setDeletedIds] = useState<number[]>([]);
 
-  Sync read and deleted IDs from localStorage
   useEffect(() => {
     try {
       const savedRead = localStorage.getItem(READ_NOTIFS_KEY);
@@ -55,7 +54,6 @@ export default function NotificationsPage() {
       const savedDeleted = localStorage.getItem(DELETED_NOTIFS_KEY);
       if (savedDeleted) setDeletedIds(JSON.parse(savedDeleted));
     } catch {
-      Ignore
     }
   }, []);
 
@@ -64,7 +62,6 @@ export default function NotificationsPage() {
     try {
       localStorage.setItem(READ_NOTIFS_KEY, JSON.stringify(ids));
     } catch {
-      Ignore
     }
   };
 
@@ -73,14 +70,12 @@ export default function NotificationsPage() {
     try {
       localStorage.setItem(DELETED_NOTIFS_KEY, JSON.stringify(ids));
     } catch {
-      Ignore
     }
   };
 
   const auditLogs = auditQuery.data?.data?.recent_activities || [];
   const pendingDocs = pendingQuery.data?.data || [];
 
-  Generate combined notification dataset from API
   const rawNotifications = useMemo(() => {
     const list: Array<{
       id: number;
@@ -93,7 +88,6 @@ export default function NotificationsPage() {
       type: "destructive" | "warning" | "success" | "info";
     }> = [];
 
-    System Maintenance & Updates
     list.push({
       id: 991,
       category: "System",
@@ -105,7 +99,6 @@ export default function NotificationsPage() {
       type: "warning",
     });
 
-    Verification Notifications
     if (pendingDocs.length > 0) {
       pendingDocs.slice(0, 5).forEach((doc) => {
         list.push({
@@ -121,7 +114,6 @@ export default function NotificationsPage() {
       });
     }
 
-    Audit logs as live system notifications
     auditLogs.forEach((log, idx) => {
       const actionStr =
         typeof log.action === "string"
@@ -167,18 +159,15 @@ export default function NotificationsPage() {
     return list;
   }, [auditLogs, pendingDocs]);
 
-  Filter out deleted items
   const activeList = useMemo(() => {
     return rawNotifications.filter((n) => !deletedIds.includes(n.id));
   }, [rawNotifications, deletedIds]);
 
-  Summary Metrics
   const totalCount = activeList.length;
   const unreadCount = activeList.filter((n) => !readIds.includes(n.id)).length;
   const highPriorityCount = activeList.filter((n) => n.priority === "Penting").length;
   const todayCount = activeList.filter((n) => n.isToday).length;
 
-  Category counts
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = { Semua: totalCount };
     activeList.forEach((item) => {
@@ -187,16 +176,12 @@ export default function NotificationsPage() {
     return counts;
   }, [activeList, totalCount]);
 
-  Filtered Notifications based on Search, Category, and Tab
   const filteredNotifications = useMemo(() => {
     return activeList.filter((item) => {
-      Tab filter
       if (activeTab === "unread" && readIds.includes(item.id)) return false;
 
-      Category filter
       if (activeCategory !== "Semua" && item.category !== activeCategory) return false;
 
-      Search filter
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         const matchesTitle = item.title.toLowerCase().includes(q);
@@ -208,7 +193,6 @@ export default function NotificationsPage() {
     });
   }, [activeList, readIds, activeTab, activeCategory, searchQuery]);
 
-  Actions
   const handleMarkAllAsRead = () => {
     const allIds = Array.from(new Set([...readIds, ...activeList.map((n) => n.id)]));
     saveReadIds(allIds);

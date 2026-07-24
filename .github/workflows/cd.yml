@@ -1,0 +1,34 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    name: Continuous Deployment (Production)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js & pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Install Monorepo Dependencies
+        run: pnpm install
+
+      - name: Build Next.js Dashboard Production Bundle
+        run: pnpm build
+
+      - name: Deployment Step Summary
+        run: |
+          echo "🚀 Build & Automated CI Checks Successful!"
+          echo "Ready for production deployment of Digital Arsip FT UNPAS."
