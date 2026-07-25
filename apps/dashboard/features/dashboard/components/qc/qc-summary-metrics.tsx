@@ -1,5 +1,7 @@
+"use client";
+
 import React from "react";
-import { Clock, FileCheck, XCircle, AlertCircle } from "lucide-react";
+import { Clock, CheckCircle2, FileCheck, XCircle, TrendingUp, AlertTriangle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { DocumentStatisticsResponse } from "../../types/dashboard.types";
@@ -10,7 +12,11 @@ interface QCSummaryMetricsProps {
   isLoading: boolean;
 }
 
-export function QCSummaryMetrics({ stats, fallbackPendingCount, isLoading }: QCSummaryMetricsProps) {
+export function QCSummaryMetrics({
+  stats,
+  fallbackPendingCount,
+  isLoading,
+}: QCSummaryMetricsProps) {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -25,67 +31,96 @@ export function QCSummaryMetrics({ stats, fallbackPendingCount, isLoading }: QCS
     );
   }
 
+  const pendingCount = stats?.pending_documents ?? fallbackPendingCount;
+  const verifiedCount = stats?.verified_documents ?? 0;
+  const rejectedCount = stats?.rejected_documents ?? 0;
+  const totalCount = stats?.total_documents ?? (pendingCount + verifiedCount + rejectedCount);
+
+  // Success & rejection rate calculations strictly based on API numbers
+  const successRate = totalCount > 0 ? ((verifiedCount / totalCount) * 100).toFixed(1) : "0";
+  const rejectionRate = totalCount > 0 ? ((rejectedCount / totalCount) * 100).toFixed(1) : "0";
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <Card className="border border-border/60 bg-card shadow-sm">
+      {/* 1. Perlu Verifikasi */}
+      <Card className="border border-border/60 bg-card shadow-sm hover:shadow-md transition-shadow">
         <CardContent className="p-5">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-medium text-muted-foreground">Perlu Verifikasi</p>
-              <p className="text-2xl font-bold tracking-tight text-amber-600 mt-1">
-                {stats?.pending_documents ?? fallbackPendingCount}
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-1">
+              <p className="text-xs font-normal text-muted-foreground">Perlu Verifikasi</p>
+              <p className="text-3xl font-bold tracking-tight text-foreground">
+                {pendingCount}
               </p>
+              <div className="flex items-center gap-1 text-xs text-amber-600 dark:text-amber-400 font-medium pt-1">
+                <AlertTriangle className="w-3.5 h-3.5" />
+                <span>Dokumen Antrean QC</span>
+              </div>
             </div>
-            <div className="p-3 rounded-xl bg-amber-500/10 text-amber-600 dark:bg-amber-950 dark:text-amber-400">
-              <Clock className="w-5 h-5" />
+            <div className="p-3.5 rounded-2xl bg-[#FEF9C2] text-amber-700 dark:bg-amber-950/80 dark:text-amber-300 shrink-0">
+              <Clock className="w-6 h-6" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="border border-border/60 bg-card shadow-sm">
+      {/* 2. Terverifikasi */}
+      <Card className="border border-border/60 bg-card shadow-sm hover:shadow-md transition-shadow">
         <CardContent className="p-5">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-medium text-muted-foreground">Total Terverifikasi</p>
-              <p className="text-2xl font-bold tracking-tight text-emerald-600 mt-1">
-                {stats?.verified_documents ?? 0}
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-1">
+              <p className="text-xs font-normal text-muted-foreground">Dokumen Terverifikasi</p>
+              <p className="text-3xl font-bold tracking-tight text-foreground">
+                {verifiedCount}
               </p>
+              <div className="flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 font-medium pt-1">
+                <TrendingUp className="w-3.5 h-3.5" />
+                <span>Terverifikasi QC</span>
+              </div>
             </div>
-            <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400">
-              <FileCheck className="w-5 h-5" />
+            <div className="p-3.5 rounded-2xl bg-[#DCFCE7] text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300 shrink-0">
+              <FileCheck className="w-6 h-6" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="border border-border/60 bg-card shadow-sm">
+      {/* 3. Total Diverifikasi */}
+      <Card className="border border-border/60 bg-card shadow-sm hover:shadow-md transition-shadow">
         <CardContent className="p-5">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-medium text-muted-foreground">Total Ditolak</p>
-              <p className="text-2xl font-bold tracking-tight text-rose-600 mt-1">
-                {stats?.rejected_documents ?? 0}
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-1">
+              <p className="text-xs font-normal text-muted-foreground">Tingkat Kelayakan</p>
+              <p className="text-3xl font-bold tracking-tight text-foreground">
+                {verifiedCount}
               </p>
+              <div className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 font-medium pt-1">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>{successRate}% disetujui</span>
+              </div>
             </div>
-            <div className="p-3 rounded-xl bg-rose-500/10 text-rose-600 dark:bg-rose-950 dark:text-rose-400">
-              <XCircle className="w-5 h-5" />
+            <div className="p-3.5 rounded-2xl bg-[#DBEAFE] text-blue-700 dark:bg-blue-950/80 dark:text-blue-300 shrink-0">
+              <CheckCircle2 className="w-6 h-6" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="border border-border/60 bg-card shadow-sm">
+      {/* 4. Ditolak */}
+      <Card className="border border-border/60 bg-card shadow-sm hover:shadow-md transition-shadow">
         <CardContent className="p-5">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-medium text-muted-foreground">Total Dokumen</p>
-              <p className="text-2xl font-bold tracking-tight text-foreground mt-1">
-                {stats?.total_documents ?? 0}
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-1">
+              <p className="text-xs font-normal text-muted-foreground">Dokumen Ditolak</p>
+              <p className="text-3xl font-bold tracking-tight text-foreground">
+                {rejectedCount}
               </p>
+              <div className="flex items-center gap-1 text-xs text-rose-600 dark:text-rose-400 font-medium pt-1">
+                <XCircle className="w-3.5 h-3.5" />
+                <span>{rejectionRate}% ditolak</span>
+              </div>
             </div>
-            <div className="p-3 rounded-xl bg-blue-500/10 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
-              <AlertCircle className="w-5 h-5" />
+            <div className="p-3.5 rounded-2xl bg-[#FFE2E2] text-rose-700 dark:bg-rose-950/80 dark:text-rose-300 shrink-0">
+              <XCircle className="w-6 h-6" />
             </div>
           </div>
         </CardContent>
