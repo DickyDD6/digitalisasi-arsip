@@ -8,6 +8,8 @@ import {
   Upload,
   History,
   FileCheck,
+  FileX,
+  Clock,
   Printer,
   Search,
 } from "lucide-react";
@@ -77,13 +79,25 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
 
   {
     label: "Verifikasi Dokumen",
-    link: "/document-list?status=menunggu_verifikasi",
+    link: "/verification?status=menunggu_verifikasi",
+    icon: Clock,
+    allowedRoles: ["qc"],
+  },
+  {
+    label: "Dokumen Terverifikasi",
+    link: "/verified-documents",
     icon: FileCheck,
     allowedRoles: ["qc"],
   },
   {
+    label: "Dokumen Ditolak",
+    link: "/rejected-documents",
+    icon: FileX,
+    allowedRoles: ["qc"],
+  },
+  {
     label: "Riwayat Verifikasi",
-    link: "/document-list?status=terverifikasi",
+    link: "/verification-history",
     icon: History,
     allowedRoles: ["qc"],
   },
