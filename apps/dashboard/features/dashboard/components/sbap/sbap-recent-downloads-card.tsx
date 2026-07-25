@@ -14,7 +14,7 @@ interface SBAPRecentDownloadsCardProps {
 }
 
 export function SBAPRecentDownloadsCard({ onDownload }: SBAPRecentDownloadsCardProps) {
-  // Fetch verified documents directly from API
+  // Directly fetch verified documents from API
   const docsQuery = useQuery(
     dashboardQueries.documents({ status: "verified", per_page: 5 })
   );
@@ -99,7 +99,7 @@ export function SBAPRecentDownloadsCard({ onDownload }: SBAPRecentDownloadsCardP
           </div>
         ) : (
           <div className="h-32 flex flex-col items-center justify-center text-muted-foreground text-xs rounded-xl border border-dashed p-6">
-            <span>Belum ada riwayat dokumen terverifikasi dari API.</span>
+            <span>Belum ada riwayat dokumen yang baru diunduh.</span>
           </div>
         )}
       </CardContent>

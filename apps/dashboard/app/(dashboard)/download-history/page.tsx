@@ -198,7 +198,7 @@ export default function DownloadHistoryPage() {
             </div>
           ) : (
             <div className="h-44 flex flex-col items-center justify-center text-muted-foreground text-xs rounded-xl border border-dashed p-6">
-              <span>Belum ada riwayat unduhan yang cocok dari API.</span>
+              <span>Belum ada riwayat unduhan dokumen yang sesuai.</span>
             </div>
           )}
         </CardContent>

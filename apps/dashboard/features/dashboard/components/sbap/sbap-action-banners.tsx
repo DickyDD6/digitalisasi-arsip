@@ -47,7 +47,7 @@ export function SBAPActionBanners() {
           </div>
 
           <div className="mt-4 pt-4 border-t border-white/20 space-y-1 text-xs text-white/90 font-medium">
-            <p>• 892 dokumen tersedia</p>
+            <p>• Akses seluruh arsip digital resmi</p>
             <p>• Status: Terverifikasi oleh Tim QC</p>
           </div>
         </div>

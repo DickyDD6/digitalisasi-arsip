@@ -26,7 +26,7 @@ export function SBAPSummaryMetrics({ stats, fallbackVerifiedCount, isLoading }: 
     );
   }
 
-  const verifiedCount = stats?.verified_documents ?? fallbackVerifiedCount ?? 892;
+  const verifiedCount = stats?.verified_documents ?? fallbackVerifiedCount;
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -38,7 +38,7 @@ export function SBAPSummaryMetrics({ stats, fallbackVerifiedCount, isLoading }: 
               <div>
                 <p className="text-xs font-medium text-muted-foreground">Total Arsip Tersedia</p>
                 <p className="text-2xl font-bold tracking-tight text-foreground mt-1">
-                  {verifiedCount > 0 ? verifiedCount : 892}
+                  {verifiedCount}
                 </p>
                 <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-600 dark:text-blue-400 mt-2">
                   <ArrowUpRight className="w-3 h-3" />
@@ -53,19 +53,19 @@ export function SBAPSummaryMetrics({ stats, fallbackVerifiedCount, isLoading }: 
         </Card>
       </Link>
 
-      {/* 2. Download Hari Ini */}
+      {/* 2. Total Dokumen */}
       <Link href="/download-history" className="group block focus:outline-none">
         <Card className="border border-border/60 bg-card shadow-sm group-hover:border-emerald-500/40 transition-all duration-200 group-hover:shadow-md">
           <CardContent className="p-5">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-xs font-medium text-muted-foreground">Download Hari Ini</p>
+                <p className="text-xs font-medium text-muted-foreground">Total Dokumen</p>
                 <p className="text-2xl font-bold tracking-tight text-foreground mt-1">
-                  15
+                  {stats?.total_documents ?? verifiedCount}
                 </p>
                 <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 mt-2">
                   <ArrowUpRight className="w-3 h-3" />
-                  +8 dari kemarin
+                  Aktif
                 </span>
               </div>
               <div className="p-3 rounded-xl bg-emerald-100 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400 shrink-0 group-hover:scale-105 transition-transform">
@@ -76,19 +76,19 @@ export function SBAPSummaryMetrics({ stats, fallbackVerifiedCount, isLoading }: 
         </Card>
       </Link>
 
-      {/* 3. Pencarian Hari Ini */}
+      {/* 3. Dokumen Menunggu Verifikasi */}
       <Link href="/search-archive" className="group block focus:outline-none">
         <Card className="border border-border/60 bg-card shadow-sm group-hover:border-purple-500/40 transition-all duration-200 group-hover:shadow-md">
           <CardContent className="p-5">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-xs font-medium text-muted-foreground">Pencarian Hari Ini</p>
+                <p className="text-xs font-medium text-muted-foreground">Menunggu Verifikasi</p>
                 <p className="text-2xl font-bold tracking-tight text-foreground mt-1">
-                  42
+                  {stats?.pending_documents ?? 0}
                 </p>
                 <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-purple-600 dark:text-purple-400 mt-2">
                   <ArrowUpRight className="w-3 h-3" />
-                  Aktif
+                  Dalam Proses
                 </span>
               </div>
               <div className="p-3 rounded-xl bg-purple-100 text-purple-600 dark:bg-purple-950 dark:text-purple-400 shrink-0 group-hover:scale-105 transition-transform">
@@ -99,19 +99,19 @@ export function SBAPSummaryMetrics({ stats, fallbackVerifiedCount, isLoading }: 
         </Card>
       </Link>
 
-      {/* 4. Waktu Akses Rata-rata */}
+      {/* 4. Dokumen Ditolak */}
       <div className="group block">
         <Card className="border border-border/60 bg-card shadow-sm transition-all duration-200">
           <CardContent className="p-5">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-xs font-medium text-muted-foreground">Waktu Akses Rata-rata</p>
+                <p className="text-xs font-medium text-muted-foreground">Dokumen Ditolak</p>
                 <p className="text-2xl font-bold tracking-tight text-foreground mt-1">
-                  2.3s
+                  {stats?.rejected_documents ?? 0}
                 </p>
                 <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-600 dark:text-amber-400 mt-2">
                   <ArrowUpRight className="w-3 h-3" />
-                  Cepat
+                  Perlu Perbaikan
                 </span>
               </div>
               <div className="p-3 rounded-xl bg-amber-100 text-amber-600 dark:bg-amber-950 dark:text-amber-400 shrink-0 group-hover:scale-105 transition-transform">

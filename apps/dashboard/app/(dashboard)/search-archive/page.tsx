@@ -106,27 +106,7 @@ export default function SearchArchivePage() {
 
   const handleDownloadSingle = (doc: DocumentItem) => {
     toast.success(`Mengunduh arsip "${doc.title || doc.file_name}"`);
-    try {
-      const existing = localStorage.getItem("digital_archive_sbap_downloads");
-      const logs = existing ? JSON.parse(existing) : [];
-      const newLog = {
-        id: Date.now(),
-        fileName: doc.title || doc.file_name || `Dokumen_${doc.id}`,
-        npm: doc.npm || doc.student_number || "12345678",
-        prodi: selectedProdi !== "all" ? selectedProdi : "Teknik Informatika",
-        downloadedAt: new Date().toLocaleString("id-ID", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        docId: doc.id,
-      };
-      localStorage.setItem("digital_archive_sbap_downloads", JSON.stringify([newLog, ...logs]));
-    } catch {
-      // ignore
-    }
+    window.open(`/api/documents/${doc.id}/download`, "_blank");
   };
 
   const handleBulkDownload = () => {
@@ -325,7 +305,7 @@ export default function SearchArchivePage() {
                           {categoryName}
                         </TableCell>
                         <TableCell className="text-xs text-muted-foreground">
-                          {doc.prodi || (selectedProdi !== "all" ? selectedProdi : "Teknik Informatika")}
+                          {doc.prodi || (selectedProdi !== "all" ? selectedProdi : "-")}
                         </TableCell>
                         <TableCell>
                           <Badge
@@ -358,7 +338,7 @@ export default function SearchArchivePage() {
             </div>
           ) : (
             <div className="h-48 flex flex-col items-center justify-center text-muted-foreground text-xs rounded-xl border border-dashed p-6">
-              <span>Tidak ada arsip terverifikasi yang cocok dengan kriteria pencarian.</span>
+              <span>Tidak ditemukan arsip terverifikasi yang sesuai dengan kriteria pencarian Anda.</span>
             </div>
           )}
         </CardContent>

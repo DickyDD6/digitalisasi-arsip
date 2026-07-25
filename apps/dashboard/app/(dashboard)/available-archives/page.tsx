@@ -246,7 +246,7 @@ export default function AvailableArchivesPage() {
             </div>
           ) : (
             <div className="h-44 flex flex-col items-center justify-center text-muted-foreground text-xs rounded-xl border border-dashed p-6">
-              <span>Belum ada dokumen terverifikasi yang tersedia dari API.</span>
+              <span>Belum ada dokumen terverifikasi yang tersedia saat ini.</span>
             </div>
           )}
         </CardContent>
