@@ -11,7 +11,11 @@ export interface SidebarMenuItemConfig {
 export const ROLE_PERMISSIONS: Record<string, UserRole[]> = {
   "/": ["manager", "qc", "uploader", "sbap"],
   "/manage-archive": ["manager"],
-  "/document-list": ["uploader", "manager"],
+  "/verification": ["qc", "manager"],
+  "/verification-history": ["qc", "manager"],
+  "/verified-documents": ["qc", "manager"],
+  "/rejected-documents": ["qc", "manager"],
+  "/document-list": ["uploader", "manager", "qc", "sbap"],
   "/upload-document": ["uploader", "manager"],
   "/upload-history": ["uploader", "manager"],
   "/notifications": ["manager", "qc", "uploader", "sbap"],

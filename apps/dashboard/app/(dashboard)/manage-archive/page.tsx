@@ -15,7 +15,7 @@ import { Metadata } from "next";
 import { ArchiveDataContent } from "@/features/archives/components/archive-data-content";
 
 export const metadata: Metadata = {
-  title: "Management Arsip",
+  title: "Management Arsip - Manager",
   description:
     "Melihat, mengunduh, dan menghapus dokumen dan transkrip nilai siswa.",
 };
