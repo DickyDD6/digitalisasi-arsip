@@ -16,7 +16,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@repo/ui/card";
 import { FileText } from "lucide-react";
 
 export function ManageArchiveContainer() {

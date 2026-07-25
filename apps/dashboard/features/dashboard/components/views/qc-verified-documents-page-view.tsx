@@ -8,10 +8,10 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@repo/ui/card";
+import { Button } from "@repo/ui/button";
+import { Badge } from "@repo/ui/badge";
+import { Skeleton } from "@repo/ui/skeleton";
 import { useQCVerifiedDocuments } from "../../hooks/use-qc-verified-documents";
 import { QCVerifiedDocumentStats } from "../qc/qc-verified-document-stats";
 import { QCVerifiedDocumentFilter, type QCFilterCategoryOption } from "../qc/qc-verified-document-filter";

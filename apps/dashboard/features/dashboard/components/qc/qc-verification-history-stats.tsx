@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card } from "@repo/ui/card";
+import { Skeleton } from "@repo/ui/skeleton";
 
 interface QCVerificationHistoryStatsProps {
   stats: {

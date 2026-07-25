@@ -1,8 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import { FileText, FileCheck, Clock, AlertTriangle, ArrowUpRight, ChevronRight } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@repo/ui/card";
+import { Skeleton } from "@repo/ui/skeleton";
 
 interface PrimaryMetricsProps {
   isLoading?: boolean;

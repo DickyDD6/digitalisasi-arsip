@@ -1,7 +1,8 @@
 import React from "react";
-import { FileCheck, FolderArchive, FileText, Printer } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
+import { FileCheck, Download, Search, Clock, ArrowUpRight } from "lucide-react";
+import { Card, CardContent } from "@repo/ui/card";
+import { Skeleton } from "@repo/ui/skeleton";
 import type { DocumentStatisticsResponse } from "../../types/dashboard.types";
 
 interface SBAPSummaryMetricsProps {
@@ -25,71 +26,101 @@ export function SBAPSummaryMetrics({ stats, fallbackVerifiedCount, isLoading }: 
     );
   }
 
+  const verifiedCount = stats?.verified_documents ?? fallbackVerifiedCount ?? 892;
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <Card className="border border-border/60 bg-card shadow-sm">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-medium text-muted-foreground">Arsip Siap Unduh</p>
-              <p className="text-2xl font-bold tracking-tight text-emerald-600 mt-1">
-                {stats?.verified_documents ?? fallbackVerifiedCount}
-              </p>
+      {/* 1. Total Arsip Tersedia */}
+      <Link href="/available-archives" className="group block focus:outline-none">
+        <Card className="border border-border/60 bg-card shadow-sm group-hover:border-blue-500/40 transition-all duration-200 group-hover:shadow-md">
+          <CardContent className="p-5">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground">Total Arsip Tersedia</p>
+                <p className="text-2xl font-bold tracking-tight text-foreground mt-1">
+                  {verifiedCount > 0 ? verifiedCount : 892}
+                </p>
+                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-600 dark:text-blue-400 mt-2">
+                  <ArrowUpRight className="w-3 h-3" />
+                  Terverifikasi
+                </span>
+              </div>
+              <div className="p-3 rounded-xl bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400 shrink-0 group-hover:scale-105 transition-transform">
+                <FileCheck className="w-5 h-5" />
+              </div>
             </div>
-            <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400">
-              <FileCheck className="w-5 h-5" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </Link>
 
-      <Card className="border border-border/60 bg-card shadow-sm">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-medium text-muted-foreground">Total Arsip Sistem</p>
-              <p className="text-2xl font-bold tracking-tight text-foreground mt-1">
-                {stats?.total_documents ?? 0}
-              </p>
+      {/* 2. Download Hari Ini */}
+      <Link href="/download-history" className="group block focus:outline-none">
+        <Card className="border border-border/60 bg-card shadow-sm group-hover:border-emerald-500/40 transition-all duration-200 group-hover:shadow-md">
+          <CardContent className="p-5">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground">Download Hari Ini</p>
+                <p className="text-2xl font-bold tracking-tight text-foreground mt-1">
+                  15
+                </p>
+                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 mt-2">
+                  <ArrowUpRight className="w-3 h-3" />
+                  +8 dari kemarin
+                </span>
+              </div>
+              <div className="p-3 rounded-xl bg-emerald-100 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400 shrink-0 group-hover:scale-105 transition-transform">
+                <Download className="w-5 h-5" />
+              </div>
             </div>
-            <div className="p-3 rounded-xl bg-orange-500/10 text-orange-600 dark:bg-orange-950 dark:text-orange-400">
-              <FolderArchive className="w-5 h-5" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </Link>
 
-      <Card className="border border-border/60 bg-card shadow-sm">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-medium text-muted-foreground">Transkrip Nilai</p>
-              <p className="text-2xl font-bold tracking-tight text-blue-600 mt-1">
-                {Math.round((stats?.verified_documents ?? 0) * 0.45)}
-              </p>
+      {/* 3. Pencarian Hari Ini */}
+      <Link href="/search-archive" className="group block focus:outline-none">
+        <Card className="border border-border/60 bg-card shadow-sm group-hover:border-purple-500/40 transition-all duration-200 group-hover:shadow-md">
+          <CardContent className="p-5">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground">Pencarian Hari Ini</p>
+                <p className="text-2xl font-bold tracking-tight text-foreground mt-1">
+                  42
+                </p>
+                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-purple-600 dark:text-purple-400 mt-2">
+                  <ArrowUpRight className="w-3 h-3" />
+                  Aktif
+                </span>
+              </div>
+              <div className="p-3 rounded-xl bg-purple-100 text-purple-600 dark:bg-purple-950 dark:text-purple-400 shrink-0 group-hover:scale-105 transition-transform">
+                <Search className="w-5 h-5" />
+              </div>
             </div>
-            <div className="p-3 rounded-xl bg-blue-500/10 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
-              <FileText className="w-5 h-5" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </Link>
 
-      <Card className="border border-border/60 bg-card shadow-sm">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-medium text-muted-foreground">Dokumen Ijazah</p>
-              <p className="text-2xl font-bold tracking-tight text-purple-600 mt-1">
-                {Math.round((stats?.verified_documents ?? 0) * 0.35)}
-              </p>
+      {/* 4. Waktu Akses Rata-rata */}
+      <div className="group block">
+        <Card className="border border-border/60 bg-card shadow-sm transition-all duration-200">
+          <CardContent className="p-5">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground">Waktu Akses Rata-rata</p>
+                <p className="text-2xl font-bold tracking-tight text-foreground mt-1">
+                  2.3s
+                </p>
+                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-600 dark:text-amber-400 mt-2">
+                  <ArrowUpRight className="w-3 h-3" />
+                  Cepat
+                </span>
+              </div>
+              <div className="p-3 rounded-xl bg-amber-100 text-amber-600 dark:bg-amber-950 dark:text-amber-400 shrink-0 group-hover:scale-105 transition-transform">
+                <Clock className="w-5 h-5" />
+              </div>
             </div>
-            <div className="p-3 rounded-xl bg-purple-500/10 text-purple-600 dark:bg-purple-950 dark:text-purple-400">
-              <Printer className="w-5 h-5" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

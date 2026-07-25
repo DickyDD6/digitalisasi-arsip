@@ -5,13 +5,13 @@ import { favicons } from "@/config/favicons";
 import { TanstackProvider } from "@/shared/providers/tanstack-provider";
 import { ThemeProvider } from "@/shared/providers/theme-provider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@repo/ui/sonner";
+import { TooltipProvider } from "@repo/ui/tooltip";
 import { ConsoleSecurity } from "@/shared/components/console-security";
 import NextTopLoader from "nextjs-toploader";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { CheckCircle2, Clock, Upload, XCircle } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card } from "@repo/ui/card";
+import { Skeleton } from "@repo/ui/skeleton";
 
 interface UploadHistorySummaryMetricsProps {
   isLoading: boolean;

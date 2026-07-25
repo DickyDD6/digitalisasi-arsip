@@ -1,5 +1,5 @@
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@repo/ui/badge";
+import { Checkbox } from "@repo/ui/checkbox";
 
 import { ColumnDef } from "@tanstack/react-table";
 import { ActionDropdownUser } from "./ui/action-dropdown-user";

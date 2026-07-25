@@ -5,16 +5,16 @@ import {
   PageTitle,
   PageDescription,
 } from "@/shared/components/page-header";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Field, FieldContent, FieldLabel } from "@/components/ui/field";
+import { Alert, AlertDescription, AlertTitle } from "@repo/ui/alert";
+import { Badge } from "@repo/ui/badge";
+import { Card, CardContent, CardHeader } from "@repo/ui/card";
+import { Field, FieldContent, FieldLabel } from "@repo/ui/field";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "@/components/ui/input-group";
-import { Separator } from "@/components/ui/separator";
+} from "@repo/ui/input-group";
+import { Separator } from "@repo/ui/separator";
 import { authQueries } from "@/features/auth/queries/auth.queries";
 import { useQuery } from "@tanstack/react-query";
 import {

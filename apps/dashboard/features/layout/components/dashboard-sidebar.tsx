@@ -15,7 +15,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from "@repo/ui/sidebar";
 import { canAccessMenu } from "@/config/rbac";
 import { authQueries } from "@/features/auth/queries/auth.queries";
 import { userQueries } from "@/features/users/queries/user.queries";
@@ -63,13 +63,13 @@ export const DashboardSidebar = () => {
       <SidebarHeader className="shadow-sm py-3.5">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton className="hover:bg-transparent focus:bg-transparent active:bg-transparent cursor-default overflow-visible group-data-[collapsible=icon]:overflow-hidden p-0 group-data-[collapsible=icon]:p-0!">
-              <div className="h-full px-1 rounded-md bg-primary place-content-center">
-                <FolderArchive className="text-primary-foreground size-5" />
+            <SidebarMenuButton className="hover:bg-transparent focus:bg-transparent active:bg-transparent cursor-default overflow-hidden p-0">
+              <div className="w-8 h-8 rounded-lg bg-primary text-primary-foreground shrink-0 flex items-center justify-center aspect-square">
+                <FolderArchive className="size-4" />
               </div>
-              <div className="leading-2">
-                <h2 className="-mt-1 text-xl font-semibold">Dashboard</h2>
-                <p className="text-muted-foreground text-xs font-medium">
+              <div className="grid leading-tight group-data-[collapsible=icon]:hidden">
+                <h2 className="text-sm font-semibold text-foreground truncate">Dashboard</h2>
+                <p className="text-muted-foreground text-xs font-medium truncate">
                   {roleLabel}
                 </p>
               </div>
@@ -77,38 +77,55 @@ export const DashboardSidebar = () => {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
+
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {accessibleItems.map((item, i) => (
-                <SidebarMenuItem key={i}>
-                  <SidebarMenuButton isActive={pathname === item.link}>
-                    <Link
-                      href={item.link}
-                      onMouseEnter={() => handlePrefetch(item.link)}
+              {accessibleItems.map((item, i) => {
+                const IconComp = item.icon;
+                return (
+                  <SidebarMenuItem key={i}>
+                    <SidebarMenuButton
+                      isActive={pathname === item.link}
+                      render={
+                        <Link
+                          href={item.link}
+                          onMouseEnter={() => handlePrefetch(item.link)}
+                          className="w-full h-full flex items-center gap-3 shrink-0"
+                        />
+                      }
                     >
-                      <item.icon />
-                      {item.label}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+                      <IconComp className="w-4 h-4 shrink-0" />
+                      <span className="truncate group-data-[collapsible=icon]:hidden">
+                        {item.label}
+                      </span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton isActive={pathname === "/system-settings"}>
-              <Link
-                href={"/system-settings"}
-                onMouseEnter={() => handlePrefetch("/system-settings")}
-              >
-                <Settings />
+            <SidebarMenuButton
+              isActive={pathname === "/system-settings"}
+              render={
+                <Link
+                  href="/system-settings"
+                  onMouseEnter={() => handlePrefetch("/system-settings")}
+                  className="w-full h-full flex items-center gap-3 shrink-0"
+                />
+              }
+            >
+              <Settings className="w-4 h-4 shrink-0" />
+              <span className="truncate group-data-[collapsible=icon]:hidden">
                 Pengaturan Sistem
-              </Link>
+              </span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>

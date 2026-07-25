@@ -1,21 +1,21 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@repo/ui/badge";
+import { Button } from "@repo/ui/button";
 import {
   Dialog,
   DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
-} from "@/components/ui/dialog";
+} from "@repo/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@repo/ui/dropdown-menu";
 import {
   ChevronDown,
   HelpCircle,
@@ -28,7 +28,7 @@ import React, { useState } from "react";
 import { LogoutButton } from "./logout-button";
 import { useQuery } from "@tanstack/react-query";
 import { authQueries } from "@/features/auth/queries/auth.queries";
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 
 const ROLE_LABELS: Record<string, string> = {
   manager: "Manager Arsip",

@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardTitle } from "@repo/ui/card";
 import { GenerateReportDialog } from "@/features/reports/components/generate-report-dialog";
 import { reportQueries } from "@/features/reports/queries/report.queries";
 import { useQuery } from "@tanstack/react-query";

@@ -7,16 +7,17 @@ import { useQuery } from "@tanstack/react-query";
 import { Bell, CheckCircle2, AlertCircle, Info, AlertTriangle, Check, ExternalLink, ChevronRight } from "lucide-react";
 import { authQueries } from "@/features/auth/queries/auth.queries";
 import { dashboardQueries } from "@/features/dashboard/queries/dashboard.queries";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@repo/ui/button";
+import { Badge } from "@repo/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@repo/ui/dropdown-menu";
 
 const READ_NOTIFS_KEY = "digital_archive_read_notifications";
 
@@ -169,27 +170,29 @@ export function NotificationsDropdown() {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-80 sm:w-96 p-0 shadow-lg border border-border/60">
-        <DropdownMenuLabel className="p-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-sm">Notifikasi</span>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel className="p-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-sm">Notifikasi</span>
+              {unreadCount > 0 && (
+                <Badge variant="secondary" className="bg-orange-500/10 text-orange-600 text-[10px]">
+                  {unreadCount} baru
+                </Badge>
+              )}
+            </div>
             {unreadCount > 0 && (
-              <Badge variant="secondary" className="bg-orange-500/10 text-orange-600 text-[10px]">
-                {unreadCount} baru
-              </Badge>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={markAllAsRead}
+                className="text-[11px] h-7 px-2 text-muted-foreground hover:text-foreground"
+              >
+                <Check className="w-3 h-3 mr-1" />
+                Tandai dibaca
+              </Button>
             )}
-          </div>
-          {unreadCount > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={markAllAsRead}
-              className="text-[11px] h-7 px-2 text-muted-foreground hover:text-foreground"
-            >
-              <Check className="w-3 h-3 mr-1" />
-              Tandai dibaca
-            </Button>
-          )}
-        </DropdownMenuLabel>
+          </DropdownMenuLabel>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator className="m-0" />
 
         <div className="max-h-80 overflow-y-auto divide-y divide-border/40">

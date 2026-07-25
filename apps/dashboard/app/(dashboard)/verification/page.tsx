@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { QCVerificationPageView } from "@/features/dashboard/components/views/qc-verification-page-view";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@repo/ui/skeleton";
 
 export const metadata: Metadata = {
   title: "Verifikasi Dokumen - Quality Control",

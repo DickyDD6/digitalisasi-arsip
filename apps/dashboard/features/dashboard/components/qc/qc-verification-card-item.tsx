@@ -2,9 +2,9 @@
 
 import React from "react";
 import { FileText, FileCheck, FileX, User, Calendar, HardDrive, Eye } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Card } from "@repo/ui/card";
+import { Button } from "@repo/ui/button";
+import { Badge } from "@repo/ui/badge";
 import type { DocumentItem } from "../../types/dashboard.types";
 import {
   getDocCategory,

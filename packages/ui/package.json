@@ -4,9 +4,22 @@
   "private": true,
   "sideEffects": false,
   "exports": {
-    ".": "./src/index.ts",
     "./globals.css": "./src/styles/globals.css",
-    "./*": "./src/components/ui/*.tsx"
+    "./*": "./src/components/shadcn/*.tsx",
+    "./lib/*": "./src/lib/*.ts",
+    "./hooks/*": "./src/hooks/*.ts"
+  },
+  "imports": {
+    "#components/*": "./src/components/shadcn/*.tsx",
+    "#lib/*": "./src/lib/*.ts",
+    "#hooks/*": "./src/hooks/*.ts"
+  },
+  "aliases": {
+    "components": "#",
+    "ui": "#",
+    "lib": "#lib",
+    "hooks": "#hooks",
+    "utils": "#lib/utils"
   },
   "scripts": {
     "check-types": "tsc --noEmit"

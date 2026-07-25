@@ -5,8 +5,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@repo/ui/card";
+import { Skeleton } from "@repo/ui/skeleton";
 import {
   ResponsiveContainer,
   PieChart,

@@ -3,12 +3,12 @@ import {
   FieldDescription,
   FieldError,
   FieldLabel,
-} from "@/components/ui/field";
+} from "@repo/ui/field";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "@/components/ui/input-group";
+} from "@repo/ui/input-group";
 import { ReactNode } from "react";
 import { useFieldContext } from "../form-context";
 

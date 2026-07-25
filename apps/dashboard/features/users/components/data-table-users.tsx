@@ -4,7 +4,7 @@ import { Button } from "@repo/ui/button";
 import {
   DataTableColumnHeader,
   DataTablePagination,
-} from "@/components/ui/data-table";
+} from "@repo/ui/data-table";
 import {
   Empty,
   EmptyContent,
@@ -12,7 +12,7 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty";
+} from "@repo/ui/empty";
 import {
   Select,
   SelectContent,

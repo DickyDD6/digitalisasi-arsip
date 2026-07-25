@@ -1,8 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import { Upload, Clock, TrendingUp, TrendingDown, FileX, ChevronRight } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card } from "@repo/ui/card";
+import { Skeleton } from "@repo/ui/skeleton";
 import type { DocumentStats } from "../../types/dashboard.types";
 
 interface UploaderSummaryMetricsProps {

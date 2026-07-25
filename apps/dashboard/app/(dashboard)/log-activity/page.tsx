@@ -4,7 +4,7 @@ import {
   PageHeader,
   PageTitle,
 } from "@/shared/components/page-header";
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/button";
 import { LogActivityContent } from "@/features/log-activity/components/log-activity-content";
 
 export default function LogActivityPage() {

@@ -142,6 +142,8 @@ export interface YearlyStat {
   year: string;
   nilai: number;
   transkrip: number;
+  ijazah: number;
+  bas: number;
   total: number;
 }
 
@@ -153,11 +155,16 @@ export interface DocumentTypeStat {
 }
 
 export interface QCStaffStat {
+  id?: number;
   staff: string;
+  role?: string;
+  email?: string;
   terverifikasi: number;
   ditolak: number;
   avgTime: string;
   successRate: string;
+  isOnline?: boolean;
+  lastSeen?: string;
 }
 
 export interface NotificationItem {

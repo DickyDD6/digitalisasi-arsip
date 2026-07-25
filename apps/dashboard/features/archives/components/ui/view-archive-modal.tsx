@@ -1,7 +1,7 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@repo/ui/badge";
+import { Button } from "@repo/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,8 +9,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
+} from "@repo/ui/dialog";
+import { Field, FieldGroup, FieldLabel, FieldSet } from "@repo/ui/field";
 import { http } from "@/shared/lib/http";
 import { useQuery } from "@tanstack/react-query";
 import { formatDate } from "date-fns";

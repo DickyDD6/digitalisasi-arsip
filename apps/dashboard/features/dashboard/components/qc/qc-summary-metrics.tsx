@@ -3,8 +3,8 @@
 import React from "react";
 import Link from "next/link";
 import { Clock, CheckCircle2, FileCheck, XCircle, TrendingUp, AlertTriangle, ChevronRight } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@repo/ui/card";
+import { Skeleton } from "@repo/ui/skeleton";
 import type { DocumentStatisticsResponse } from "../../types/dashboard.types";
 
 interface QCSummaryMetricsProps {

@@ -4,7 +4,7 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "@/components/ui/input-group";
+} from "@repo/ui/input-group";
 import { Search } from "lucide-react";
 import { archiveTableColumns } from "./archive-table-columns";
 import { DataTableArchive } from "./data-table-archive";

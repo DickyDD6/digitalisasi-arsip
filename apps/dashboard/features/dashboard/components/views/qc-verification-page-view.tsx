@@ -8,9 +8,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@repo/ui/card";
+import { Button } from "@repo/ui/button";
+import { Skeleton } from "@repo/ui/skeleton";
 import { useQCDashboard } from "../../hooks/use-qc-dashboard";
 import { QCVerificationCardItem } from "../qc/qc-verification-card-item";
 import { QCVerifyModal } from "../qc/qc-verify-modal";

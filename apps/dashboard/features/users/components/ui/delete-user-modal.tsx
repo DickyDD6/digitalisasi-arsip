@@ -1,14 +1,14 @@
 "use client";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@repo/ui/alert";
+import { Button } from "@repo/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@repo/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -17,8 +17,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Field, FieldGroup } from "@/components/ui/field";
+} from "@repo/ui/dialog";
+import { Field, FieldGroup } from "@repo/ui/field";
 import { useUserDelete } from "@/features/users/hooks/use-user-delete";
 import { useUserDeleteDetail } from "@/features/users/hooks/use-user-detail";
 import { useUserDeleteMultiple } from "@/features/users/hooks/use-user-delete";

@@ -5,8 +5,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@repo/ui/card";
+import { Skeleton } from "@repo/ui/skeleton";
 import {
   ResponsiveContainer,
   BarChart,
@@ -22,9 +22,10 @@ import type { YearlyStat } from "../../types/dashboard.types";
 interface YearlyStatsChartProps {
   isLoading?: boolean;
   data: YearlyStat[];
+  periodLabel?: string;
 }
 
-export function YearlyStatsChart({ isLoading, data }: YearlyStatsChartProps) {
+export function YearlyStatsChart({ isLoading, data, periodLabel }: YearlyStatsChartProps) {
   if (isLoading) {
     return (
       <Card className="lg:col-span-2 border border-border/60 bg-card shadow-sm p-5 space-y-4">
@@ -41,20 +42,23 @@ export function YearlyStatsChart({ isLoading, data }: YearlyStatsChartProps) {
   }
 
   const hasData = data && data.length > 0;
+  const chartTitle = periodLabel
+    ? `Statistik Arsip Digital (${periodLabel})`
+    : "Statistik Arsip Digital";
 
   return (
     <Card className="lg:col-span-2 border border-border/60 bg-card shadow-sm flex flex-col justify-between">
       <CardHeader className="p-5 pb-2">
         <CardTitle className="text-lg font-semibold text-foreground">
-          Statistik Arsip Digital (2000-2010)
+          {chartTitle}
         </CardTitle>
         <CardDescription className="text-xs text-muted-foreground">
-          Distribusi dokumen yang telah didigitalisasi per tahun
+          Distribusi dokumen (Nilai, Transkrip, Ijazah, &amp; Berita Acara Sidang) per tahun
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="p-5 pt-3 space-y-6">
-        {/* Recharts Bar Chart (Yearly Distribution) */}
+      <CardContent className="p-5 pt-3 space-y-6 flex-1 flex flex-col justify-between">
+        {/* Recharts Bar Chart (Stacked 4 Categories) */}
         {hasData ? (
           <div className="h-72 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
@@ -77,14 +81,16 @@ export function YearlyStatsChart({ isLoading, data }: YearlyStatsChartProps) {
                   iconType="circle"
                   wrapperStyle={{ paddingTop: "12px", fontSize: "12px" }}
                 />
-                <Bar dataKey="nilai" name="Nilai" fill="var(--chart-1)" radius={[4, 4, 0, 0]} stackId="a" />
-                <Bar dataKey="transkrip" name="Transkrip" fill="var(--chart-2)" radius={[4, 4, 0, 0]} stackId="a" />
+                <Bar dataKey="nilai" name="Nilai" fill="var(--chart-1)" radius={[0, 0, 0, 0]} stackId="a" />
+                <Bar dataKey="transkrip" name="Transkrip" fill="var(--chart-2)" radius={[0, 0, 0, 0]} stackId="a" />
+                <Bar dataKey="ijazah" name="Ijazah" fill="var(--chart-3)" radius={[0, 0, 0, 0]} stackId="a" />
+                <Bar dataKey="bas" name="Berita Acara Sidang" fill="var(--chart-4)" radius={[4, 4, 0, 0]} stackId="a" />
               </BarChart>
             </ResponsiveContainer>
           </div>
         ) : (
           <div className="h-64 flex flex-col items-center justify-center text-muted-foreground text-xs rounded-xl border border-dashed p-6">
-            <span>Belum ada data statistik tahunan tersedia.</span>
+            <span>Belum ada data statistik tahunan tersedia untuk periode ini.</span>
           </div>
         )}
       </CardContent>

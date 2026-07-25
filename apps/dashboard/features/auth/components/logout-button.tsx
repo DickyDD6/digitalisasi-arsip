@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, type buttonVariants } from "@/components/ui/button";
+import { Button, type buttonVariants } from "@repo/ui/button";
 import { VariantProps } from "class-variance-authority";
 import { Loader2, LogOut } from "lucide-react";
 import { Slot } from "radix-ui";

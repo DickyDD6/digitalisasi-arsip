@@ -10,7 +10,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@repo/ui/card";
 import { DocumentTypeSelector, DocumentTypeOption } from "./document-type-selector";
 import { FileDropzone } from "./file-dropzone";
 import { MetadataForm, MetadataFormState } from "./metadata-form";

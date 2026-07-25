@@ -1,8 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import { TrendingUp, Clock, Users, AlertCircle, ChevronRight } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@repo/ui/card";
+import { Skeleton } from "@repo/ui/skeleton";
 
 interface SecondaryMetricsProps {
   isLoading?: boolean;

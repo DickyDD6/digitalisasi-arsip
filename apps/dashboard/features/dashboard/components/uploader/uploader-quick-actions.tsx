@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { Upload, Clock, FileX } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Card } from "@repo/ui/card";
 
 export function UploaderQuickActions() {
   return (

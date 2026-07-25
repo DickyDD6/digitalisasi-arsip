@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@repo/ui/card";
 
 export function QCHeaderBanner() {
   return (

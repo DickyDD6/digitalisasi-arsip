@@ -3,20 +3,20 @@ import {
   PageTitle,
   PageDescription,
 } from "@/shared/components/page-header";
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/button";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Field, FieldLabel } from "@/components/ui/field";
+} from "@repo/ui/card";
+import { Field, FieldLabel } from "@repo/ui/field";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "@/components/ui/input-group";
+} from "@repo/ui/input-group";
 import { Clock, KeyRound, Shield } from "lucide-react";
 
 export default function ChangePasswordPage() {

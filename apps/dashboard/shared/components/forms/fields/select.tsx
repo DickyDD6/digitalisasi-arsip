@@ -3,17 +3,17 @@ import {
   FieldDescription,
   FieldError,
   FieldLabel,
-} from "@/components/ui/field";
+} from "@repo/ui/field";
 import {
   SelectContent,
   SelectItem,
   Select as SelectPrimitive,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@repo/ui/select";
 import { ReactNode } from "react";
 import { useFieldContext } from "../form-context";
-import { InputGroup, InputGroupAddon } from "@/components/ui/input-group";
+import { InputGroup, InputGroupAddon } from "@repo/ui/input-group";
 
 export const Select = ({
   label,

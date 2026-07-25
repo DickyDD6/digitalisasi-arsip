@@ -9,7 +9,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@repo/ui/card";
 import { FileText } from "lucide-react";
 import { Metadata } from "next";
 import { ArchiveDataContent } from "@/features/archives/components/archive-data-content";

@@ -9,6 +9,11 @@
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
+  "imports": {
+    "#components/*": "./shared/components/*.tsx",
+    "#lib/*": "./shared/lib/*.ts",
+    "#hooks/*": "./shared/hooks/*.ts"
+  },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
     "@repo/ui": "workspace:*",

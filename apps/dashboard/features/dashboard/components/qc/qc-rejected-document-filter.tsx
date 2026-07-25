@@ -2,9 +2,9 @@
 
 import React from "react";
 import { Search } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent } from "@repo/ui/card";
+import { Input } from "@repo/ui/input";
+import { Tabs, TabsList, TabsTrigger } from "@repo/ui/tabs";
 import type { QCFilterCategoryOption } from "./qc-verified-document-filter";
 
 interface QCRejectedDocumentFilterProps {

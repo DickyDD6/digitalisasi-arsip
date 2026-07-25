@@ -1,18 +1,18 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/button";
 import {
   Field,
   FieldDescription,
   FieldError,
   FieldLabel,
-} from "@/components/ui/field";
+} from "@repo/ui/field";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group";
+} from "@repo/ui/input-group";
 import generator from "generate-password";
 import { Check, Copy, Eye, EyeOff, PencilLine, RefreshCw } from "lucide-react";
 import React, { ReactNode, useEffect, useState } from "react";

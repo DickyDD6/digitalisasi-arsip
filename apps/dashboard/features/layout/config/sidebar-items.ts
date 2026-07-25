@@ -10,7 +10,6 @@ import {
   FileCheck,
   FileX,
   Clock,
-  Printer,
   Search,
 } from "lucide-react";
 import React from "react";
@@ -102,16 +101,23 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     allowedRoles: ["qc"],
   },
 
+  // SBAP (Subbagian Akademik) Menu Items (English Route Names)
   {
-    label: "Pencarian Arsip",
-    link: "/document-list?status=terverifikasi",
+    label: "Cari Arsip",
+    link: "/search-archive",
     icon: Search,
     allowedRoles: ["sbap"],
   },
   {
-    label: "Cetak Transkrip",
-    link: "/document-list?tab=print",
-    icon: Printer,
+    label: "Arsip Tersedia",
+    link: "/available-archives",
+    icon: FileCheck,
+    allowedRoles: ["sbap"],
+  },
+  {
+    label: "Riwayat Download",
+    link: "/download-history",
+    icon: History,
     allowedRoles: ["sbap"],
   },
 ];

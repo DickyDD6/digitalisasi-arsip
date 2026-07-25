@@ -3,8 +3,8 @@ import {
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
-} from "@/components/ui/context-menu";
-import { TableCell, TableRow } from "@/components/ui/table";
+} from "@repo/ui/context-menu";
+import { TableCell, TableRow } from "@repo/ui/table";
 import { flexRender, Row } from "@tanstack/react-table";
 import { DeleteArchiveModal } from "./delete-archive-modal";
 import { DownloadArchiveModal } from "./download-archive-modal";

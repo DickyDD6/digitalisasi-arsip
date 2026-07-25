@@ -1,9 +1,9 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@repo/ui/badge";
+import { Checkbox } from "@repo/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
-import { DataTableViewOptions } from "@/components/ui/data-table";
+import { DataTableViewOptions } from "@repo/ui/data-table";
 import { ActionDropdownArchive } from "../components/ui/action-dropdown-archive";
 import {
   ARCHIVE_DOCUMENT_STATUS,

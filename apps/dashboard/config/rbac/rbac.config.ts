@@ -25,6 +25,9 @@ export const ROLE_PERMISSIONS: Record<string, UserRole[]> = {
   "/profile": ["manager", "qc", "uploader", "sbap"],
   "/system-settings": ["manager", "qc", "uploader", "sbap"],
   "/help": ["manager", "qc", "uploader", "sbap"],
+  "/search-archive": ["sbap", "manager"],
+  "/available-archives": ["sbap", "manager"],
+  "/download-history": ["sbap", "manager"],
 };
 
 export function hasPermission(

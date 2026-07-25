@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { Clock, FileCheck, FileX } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Card } from "@repo/ui/card";
 
 interface QCQuickAccessBannerProps {
   pendingCount?: number;

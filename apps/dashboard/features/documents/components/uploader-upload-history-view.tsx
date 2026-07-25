@@ -3,8 +3,8 @@
 import React, { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Clock } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card } from "@repo/ui/card";
+import { Skeleton } from "@repo/ui/skeleton";
 import { uploadHistoryQueries } from "@/features/documents/queries/upload-history.queries";
 import { UploadHistoryHeaderBanner } from "./upload-history/upload-history-header-banner";
 import { UploadHistorySummaryMetrics } from "./upload-history/upload-history-summary-metrics";

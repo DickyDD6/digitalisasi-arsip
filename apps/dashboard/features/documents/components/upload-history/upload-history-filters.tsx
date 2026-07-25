@@ -1,13 +1,13 @@
 import React from "react";
 import { Filter } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Card } from "@repo/ui/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@repo/ui/select";
 
 interface UploadHistoryFiltersProps {
   selectedPeriod: string;

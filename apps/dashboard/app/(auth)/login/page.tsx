@@ -11,8 +11,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { FieldSet } from "@/components/ui/field";
+} from "@repo/ui/card";
+import { FieldSet } from "@repo/ui/field";
 import { useLogin } from "@/features/auth/hooks/use-login";
 import { useTimeAgo } from "@/shared/hooks/use-time-ago";
 import { isAxiosError } from "axios";

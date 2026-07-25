@@ -3,9 +3,9 @@ import {
   CardContent,
   CardDescription,
   CardTitle,
-} from "@/components/ui/card";
+} from "@repo/ui/card";
 import { findChild } from "@/shared/utils/find-children";
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@repo/ui/lib/utils";
 import React from "react";
 
 export const PageHeader = ({

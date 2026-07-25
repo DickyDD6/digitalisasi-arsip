@@ -5,7 +5,7 @@ import {
   AddUserForm,
   AddUserFormOpts,
 } from "@/shared/components/forms/form/users/add-user-form";
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -14,7 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@repo/ui/dialog";
 import { useUserCreate } from "@/features/users/hooks/use-user-create";
 import { isAxiosError } from "axios";
 import { UserRoundPlus } from "lucide-react";

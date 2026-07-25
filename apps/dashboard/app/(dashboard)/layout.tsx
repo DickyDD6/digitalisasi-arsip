@@ -1,6 +1,6 @@
 import type React from "react";
 import { AuthGuard } from "@/features/auth/components/auth-guard";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@repo/ui/sidebar";
 import { DashboardNavbar } from "@/features/layout/components/dashboard-navbar";
 import { DashboardSidebar } from "@/features/layout/components/dashboard-sidebar";
 

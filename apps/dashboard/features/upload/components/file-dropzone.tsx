@@ -2,8 +2,8 @@
 
 import React, { useRef, useState } from "react";
 import { UploadCloud, FileText, X, CheckCircle2 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui/card";
+import { Button } from "@repo/ui/button";
 
 interface FileDropzoneProps {
   selectedFile: File | null;

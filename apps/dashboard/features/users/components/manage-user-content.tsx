@@ -1,15 +1,15 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@repo/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui/card";
 import {
   Empty,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@repo/ui/empty";
+import { Skeleton } from "@repo/ui/skeleton";
 import { useUsersStatistic } from "@/features/users/hooks/use-users-statistic";
 import { CloudAlert } from "lucide-react";
 import { DataTableUsers } from "./data-table-users";

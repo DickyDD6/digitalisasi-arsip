@@ -8,9 +8,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+} from "@repo/ui/dialog";
+import { Button } from "@repo/ui/button";
+import { Textarea } from "@repo/ui/textarea";
 import type { DocumentItem } from "../../types/dashboard.types";
 
 interface QCVerifyModalProps {
