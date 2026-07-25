@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/button";
 import {
   DataTableColumnHeader,
   DataTablePagination,
@@ -20,7 +20,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@repo/ui/table";
 import {
   ColumnDef,
   ColumnFiltersState,

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/button";
 import {
   DataTableColumnHeader,
   DataTablePagination,
@@ -21,7 +21,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@repo/ui/select";
 import {
   Table,
   TableBody,
@@ -29,7 +29,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@repo/ui/table";
 import { ROLE } from "@/shared/constants/role";
 import { useUsersTable } from "@/features/users/hooks/use-users-table";
 import { useQueryClient } from "@tanstack/react-query";
