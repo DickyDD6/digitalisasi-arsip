@@ -1,4 +1,4 @@
-interface ArchiveDocument {
+export interface ArchiveDocument {
   id: number;
   document_type: string;
   file_name: string;
@@ -19,15 +19,15 @@ interface ArchiveDocument {
   updated_at: Date;
 }
 
-type ArchiveDocumentTypeKey = "GRADE" | "CERTIFICATE" | "TRANSCRIPT" | "SIDANG";
-type ArchiveDocumentType =
+export type ArchiveDocumentTypeKey = "GRADE" | "CERTIFICATE" | "TRANSCRIPT" | "SIDANG";
+export type ArchiveDocumentType =
   | "Nilai"
   | "Ijazah"
   | "Transkrip"
   | "Berita Acara Sidang";
 
-type ArchiveDocumentStatusKey = "PENDING" | "VERIFIED" | "REJECTED";
-type ArchiveDocumentStatus =
+export type ArchiveDocumentStatusKey = "PENDING" | "VERIFIED" | "REJECTED";
+export type ArchiveDocumentStatus =
   | "Menunggu Verifikasi"
   | "Diverifikaksi"
   | "Ditolak";

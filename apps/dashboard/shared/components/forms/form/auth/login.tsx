@@ -1,4 +1,4 @@
-import { AUTH_SCHEMA } from "@/schemas/auth.schema";
+import { AUTH_SCHEMA } from "@/features/auth/schemas/auth.schema";
 import { KeyRound, UserRound } from "lucide-react";
 import { formOptions } from "@tanstack/react-form-nextjs";
 import { withForm } from "../../form-context";

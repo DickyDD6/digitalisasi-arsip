@@ -5,7 +5,7 @@ import {
   EditUserForm,
   EditUserFormOpts,
 } from "@/shared/components/forms/form/users/edit-user-form";
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -14,10 +14,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@repo/ui/dialog";
 import { useUserUpdate } from "@/features/users/hooks/use-user-update";
 import { useUserUpdateDetail } from "@/features/users/hooks/use-user-detail";
-import { USER_SCHEMA } from "@/schemas/user.schema";
+import { USER_SCHEMA } from "@/features/users/schemas/user.schema";
 import { isAxiosError } from "axios";
 import { Edit } from "lucide-react";
 import { useEffect } from "react";
