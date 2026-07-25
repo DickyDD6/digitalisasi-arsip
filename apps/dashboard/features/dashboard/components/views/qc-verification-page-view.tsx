@@ -20,7 +20,7 @@ import type { DocumentItem } from "../../types/dashboard.types";
 
 // Helper to determine if a document is Urgent strictly based on API status, title, or file name
 function checkIsUrgent(doc: DocumentItem): boolean {
-  const d = doc as Record<string, any>;
+  const d = doc as unknown as Record<string, unknown>;
   if (d.is_urgent === true || doc.status === "urgent" || doc.status === "menunggu_verifikasi_urgent") return true;
   const fileName = doc.file_name?.toLowerCase() || "";
   const title = doc.title?.toLowerCase() || "";
