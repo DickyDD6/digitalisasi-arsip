@@ -1,4 +1,4 @@
-import { http } from "@/lib/http";
+import { http } from "@/shared/lib/http";
 
 export interface FetchUploadHistoryParams {
   page?: number;

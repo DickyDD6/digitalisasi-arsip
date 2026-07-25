@@ -1,4 +1,4 @@
-import { http } from "@/lib/http";
+import { http } from "@/shared/lib/http";
 import { AuthUser, LoginCredentials, LoginResponse } from "../types/auth.types";
 
 export const authService = {

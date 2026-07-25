@@ -2,7 +2,7 @@ import {
   PageDescription,
   PageHeader,
   PageTitle,
-} from "@/components/page-header";
+} from "@/shared/components/page-header";
 import {
   Accordion,
   AccordionContent,
@@ -342,10 +342,8 @@ export default function HelpPage() {
             </CardHeader>
             <CardContent className="w-full min-h-0 overflow-auto">
               <Accordion
-                type="single"
-                collapsible
                 className="w-full"
-                defaultValue="item-1"
+                defaultValue={["item-1"]}
               >
                 {[
                   "Semua",

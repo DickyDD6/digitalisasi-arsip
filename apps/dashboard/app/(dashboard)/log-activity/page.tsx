@@ -3,7 +3,7 @@ import {
   PageDescription,
   PageHeader,
   PageTitle,
-} from "@/components/page-header";
+} from "@/shared/components/page-header";
 import { Button } from "@/components/ui/button";
 import { LogActivityContent } from "@/features/log-activity/components/log-activity-content";
 

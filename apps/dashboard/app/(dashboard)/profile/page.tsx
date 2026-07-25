@@ -4,7 +4,7 @@ import {
   PageHeader,
   PageTitle,
   PageDescription,
-} from "@/components/page-header";
+} from "@/shared/components/page-header";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";

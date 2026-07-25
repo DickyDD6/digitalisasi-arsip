@@ -4,8 +4,8 @@ import {
   CardDescription,
   CardTitle,
 } from "@/components/ui/card";
-import { findChild } from "@/lib/find-children";
-import { cn } from "@/lib/utils";
+import { findChild } from "@/shared/utils/find-children";
+import { cn } from "@/shared/lib/utils";
 import React from "react";
 
 export const PageHeader = ({

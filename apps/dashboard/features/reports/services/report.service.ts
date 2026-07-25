@@ -1,5 +1,5 @@
-import { http } from "@/lib/http";
-import { downloadFile } from "@/lib/download-helper";
+import { http } from "@/shared/lib/http";
+import { downloadFile } from "@/shared/utils/download-helper";
 
 export interface GenerateReportPayload {
   period_start: string;

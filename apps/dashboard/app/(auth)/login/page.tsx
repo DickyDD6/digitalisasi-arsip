@@ -1,10 +1,10 @@
 "use client";
 
-import { useAppForm } from "@/components/forms/form-context";
+import { useAppForm } from "@/shared/components/forms/form-context";
 import {
   LoginForm,
   loginFormOptions,
-} from "@/components/forms/form/auth/login";
+} from "@/shared/components/forms/form/auth/login";
 import {
   Card,
   CardContent,
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card";
 import { FieldSet } from "@/components/ui/field";
 import { useLogin } from "@/features/auth/hooks/use-login";
-import { useTimeAgo } from "@/lib/hooks/use-time-ago";
+import { useTimeAgo } from "@/shared/hooks/use-time-ago";
 import { isAxiosError } from "axios";
 import Image from "next/image";
 import { useRouter } from "nextjs-toploader/app";

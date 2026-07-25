@@ -1,4 +1,4 @@
-import { withForm } from "@/components/forms/form-context";
+import { withForm } from "@/shared/components/forms/form-context";
 import { ROLE } from "@/constants/role";
 import { USER_SCHEMA } from "@/schemas/user.schema";
 import { formOptions, revalidateLogic } from "@tanstack/react-form-nextjs";
@@ -10,13 +10,13 @@ import {
   UserRoundKey,
 } from "lucide-react";
 
-export const EditUserFormOpts = formOptions({
+export const AddUserFormOpts = formOptions({
   defaultValues: {
     name: "",
     email: "",
     password: "",
     nip: "",
-    role: "",
+    role: ROLE.SBAP,
   },
   validationLogic: revalidateLogic(),
   validators: {
@@ -24,8 +24,8 @@ export const EditUserFormOpts = formOptions({
   },
 });
 
-export const EditUserForm = withForm({
-  ...EditUserFormOpts,
+export const AddUserForm = withForm({
+  ...AddUserFormOpts,
   render: ({ form }) => (
     <>
       <form.AppField name="name">
@@ -52,8 +52,9 @@ export const EditUserForm = withForm({
         {(field) => (
           <field.PasswordGenerate
             label="Kata Sandi Pengguna"
-            placeholder="Masukkan Kata Sandi Baru"
+            placeholder="Masukkan Kata Sandi Pengguna"
             icon={{ side: "left", element: <KeyRound /> }}
+            mode={"add"}
           />
         )}
       </form.AppField>

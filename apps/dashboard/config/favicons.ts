@@ -65,5 +65,4 @@ export const favicons: Metadata["icons"] = {
       type: "image/png",
     },
   ],
-  other: [{ rel: "manifest", url: "/manifest" }],
 };

@@ -2,7 +2,7 @@ import {
   PageDescription,
   PageHeader,
   PageTitle,
-} from "@/components/page-header";
+} from "@/shared/components/page-header";
 import { ReportContent } from "@/features/reports/components/report-content";
 
 export default function ReportPage() {

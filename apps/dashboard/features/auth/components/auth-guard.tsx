@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { RoleThemeProvider } from "@/features/auth/components/role-theme-provider";
 import { authQueries } from "@/features/auth/queries/auth.queries";
-import { Flasher } from "./flasher";
+import { Flasher } from "@/shared/components/flasher";
 
 export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -30,5 +30,5 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
     return <Flasher />;
   }
 
-  return <RoleThemeProvider role={user.role}>{children}</RoleThemeProvider>;
+  return <RoleThemeProvider>{children}</RoleThemeProvider>;
 };

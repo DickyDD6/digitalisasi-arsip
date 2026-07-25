@@ -50,17 +50,16 @@ export const Select = ({
 
         <SelectPrimitive
           value={field.state.value}
-          onValueChange={field.handleChange}
+          onValueChange={(val) => field.handleChange(val as string)}
         >
           <SelectTrigger className="w-full border-0 shadow-none">
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
-          <SelectContent position="popper">
+          <SelectContent>
             {options.map((option) => (
               <SelectItem
                 key={option.value}
                 value={option.value}
-                onSelect={() => field.handleChange(option.value)}
               >
                 {option.label}
               </SelectItem>

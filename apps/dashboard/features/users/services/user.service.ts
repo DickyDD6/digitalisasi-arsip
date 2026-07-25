@@ -1,4 +1,4 @@
-import { http } from "@/lib/http";
+import { http } from "@/shared/lib/http";
 
 export const userService = {
   async getUsers(params?: UserParams): Promise<ApiResponse<User[]>> {

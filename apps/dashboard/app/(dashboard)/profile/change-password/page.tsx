@@ -2,7 +2,7 @@ import {
   PageHeader,
   PageTitle,
   PageDescription,
-} from "@/components/page-header";
+} from "@/shared/components/page-header";
 import { Button } from "@/components/ui/button";
 import {
   Card,
