@@ -2,8 +2,9 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { Bell, CheckCircle2, AlertCircle, Info, AlertTriangle, Check, ExternalLink } from "lucide-react";
+import { Bell, CheckCircle2, AlertCircle, Info, AlertTriangle, Check, ExternalLink, ChevronRight } from "lucide-react";
 import { authQueries } from "@/features/auth/queries/auth.queries";
 import { dashboardQueries } from "@/features/dashboard/queries/dashboard.queries";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ const READ_NOTIFS_KEY = "digital_archive_read_notifications";
 export function NotificationsDropdown() {
   const { data: user } = useQuery(authQueries.userMe());
   const role = user?.role || "manager";
+  const router = useRouter();
 
   const auditQuery = useQuery(dashboardQueries.auditLogStats());
   const pendingQuery = useQuery(dashboardQueries.pendingDocuments(5, 1));
@@ -50,7 +52,16 @@ export function NotificationsDropdown() {
   const auditLogs = auditQuery.data?.data?.recent_activities || [];
   const pendingDocs = pendingQuery.data?.data || [];
 
-  const notifications = React.useMemo(() => {
+  type LocalNotification = {
+    id: number;
+    title: string;
+    message: string;
+    time: string;
+    type: "warning" | "success" | "info" | "destructive";
+    href?: string;
+  };
+
+  const notifications = React.useMemo((): LocalNotification[] => {
     if (role === "qc" && pendingDocs.length > 0) {
       return pendingDocs.slice(0, 5).map((doc) => ({
         id: doc.id,
@@ -58,6 +69,7 @@ export function NotificationsDropdown() {
         message: `${doc.title || doc.file_name || "Dokumen"} menunggu verifikasi QC.`,
         time: "Baru saja",
         type: "warning" as const,
+        href: "/verification",
       }));
     }
 
@@ -69,6 +81,7 @@ export function NotificationsDropdown() {
           message: "Dokumen terbaru Anda telah berhasil diunggah ke sistem.",
           time: "5 Menit lalu",
           type: "success" as const,
+          href: "/upload-history",
         },
         {
           id: 102,
@@ -76,6 +89,7 @@ export function NotificationsDropdown() {
           message: "Gunakan template transkrip standar versi 2026 untuk upload baru.",
           time: "1 Jam lalu",
           type: "info" as const,
+          href: "/upload-document",
         },
       ];
     }
@@ -88,6 +102,7 @@ export function NotificationsDropdown() {
           message: "Transkrip nilai mahasiswa baru diverifikasi dan siap diunduh.",
           time: "10 Menit lalu",
           type: "success" as const,
+          href: "/document-list",
         },
       ];
     }
@@ -110,6 +125,11 @@ export function NotificationsDropdown() {
           : actionStr.includes("verify")
             ? ("success" as const)
             : ("info" as const),
+        href: actionStr.includes("reject") || actionStr.includes("delete")
+          ? "/rejected-documents"
+          : actionStr.includes("verify")
+            ? "/verified-documents"
+            : "/log-activity",
       };
     });
   }, [role, auditLogs, pendingDocs]);
@@ -125,6 +145,11 @@ export function NotificationsDropdown() {
     if (!readIds.includes(id)) {
       saveReadIds([...readIds, id]);
     }
+  };
+
+  const handleNotifClick = (id: number, href?: string) => {
+    markSingleAsRead(id);
+    router.push(href ?? "/notifications");
   };
 
   return (
@@ -171,9 +196,10 @@ export function NotificationsDropdown() {
               return (
                 <DropdownMenuItem
                   key={item.id}
-                  className={`p-3.5 flex items-start gap-3 cursor-pointer transition-colors ${isRead ? "opacity-60 bg-transparent" : "bg-muted/30"
-                    }`}
-                  onClick={() => markSingleAsRead(item.id)}
+                  className={`p-3.5 flex items-start gap-3 cursor-pointer transition-colors group ${
+                    isRead ? "opacity-60 bg-transparent" : "bg-muted/30"
+                  }`}
+                  onClick={() => handleNotifClick(item.id, item.href)}
                 >
                   {item.type === "destructive" ? (
                     <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
@@ -194,6 +220,7 @@ export function NotificationsDropdown() {
                       {item.message}
                     </p>
                   </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-muted-foreground shrink-0 mt-0.5 opacity-50" />
                 </DropdownMenuItem>
               );
             })

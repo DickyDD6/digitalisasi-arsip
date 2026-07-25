@@ -80,7 +80,7 @@ export function ManagerDashboardView() {
 
       {/* 7. Verification Status & Notifications Grid (2 Columns) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <StatusAlerts isLoading={isLoading} />
+        <StatusAlerts isLoading={isLoading} pendingDocuments={primaryMetrics.pendingDocuments} />
         <NotificationsCard isLoading={isLoading} notifications={notificationsData} />
       </div>
     </div>

@@ -170,4 +170,6 @@ export interface NotificationItem {
   bgColor: string;
   textColor: string;
   iconColor: string;
+  /** URL tujuan saat notifikasi diklik. Opsional. */
+  href?: string;
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { AlertCircle, CheckCircle2, Info, AlertTriangle, ExternalLink } from "lucide-react";
+import { AlertCircle, CheckCircle2, Info, AlertTriangle, ExternalLink, ChevronRight } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -75,25 +75,23 @@ export function NotificationsCard({ isLoading, notifications }: NotificationsCar
           notifications.map((item) => {
             const IconComp = getIcon(item.iconName);
             return (
-              <div
-                key={item.id}
-                className={`p-3.5 rounded-xl border ${item.bgColor} flex items-start justify-between gap-3 transition-colors`}
-              >
-                <div className="flex items-start gap-3">
-                  <IconComp className={`w-4 h-4 ${item.iconColor} shrink-0 mt-0.5`} />
-                  <div className="space-y-0.5">
-                    <p className={`text-xs font-semibold ${item.textColor}`}>
-                      {item.title}
-                    </p>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      {item.message}
-                    </p>
+              <Link href={item.href ?? "/notifications"} key={item.id} aria-label={item.title}>
+                <div
+                  className={`p-3.5 rounded-xl border ${item.bgColor} flex items-center justify-between gap-3 cursor-pointer hover:opacity-90 transition-opacity group`}
+                >
+                  <div className="flex items-start gap-3 flex-1">
+                    <IconComp className={`w-4 h-4 ${item.iconColor} shrink-0 mt-0.5`} />
+                    <div className="space-y-0.5">
+                      <p className={`text-xs font-semibold ${item.textColor}`}>{item.title}</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{item.message}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-[11px] text-muted-foreground whitespace-nowrap">{item.time}</span>
+                    <ChevronRight className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
                 </div>
-                <span className="text-[11px] text-muted-foreground whitespace-nowrap shrink-0">
-                  {item.time}
-                </span>
-              </div>
+              </Link>
             );
           })
         ) : (

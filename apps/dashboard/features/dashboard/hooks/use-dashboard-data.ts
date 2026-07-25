@@ -96,6 +96,11 @@ export function useDashboardData(startDate?: string, endDate?: string) {
           : isSuccess
             ? "text-emerald-600 dark:text-emerald-400"
             : "text-blue-600 dark:text-blue-400",
+        href: isDestructive
+          ? "/rejected-documents"
+          : isSuccess
+            ? "/verified-documents"
+            : "/log-activity",
       };
     })
     : [];
