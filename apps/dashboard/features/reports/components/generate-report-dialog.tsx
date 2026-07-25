@@ -135,7 +135,7 @@ export const GenerateReportDialog: React.FC<GenerateReportDialogProps> = ({
               Gaya
             </Label>
             <div className="col-span-3">
-              <Select value={style} onValueChange={(val) => val && setStyle(val as "tabular" | "chart" | "summary")}>
+              <Select value={style} onValueChange={(val) => val && setStyle(val as "summary" | "detailed" | "executive")}>
                 <SelectTrigger>
                   <SelectValue placeholder="Pilih gaya" />
                 </SelectTrigger>
