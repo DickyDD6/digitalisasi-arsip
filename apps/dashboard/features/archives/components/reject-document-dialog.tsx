@@ -53,9 +53,10 @@ export const RejectDocumentDialog: React.FC<RejectDocumentDialogProps> = ({
       toast.success("Dokumen ditolak!");
       queryClient.invalidateQueries({ queryKey: ["documents"] });
       onOpenChange(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMsg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || "Terjadi kesalahan.";
       toast.error("Gagal menolak dokumen", {
-        description: err?.response?.data?.message || "Terjadi kesalahan.",
+        description: errorMsg,
       });
     } finally {
       setLoading(false);

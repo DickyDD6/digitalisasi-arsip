@@ -84,7 +84,10 @@ export function DocumentDistributionChart({ isLoading, data }: DocumentDistribut
                     ))}
                   </Pie>
                   <RechartsTooltip
-                    formatter={(value: any, name: any) => [`${value.toLocaleString()} Dokumen`, name]}
+                    formatter={(value) => [
+                      `${typeof value === "number" ? value.toLocaleString() : (value ?? "")} Dokumen`,
+                      "",
+                    ]}
                     contentStyle={{
                       backgroundColor: "rgba(255, 255, 255, 0.95)",
                       borderRadius: "8px",

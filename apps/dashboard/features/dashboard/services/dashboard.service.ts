@@ -46,7 +46,7 @@ export const dashboardService = {
     return response.data;
   },
 
-  getDocuments: async (params?: Record<string, any>) => {
+  getDocuments: async (params?: Record<string, unknown>) => {
     const response = await http.get<DocumentListResponse>("/api/documents", {
       params,
     });

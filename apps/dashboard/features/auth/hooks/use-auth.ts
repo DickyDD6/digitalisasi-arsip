@@ -14,7 +14,7 @@ export function useAuth() {
   const loginMutation = useMutation({
     mutationFn: (credentials: LoginCredentials) => authService.login(credentials),
     onSuccess: (data) => {
-      const user = data?.data?.user ?? (data as any)?.user;
+      const user = data?.data?.user ?? (data as unknown as { user?: User })?.user;
       if (user) {
         queryClient.setQueryData(["auth", "me"], user);
         if (typeof window !== "undefined") {

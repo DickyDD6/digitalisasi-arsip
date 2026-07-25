@@ -99,7 +99,7 @@ export const GenerateReportDialog: React.FC<GenerateReportDialogProps> = ({
               Tipe
             </Label>
             <div className="col-span-3">
-              <Select value={type} onValueChange={(val: string) => setType(val as "monthly" | "annual" | "custom")}>
+              <Select value={type} onValueChange={(val) => val && setType(val as "monthly" | "annual" | "custom")}>
                 <SelectTrigger>
                   <SelectValue placeholder="Pilih tipe" />
                 </SelectTrigger>
@@ -117,7 +117,7 @@ export const GenerateReportDialog: React.FC<GenerateReportDialogProps> = ({
               Format
             </Label>
             <div className="col-span-3">
-              <Select value={format} onValueChange={(val: string) => setFormat(val as "pdf" | "xlsx" | "csv")}>
+              <Select value={format} onValueChange={(val) => val && setFormat(val as "pdf" | "xlsx" | "csv")}>
                 <SelectTrigger>
                   <SelectValue placeholder="Pilih format" />
                 </SelectTrigger>
@@ -135,7 +135,7 @@ export const GenerateReportDialog: React.FC<GenerateReportDialogProps> = ({
               Gaya
             </Label>
             <div className="col-span-3">
-              <Select value={style} onValueChange={(val: string) => setStyle(val as "tabular" | "chart" | "summary")}>
+              <Select value={style} onValueChange={(val) => val && setStyle(val as "tabular" | "chart" | "summary")}>
                 <SelectTrigger>
                   <SelectValue placeholder="Pilih gaya" />
                 </SelectTrigger>

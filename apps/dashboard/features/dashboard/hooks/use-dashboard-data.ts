@@ -58,7 +58,7 @@ export function useDashboardData(startDate?: string, endDate?: string) {
       const isSuccess =
         actionStr.includes("verify") || actionStr.includes("create") || actionStr.includes("store");
 
-      let timeStr = "";
+      let timeStr: string;
       if (log.date?.time) {
         timeStr = `${log.date.time} WIB`;
       } else if (log.created_at) {

@@ -42,7 +42,7 @@ export function QCVerificationHistoryFilter({
         {/* Status Filter Tabs */}
         <Tabs
           value={statusFilter}
-          onValueChange={(val) => onStatusFilterChange(val as any)}
+          onValueChange={(val) => onStatusFilterChange(val)}
           className="w-full sm:w-auto"
         >
           <TabsList className="grid grid-cols-3 h-9 text-xs">

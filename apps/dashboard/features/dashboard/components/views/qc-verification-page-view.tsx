@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Clock, RefreshCw, AlertTriangle, FileCheck } from "lucide-react";
+import { Clock, RefreshCw, FileCheck } from "lucide-react";
 import {
   Card,
   CardContent,

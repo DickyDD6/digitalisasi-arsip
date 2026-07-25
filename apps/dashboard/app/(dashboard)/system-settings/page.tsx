@@ -4,12 +4,8 @@ import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   Settings,
-  Shield,
   Bell,
   HardDrive,
-  FileCheck,
-  Upload,
-  Printer,
   Save,
   CheckCircle2,
 } from "lucide-react";

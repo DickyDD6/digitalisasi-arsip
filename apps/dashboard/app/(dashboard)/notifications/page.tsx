@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   Bell,
@@ -9,8 +9,6 @@ import {
   Clock,
   Search,
   CheckCheck,
-  Trash2,
-  SlidersHorizontal,
   Info,
   AlertTriangle,
 } from "lucide-react";
@@ -26,15 +24,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 
 const READ_NOTIFS_KEY = "digital_archive_read_notifications";
 const DELETED_NOTIFS_KEY = "digital_archive_deleted_notifications";
 
 export default function NotificationsPage() {
-  const { data: user } = useQuery(authQueries.userMe());
-  const role = user?.role || "manager";
+  useQuery(authQueries.userMe());
 
   const auditQuery = useQuery(dashboardQueries.auditLogStats());
   const pendingQuery = useQuery(dashboardQueries.pendingDocuments(10, 1));
@@ -43,25 +39,34 @@ export default function NotificationsPage() {
   const [activeCategory, setActiveCategory] = useState("Semua");
   const [activeTab, setActiveTab] = useState<"all" | "unread">("all");
 
-  const [readIds, setReadIds] = useState<number[]>([]);
-  const [deletedIds, setDeletedIds] = useState<number[]>([]);
-
-  useEffect(() => {
+  const [readIds, setReadIds] = useState<number[]>(() => {
+    if (typeof window === "undefined") return [];
     try {
-      const savedRead = localStorage.getItem(READ_NOTIFS_KEY);
-      if (savedRead) setReadIds(JSON.parse(savedRead));
-
-      const savedDeleted = localStorage.getItem(DELETED_NOTIFS_KEY);
-      if (savedDeleted) setDeletedIds(JSON.parse(savedDeleted));
+      const saved = localStorage.getItem(READ_NOTIFS_KEY);
+      return saved ? JSON.parse(saved) : [];
     } catch {
+      return [];
     }
-  }, []);
+  });
+
+  const [deletedIds, setDeletedIds] = useState<number[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const saved = localStorage.getItem(DELETED_NOTIFS_KEY);
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
 
   const saveReadIds = (ids: number[]) => {
     setReadIds(ids);
     try {
       localStorage.setItem(READ_NOTIFS_KEY, JSON.stringify(ids));
-    } catch {
+    } catch (error) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("Failed to save read notifications to localStorage:", error);
+      }
     }
   };
 
@@ -69,7 +74,10 @@ export default function NotificationsPage() {
     setDeletedIds(ids);
     try {
       localStorage.setItem(DELETED_NOTIFS_KEY, JSON.stringify(ids));
-    } catch {
+    } catch (error) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("Failed to save deleted notifications to localStorage:", error);
+      }
     }
   };
 

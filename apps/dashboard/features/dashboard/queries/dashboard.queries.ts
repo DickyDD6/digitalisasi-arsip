@@ -27,7 +27,7 @@ export const dashboardQueries = {
       queryFn: () => dashboardService.getUserStatistics(),
       staleTime: 1000 * 60 * 5,
     }),
-  documents: (params?: Record<string, any>) =>
+  documents: (params?: Record<string, unknown>) =>
     queryOptions({
       queryKey: [...dashboardQueries.all, "documents", params],
       queryFn: () => dashboardService.getDocuments(params),

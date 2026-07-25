@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Poppins, Noto_Sans, Inter } from "next/font/google";
+import { Poppins, Inter } from "next/font/google";
 import "@repo/ui/globals.css";
 import { favicons } from "@/config/favicons";
 import { TanstackProvider } from "@/shared/providers/tanstack-provider";

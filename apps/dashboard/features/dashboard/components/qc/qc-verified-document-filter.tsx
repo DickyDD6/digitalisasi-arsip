@@ -40,7 +40,7 @@ export function QCVerifiedDocumentFilter({
         {/* Category Tabs Filter */}
         <Tabs
           value={categoryFilter}
-          onValueChange={(val) => onCategoryFilterChange(val as any)}
+          onValueChange={(val) => onCategoryFilterChange(val)}
           className="w-full sm:w-auto"
         >
           <TabsList className="grid grid-cols-5 h-9 text-xs">
