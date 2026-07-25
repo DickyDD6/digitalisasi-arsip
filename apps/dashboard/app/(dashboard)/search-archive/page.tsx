@@ -137,7 +137,7 @@ export default function SearchArchivePage() {
   return (
     <div className="flex flex-col gap-6 w-full pb-10">
       <PageHeader>
-        <PageTitle>Pencarian Arsip Digital (Multi-Kriteria)</PageTitle>
+        <PageTitle>Pencarian Arsip Digital</PageTitle>
         <PageDescription>
           Pencarian cepat dan akurat dokumen terverifikasi berdasarkan NPM, Nama, Prodi, Jenis Dokumen, &amp; Tahun Ajaran
         </PageDescription>
@@ -149,7 +149,7 @@ export default function SearchArchivePage() {
           <div className="flex items-center justify-between">
             <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-              Form Filter Multi-Kriteria (SR-04.01)
+              Form Filter Multi-Kriteria
             </CardTitle>
             <Button
               variant="ghost"
@@ -245,7 +245,7 @@ export default function SearchArchivePage() {
             <div className="flex items-end">
               <Button className="w-full h-9 text-xs bg-[#F54A00] hover:bg-[#d64100] text-white font-medium gap-2">
                 <Search className="w-4 h-4" />
-                Cari Arsip (SR-04.01)
+                Cari Arsip
               </Button>
             </div>
           </div>

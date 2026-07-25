@@ -39,6 +39,7 @@ export default function AvailableArchivesPage() {
   const [selectedDocType, setSelectedDocType] = useState<string>("all");
   const [selectedDocIds, setSelectedDocIds] = useState<number[]>([]);
 
+  // Directly fetch verified documents from API
   const docsQuery = useQuery(dashboardQueries.documents({ status: "verified", per_page: 50 }));
   const isLoading = docsQuery.isLoading;
 
@@ -80,27 +81,7 @@ export default function AvailableArchivesPage() {
 
   const handleDownloadSingle = (doc: DocumentItem) => {
     toast.success(`Mengunduh arsip "${doc.title || doc.file_name}"`);
-    try {
-      const existing = localStorage.getItem("digital_archive_sbap_downloads");
-      const logs = existing ? JSON.parse(existing) : [];
-      const newLog = {
-        id: Date.now(),
-        fileName: doc.title || doc.file_name || `Dokumen_${doc.id}`,
-        npm: doc.npm || doc.student_number || "12345678",
-        prodi: selectedProdi !== "all" ? selectedProdi : "Teknik Informatika",
-        downloadedAt: new Date().toLocaleString("id-ID", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        docId: doc.id,
-      };
-      localStorage.setItem("digital_archive_sbap_downloads", JSON.stringify([newLog, ...logs]));
-    } catch {
-      // ignore
-    }
+    window.open(`/api/documents/${doc.id}/download`, "_blank");
   };
 
   const handleBulkDownload = () => {
@@ -232,7 +213,7 @@ export default function AvailableArchivesPage() {
                           {categoryName}
                         </TableCell>
                         <TableCell className="text-xs text-muted-foreground">
-                          {doc.prodi || (selectedProdi !== "all" ? selectedProdi : "Teknik Informatika")}
+                          {doc.prodi || (selectedProdi !== "all" ? selectedProdi : "-")}
                         </TableCell>
                         <TableCell>
                           <Badge
@@ -265,7 +246,7 @@ export default function AvailableArchivesPage() {
             </div>
           ) : (
             <div className="h-44 flex flex-col items-center justify-center text-muted-foreground text-xs rounded-xl border border-dashed p-6">
-              <span>Belum ada dokumen terverifikasi yang tersedia.</span>
+              <span>Belum ada dokumen terverifikasi yang tersedia dari API.</span>
             </div>
           )}
         </CardContent>

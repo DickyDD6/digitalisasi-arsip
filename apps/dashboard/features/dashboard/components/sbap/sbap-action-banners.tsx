@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { Search, FileCheck, ArrowRight, Zap } from "lucide-react";
-import { Badge } from "@repo/ui/badge";
+import { Search, FileCheck, ArrowRight } from "lucide-react";
 
 export function SBAPActionBanners() {
   return (
@@ -9,14 +8,8 @@ export function SBAPActionBanners() {
       {/* 1. Cari Arsip Digital Card */}
       <Link href="/search-archive" className="group block focus:outline-none">
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#9810FA] to-[#8200DB] p-6 text-white shadow-lg transition-all duration-300 hover:scale-[1.01] hover:shadow-xl">
-          <div className="flex items-start justify-between gap-4">
-            <div className="p-3 rounded-full bg-white/20 backdrop-blur-md shrink-0">
-              <Search className="w-6 h-6 text-white" />
-            </div>
-            <Badge variant="secondary" className="bg-white/20 hover:bg-white/30 text-white text-[10px] border-none px-2.5 py-0.5">
-              <Zap className="w-3 h-3 mr-1 fill-yellow-300 text-yellow-300" />
-              SR-04.01: Multi-criteria Search
-            </Badge>
+          <div className="p-3 rounded-full bg-white/20 backdrop-blur-md shrink-0 w-fit">
+            <Search className="w-6 h-6 text-white" />
           </div>
 
           <div className="mt-4 space-y-2">
@@ -39,14 +32,8 @@ export function SBAPActionBanners() {
       {/* 2. Arsip Terverifikasi Card */}
       <Link href="/available-archives" className="group block focus:outline-none">
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#155DFC] to-[#1447E6] p-6 text-white shadow-lg transition-all duration-300 hover:scale-[1.01] hover:shadow-xl">
-          <div className="flex items-start justify-between gap-4">
-            <div className="p-3 rounded-full bg-white/20 backdrop-blur-md shrink-0">
-              <FileCheck className="w-6 h-6 text-white" />
-            </div>
-            <Badge variant="secondary" className="bg-white/20 hover:bg-white/30 text-white text-[10px] border-none px-2.5 py-0.5">
-              <Zap className="w-3 h-3 mr-1 fill-yellow-300 text-yellow-300" />
-              SR-04.02 &amp; SR-04.03
-            </Badge>
+          <div className="p-3 rounded-full bg-white/20 backdrop-blur-md shrink-0 w-fit">
+            <FileCheck className="w-6 h-6 text-white" />
           </div>
 
           <div className="mt-4 space-y-2">
