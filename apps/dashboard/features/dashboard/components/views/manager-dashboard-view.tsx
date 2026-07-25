@@ -1,17 +1,44 @@
 "use client";
 
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import { useDashboardData } from "../../hooks/use-dashboard-data";
 import { ManagerHeaderBanner } from "../manager/manager-header-banner";
 import { PeriodFilter } from "../manager/period-filter";
 import { PrimaryMetrics } from "../manager/primary-metrics";
 import { SecondaryMetrics } from "../manager/secondary-metrics";
-import { YearlyStatsChart } from "../manager/yearly-stats-chart";
-import { DocumentDistributionChart } from "../manager/document-distribution-chart";
-import { QCPerformanceSection } from "../manager/qc-performance-section";
 import { StatusAlerts } from "../manager/status-alerts";
 import { NotificationsCard } from "../manager/notifications-card";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { PeriodType } from "../../types/dashboard.types";
+
+// Dynamic imports for heavy recharts components to optimize initial bundle size & LCP
+const YearlyStatsChart = dynamic(
+  () => import("../manager/yearly-stats-chart").then((m) => m.YearlyStatsChart),
+  {
+    loading: () => <Skeleton className="h-[350px] w-full rounded-xl col-span-2" />,
+    ssr: false,
+  }
+);
+
+const DocumentDistributionChart = dynamic(
+  () =>
+    import("../manager/document-distribution-chart").then(
+      (m) => m.DocumentDistributionChart
+    ),
+  {
+    loading: () => <Skeleton className="h-[350px] w-full rounded-xl" />,
+    ssr: false,
+  }
+);
+
+const QCPerformanceSection = dynamic(
+  () => import("../manager/qc-performance-section").then((m) => m.QCPerformanceSection),
+  {
+    loading: () => <Skeleton className="h-[280px] w-full rounded-xl" />,
+    ssr: false,
+  }
+);
 
 export function ManagerDashboardView() {
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>("hari");
