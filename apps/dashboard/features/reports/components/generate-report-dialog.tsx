@@ -65,9 +65,10 @@ export const GenerateReportDialog: React.FC<GenerateReportDialogProps> = ({
       await reportService.generate(payload, filename);
       toast.success("Laporan berhasil di-generate dan di-download!");
       setOpen(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMsg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || "Terjadi kesalahan saat membuat laporan.";
       toast.error("Gagal membuat laporan", {
-        description: err?.response?.data?.message || "Terjadi kesalahan saat membuat laporan.",
+        description: errorMsg,
       });
     } finally {
       setLoading(false);
@@ -98,7 +99,7 @@ export const GenerateReportDialog: React.FC<GenerateReportDialogProps> = ({
               Tipe
             </Label>
             <div className="col-span-3">
-              <Select value={type} onValueChange={(val: any) => setType(val)}>
+              <Select value={type} onValueChange={(val: string) => setType(val as "monthly" | "annual" | "custom")}>
                 <SelectTrigger>
                   <SelectValue placeholder="Pilih tipe" />
                 </SelectTrigger>
@@ -116,7 +117,7 @@ export const GenerateReportDialog: React.FC<GenerateReportDialogProps> = ({
               Format
             </Label>
             <div className="col-span-3">
-              <Select value={format} onValueChange={(val: any) => setFormat(val)}>
+              <Select value={format} onValueChange={(val: string) => setFormat(val as "pdf" | "xlsx" | "csv")}>
                 <SelectTrigger>
                   <SelectValue placeholder="Pilih format" />
                 </SelectTrigger>
@@ -134,7 +135,7 @@ export const GenerateReportDialog: React.FC<GenerateReportDialogProps> = ({
               Gaya
             </Label>
             <div className="col-span-3">
-              <Select value={style} onValueChange={(val: any) => setStyle(val)}>
+              <Select value={style} onValueChange={(val: string) => setStyle(val as "tabular" | "chart" | "summary")}>
                 <SelectTrigger>
                   <SelectValue placeholder="Pilih gaya" />
                 </SelectTrigger>

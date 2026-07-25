@@ -96,9 +96,10 @@ export const EditUserModal = ({ id }: { id: number }) => {
   });
 
   useEffect(() => {
-    const userData = (data as any)?.data || data;
-    if (userData) {
-      form.reset(userData as any);
+    const responseObj = data as unknown as { data?: User };
+    const userData = responseObj?.data || (data as unknown as User);
+    if (userData && "email" in userData) {
+      form.reset(userData);
     }
   }, [data, form]);
 

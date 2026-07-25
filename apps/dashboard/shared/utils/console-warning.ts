@@ -105,7 +105,7 @@ export const monitorConsoleActivity = () => {
   const warningText = "#fff";
   const warningSecondary = isDarkMode ? "#ff5252" : "#d32f2f";
 
-  console.log = function (...args: any[]) {
+  console.log = function (...args: unknown[]) {
     const message = args.join(" ");
     const isSuspicious = suspiciousPatterns.some((pattern) =>
       pattern.test(message),

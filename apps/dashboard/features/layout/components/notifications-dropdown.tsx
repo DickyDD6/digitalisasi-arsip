@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { Bell, CheckCircle2, AlertCircle, Info, AlertTriangle, Check, ExternalLink } from "lucide-react";
@@ -26,20 +26,15 @@ export function NotificationsDropdown() {
   const auditQuery = useQuery(dashboardQueries.auditLogStats());
   const pendingQuery = useQuery(dashboardQueries.pendingDocuments(5, 1));
 
-  const [readIds, setReadIds] = useState<number[]>([]);
-
-  useEffect(() => {
+  const [readIds, setReadIds] = useState<number[]>(() => {
+    if (typeof window === "undefined") return [];
     try {
       const saved = localStorage.getItem(READ_NOTIFS_KEY);
-      if (saved) {
-        setReadIds(JSON.parse(saved));
-      }
-    } catch (error) {
-      if (process.env.NODE_ENV !== "production") {
-        console.warn("Failed to load read notifications from localStorage:", error);
-      }
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
     }
-  }, []);
+  });
 
   const saveReadIds = (ids: number[]) => {
     setReadIds(ids);

@@ -1,5 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
-import { systemSettingsService, SystemSettingsConfig } from "../services/system-settings.service";
+import { systemSettingsService } from "../services/system-settings.service";
 
 export const systemSettingsQueries = {
   all: ["system-settings"] as const,

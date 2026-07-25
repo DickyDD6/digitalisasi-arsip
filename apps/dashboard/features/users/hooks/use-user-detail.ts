@@ -7,7 +7,7 @@ export const useUserDeleteDetail = (id: number) =>
   useQuery(userQueries.detail(id));
 
 export const useUserDeleteMultipleDetail = (ids: number[]) =>
-  useQuery(userQueries.detail(ids as any));
+  useQuery(userQueries.detail(ids[0] ?? 0));
 
 export const useUserUpdateDetail = (id: number) =>
   useQuery(userQueries.detail(id));

@@ -51,7 +51,35 @@ export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogP
   const [viewDocId, setViewDocId] = useState<number | null>(null);
   const [viewModalOpen, setViewModalOpen] = useState(false);
 
-  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [recentSearches, setRecentSearches] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const saved = localStorage.getItem(RECENT_SEARCHES_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch {
+      // ignore
+    }
+    return [];
+  });
+
+  const saveRecentSearch = React.useCallback((query: string) => {
+    const trimmed = query.trim();
+    if (!trimmed || trimmed.length < 2) return;
+    setRecentSearches((prev) => {
+      const updated = [trimmed, ...prev.filter((item) => item !== trimmed)].slice(0, 5);
+      try {
+        localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
+      } catch (error) {
+        if (process.env.NODE_ENV !== "production") {
+          console.warn("Failed to save recent search to localStorage:", error);
+        }
+      }
+      return updated;
+    });
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -62,39 +90,7 @@ export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogP
     }, 250);
 
     return () => clearTimeout(timer);
-  }, [searchTerm]);
-
-  useEffect(() => {
-    if (open) {
-      try {
-        const saved = localStorage.getItem(RECENT_SEARCHES_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed)) {
-            setRecentSearches(parsed);
-          }
-        }
-      } catch (error) {
-        if (process.env.NODE_ENV !== "production") {
-          console.warn("Failed to read recent searches from localStorage:", error);
-        }
-      }
-    }
-  }, [open]);
-
-  const saveRecentSearch = (query: string) => {
-    const trimmed = query.trim();
-    if (!trimmed || trimmed.length < 2) return;
-    const updated = [trimmed, ...recentSearches.filter((item) => item !== trimmed)].slice(0, 5);
-    setRecentSearches(updated);
-    try {
-      localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
-    } catch (error) {
-      if (process.env.NODE_ENV !== "production") {
-        console.warn("Failed to save recent search to localStorage:", error);
-      }
-    }
-  };
+  }, [searchTerm, saveRecentSearch]);
 
   const removeRecentSearch = (query: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -120,7 +116,7 @@ export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogP
     }
   };
 
-  const queryParams: Record<string, any> = {
+  const queryParams: Record<string, string | number> = {
     per_page: 8,
   };
   if (activeSearch.trim()) queryParams.search = activeSearch.trim();

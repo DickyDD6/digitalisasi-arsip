@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { DataTableViewOptions } from "@/components/ui/data-table";
+
 import { ColumnDef } from "@tanstack/react-table";
 import { ActionDropdownUser } from "./ui/action-dropdown-user";
 

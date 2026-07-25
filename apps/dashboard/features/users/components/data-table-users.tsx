@@ -71,8 +71,8 @@ export const DataTableUsers = () => {
   const userMeta = usersResponse?.meta;
 
   const currentUser =
-    queryClient.getQueryData<any>(["auth", "me"]) ||
-    queryClient.getQueryData<any>(["current", "user"]);
+    queryClient.getQueryData<User>(["auth", "me"]) ||
+    queryClient.getQueryData<User>(["current", "user"]);
 
   const data = useMemo(() => users || [], [users]);
   const columns = useMemo(() => usersTableColumns, []);

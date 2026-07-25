@@ -167,8 +167,8 @@ export const DeleteUserModal = ({ id }: { id: number | number[] }) => {
           className="justify-start w-full"
           disabled={
             isLoading ||
-            (singleQuery as any)?.data?.role === "manager" ||
-            (multipleQuery as any)?.some?.((user: any) => user.role === "manager")
+            (singleQuery as unknown as { data?: User })?.data?.role === "manager" ||
+            (Array.isArray(multipleQuery) && (multipleQuery as unknown as User[]).some((user) => user.role === "manager"))
           }
         >
           <Trash2 /> Hapus Pengguna
@@ -221,12 +221,12 @@ export const DeleteUserModal = ({ id }: { id: number | number[] }) => {
                   <span className="font-medium">
                     {Array.isArray(id)
                       ? Array.isArray(multipleQuery)
-                        ? multipleQuery
-                            .map((item: any) => item.name)
+                        ? (multipleQuery as unknown as User[])
+                            .map((item) => item.name)
                             .filter(Boolean)
                             .join(", ")
                         : "-"
-                      : (singleQuery as any)?.data?.name || "-"}
+                      : (singleQuery as unknown as { data?: User })?.data?.name || "-"}
                   </span>
                 </Field>
                 <Field
@@ -239,12 +239,12 @@ export const DeleteUserModal = ({ id }: { id: number | number[] }) => {
                   <span className="font-medium">
                     {Array.isArray(id)
                       ? Array.isArray(multipleQuery)
-                        ? (multipleQuery as any[])
-                            .map((item: any) => item.email)
+                        ? (multipleQuery as unknown as User[])
+                            .map((item) => item.email)
                             .filter(Boolean)
                             .join(", ")
                         : "-"
-                      : (singleQuery as any)?.data?.email || "-"}
+                      : (singleQuery as unknown as { data?: User })?.data?.email || "-"}
                   </span>
                 </Field>
                 <Field
@@ -257,12 +257,12 @@ export const DeleteUserModal = ({ id }: { id: number | number[] }) => {
                   <span className="font-medium">
                     {Array.isArray(id)
                       ? Array.isArray(multipleQuery)
-                        ? (multipleQuery as any[])
-                            .map((item: any) => item.nip)
+                        ? (multipleQuery as unknown as User[])
+                            .map((item) => item.nip)
                             .filter(Boolean)
                             .join(", ")
                         : "-"
-                      : (singleQuery as any)?.data?.nip || "-"}
+                      : (singleQuery as unknown as { data?: User })?.data?.nip || "-"}
                   </span>
                 </Field>
                 <Field
@@ -275,12 +275,12 @@ export const DeleteUserModal = ({ id }: { id: number | number[] }) => {
                   <span className="font-medium">
                     {Array.isArray(id)
                       ? Array.isArray(multipleQuery)
-                        ? (multipleQuery as any[])
-                            .map((item: any) => item.role)
+                        ? (multipleQuery as unknown as User[])
+                            .map((item) => item.role)
                             .filter(Boolean)
                             .join(", ")
                         : "-"
-                      : (singleQuery as any)?.data?.role || "-"}
+                      : (singleQuery as unknown as { data?: User })?.data?.role || "-"}
                   </span>
                 </Field>
               </FieldGroup>
