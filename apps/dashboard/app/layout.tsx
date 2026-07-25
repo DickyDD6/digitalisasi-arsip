@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Poppins, Noto_Sans, Inter } from "next/font/google";
 import "@repo/ui/globals.css";
 import { favicons } from "@/config/favicons";
-import { TanstackProvider } from "./tanstack-provider";
+import { TanstackProvider } from "@/shared/providers/tanstack-provider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
