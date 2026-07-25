@@ -15,10 +15,12 @@ import { EditUserModal } from "./edit-user-modal";
 export const ActionDropdownUser = ({ row }: { row: Row<User> }) => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Button variant="ghost" className="h-8 w-8 p-0">
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
+      <DropdownMenuTrigger
+        render={
+          <Button variant="ghost" className="h-8 w-8 p-0" />
+        }
+      >
+        <MoreHorizontal className="h-4 w-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="grid gap-2">
         <DropdownMenuItem>

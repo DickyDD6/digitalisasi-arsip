@@ -13,15 +13,20 @@ import { ViewArchiveModal } from "./view-archive-modal";
 export const ContextMenuArchive = ({ row }: { row: Row<ArchiveDocument> }) => {
   return (
     <ContextMenu>
-      <ContextMenuTrigger>
-        <TableRow data-state={row.getIsSelected() && "selected"}>
-          {row.getVisibleCells().map((cell) => (
-            <TableCell key={cell.id} align="center">
-              {flexRender(cell.column.columnDef.cell, cell.getContext())}
-            </TableCell>
-          ))}
-        </TableRow>
-      </ContextMenuTrigger>
+      <ContextMenuTrigger
+        render={(triggerProps) => (
+          <TableRow
+            {...triggerProps}
+            data-state={row.getIsSelected() ? "selected" : undefined}
+          >
+            {row.getVisibleCells().map((cell) => (
+              <TableCell key={cell.id} align="center">
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </TableCell>
+            ))}
+          </TableRow>
+        )}
+      />
       <ContextMenuContent className="grid gap-2">
         <ContextMenuItem>
           <ViewArchiveModal id={row.original.id} />

@@ -136,7 +136,8 @@ export function NotificationsDropdown() {
 
   const unreadCount = notifications.filter((n) => !readIds.includes(n.id)).length;
 
-  const markAllAsRead = () => {
+  const markAllAsRead = (e: React.MouseEvent) => {
+    e.stopPropagation();
     const allIds = Array.from(new Set([...readIds, ...notifications.map((n) => n.id)]));
     saveReadIds(allIds);
   };
@@ -154,15 +155,17 @@ export function NotificationsDropdown() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Button variant="ghost" size="icon" className="relative h-9 w-9 rounded-lg">
-          <Bell className="w-5 h-5 text-muted-foreground" />
-          {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-600 text-[10px] font-bold text-white shadow-sm animate-pulse">
-              {unreadCount}
-            </span>
-          )}
-        </Button>
+      <DropdownMenuTrigger
+        render={
+          <Button variant="ghost" size="icon" className="relative h-9 w-9 rounded-lg" />
+        }
+      >
+        <Bell className="w-5 h-5 text-muted-foreground" />
+        {unreadCount > 0 && (
+          <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-600 text-[10px] font-bold text-white shadow-sm animate-pulse">
+            {unreadCount}
+          </span>
+        )}
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-80 sm:w-96 p-0 shadow-lg border border-border/60">
@@ -234,15 +237,13 @@ export function NotificationsDropdown() {
         {/* Bottom Button: See All Notifications */}
         <DropdownMenuSeparator className="m-0" />
         <div className="p-2 bg-muted/20 text-center">
-          <Button
-            variant="ghost"
-            className="w-full text-xs text-[#F54A00] hover:text-[#d64100] hover:bg-[#F54A00]/10 font-medium justify-center h-8 gap-1.5"
+          <Link
+            href="/notifications"
+            className="w-full text-xs text-[#F54A00] hover:text-[#d64100] hover:bg-[#F54A00]/10 font-medium inline-flex items-center justify-center h-8 gap-1.5 rounded-lg transition-colors"
           >
-            <Link href="/notifications">
-              Lihat Semua Notifikasi
-              <ExternalLink className="w-3.5 h-3.5" />
-            </Link>
-          </Button>
+            Lihat Semua Notifikasi
+            <ExternalLink className="w-3.5 h-3.5" />
+          </Link>
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

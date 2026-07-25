@@ -20,14 +20,14 @@ export const ActionDropdownArchive = ({
 }) => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Button variant="ghost" size="icon-sm">
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        className="grid gap-2"
+      <DropdownMenuTrigger
+        render={
+          <Button variant="ghost" size="icon-sm" />
+        }
       >
+        <MoreHorizontal className="h-4 w-4" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="grid gap-2">
         <DropdownMenuItem>
           <ViewArchiveModal id={row.original.id} />
         </DropdownMenuItem>
