@@ -28,7 +28,7 @@ import React, { useState } from "react";
 import { LogoutButton } from "./logout-button";
 import { useQuery } from "@tanstack/react-query";
 import { authQueries } from "@/features/auth/queries/auth.queries";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 const ROLE_LABELS: Record<string, string> = {
   manager: "Manager Arsip",
