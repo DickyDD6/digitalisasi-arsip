@@ -52,7 +52,6 @@ export default function RootLayout({
             <Toaster
               position="top-right"
               richColors
-              theme="system"
               closeButton
               visibleToasts={3}
             />
