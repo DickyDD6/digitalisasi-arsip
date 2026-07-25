@@ -76,7 +76,7 @@ export const GenerateReportDialog: React.FC<GenerateReportDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger>
         {trigger || (
           <Button variant="outline" size="sm" className="mt-4">
             <Printer className="size-4 mr-2" />

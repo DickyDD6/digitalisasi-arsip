@@ -9,7 +9,7 @@ import {
   PageDescription,
   PageHeader,
   PageTitle,
-} from "@/components/page-header";
+} from "@/shared/components/page-header";
 import {
   Card,
   CardContent,

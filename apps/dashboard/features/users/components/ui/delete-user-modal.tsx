@@ -161,7 +161,7 @@ export const DeleteUserModal = ({ id }: { id: number | number[] }) => {
         setOpenDialog(open);
       }}
     >
-      <DialogTrigger asChild>
+      <DialogTrigger>
         <Button
           variant={"destructive"}
           className="justify-start w-full"
@@ -174,16 +174,7 @@ export const DeleteUserModal = ({ id }: { id: number | number[] }) => {
           <Trash2 /> Hapus Pengguna
         </Button>
       </DialogTrigger>
-      <DialogContent
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        onCloseAutoFocus={(e) => {
-          e.preventDefault();
-          document.dispatchEvent(
-            new KeyboardEvent("keydown", { key: "Escape" }),
-          );
-        }}
-        className={"sm:max-h-lg sm:max-w-2xl"}
-      >
+      <DialogContent className={"sm:max-h-lg sm:max-w-2xl"}>
         <DialogHeader>
           <DialogTitle>
             {Array.isArray(id)

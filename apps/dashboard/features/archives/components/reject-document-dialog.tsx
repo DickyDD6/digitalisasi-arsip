@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { XCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { http } from "@/lib/http";
+import { http } from "@/shared/lib/http";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface RejectDocumentDialogProps {
@@ -84,7 +84,7 @@ export const RejectDocumentDialog: React.FC<RejectDocumentDialogProps> = ({
             <Label htmlFor="reason" className="text-xs font-semibold">
               Alasan Penolakan <span className="text-red-500">*</span>
             </Label>
-            <Select value={reason} onValueChange={setReason}>
+            <Select value={reason} onValueChange={(val) => setReason(val || "")}>
               <SelectTrigger className="h-9">
                 <SelectValue placeholder="Pilih Alasan Penolakan" />
               </SelectTrigger>

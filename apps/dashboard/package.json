@@ -10,6 +10,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "dependencies": {
+    "@base-ui/react": "^1.6.0",
+    "@repo/ui": "workspace:*",
     "@tanstack/react-form-nextjs": "^1.28.2",
     "@tanstack/react-query": "^5.90.21",
     "@tanstack/react-query-devtools": "^5.91.3",

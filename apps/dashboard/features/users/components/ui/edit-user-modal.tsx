@@ -1,10 +1,10 @@
 "use client";
 
-import { useAppForm } from "@/components/forms/form-context";
+import { useAppForm } from "@/shared/components/forms/form-context";
 import {
   EditUserForm,
   EditUserFormOpts,
-} from "@/components/forms/form/users/edit-user-form";
+} from "@/shared/components/forms/form/users/edit-user-form";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -116,21 +116,13 @@ export const EditUserModal = ({ id }: { id: number }) => {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
+      <DialogTrigger>
         <Button variant="ghost" className="w-full justify-start">
           <Edit />
           Edit
         </Button>
       </DialogTrigger>
-      <DialogContent
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        onCloseAutoFocus={(e) => {
-          e.preventDefault();
-          document.dispatchEvent(
-            new KeyboardEvent("keydown", { key: "Escape" }),
-          );
-        }}
-      >
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit Data Pengguna</DialogTitle>
           <DialogDescription>Perbarui Informasi Pengguna</DialogDescription>

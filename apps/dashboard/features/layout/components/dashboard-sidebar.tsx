@@ -63,7 +63,7 @@ export const DashboardSidebar = () => {
             <SidebarMenu>
               {accessibleItems.map((item, i) => (
                 <SidebarMenuItem key={i}>
-                  <SidebarMenuButton isActive={pathname === item.link} asChild>
+                  <SidebarMenuButton isActive={pathname === item.link}>
                     <Link href={item.link}>
                       <item.icon />
                       {item.label}
@@ -78,7 +78,7 @@ export const DashboardSidebar = () => {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton isActive={pathname === "/system-settings"} asChild>
+            <SidebarMenuButton isActive={pathname === "/system-settings"}>
               <Link href={"/system-settings"}>
                 <Settings />
                 Pengaturan Sistem

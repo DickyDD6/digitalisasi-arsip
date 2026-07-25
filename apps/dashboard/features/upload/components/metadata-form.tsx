@@ -90,7 +90,7 @@ export function MetadataForm({
                 </Label>
                 <Select
                   value={formData.prodi}
-                  onValueChange={(val) => onChange("prodi", val)}
+                  onValueChange={(val) => onChange("prodi", val || "")}
                   required
                 >
                   <SelectTrigger className="w-full h-10 text-xs">
@@ -116,7 +116,7 @@ export function MetadataForm({
                     </Label>
                     <Select
                       value={formData.tahun_ajaran}
-                      onValueChange={(val) => onChange("tahun_ajaran", val)}
+                      onValueChange={(val) => onChange("tahun_ajaran", val || "")}
                       required
                     >
                       <SelectTrigger className="w-full h-10 text-xs">
@@ -154,7 +154,7 @@ export function MetadataForm({
                     </Label>
                     <Select
                       value={formData.kelas}
-                      onValueChange={(val) => onChange("kelas", val)}
+                      onValueChange={(val) => onChange("kelas", val || "")}
                       required
                     >
                       <SelectTrigger className="w-full h-10 text-xs">

@@ -150,17 +150,17 @@ export const DataTableUsers = () => {
                       />
                       {header.column.getCanFilter() && (
                         <Select
-                          value={roleFilter}
+                          value={roleFilter || "all"}
                           onValueChange={(value) =>
                             setRoleFilter(
-                              value === "all" ? undefined : (value as UserRole),
+                              (value as string) === "all" ? undefined : (value as UserRole),
                             )
                           }
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Filter Peran" />
                           </SelectTrigger>
-                          <SelectContent position={"popper"}>
+                          <SelectContent>
                             <SelectGroup>
                               <SelectLabel>Filter Peran</SelectLabel>
                               <SelectItem value="all">Semua Peran</SelectItem>

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
-import { http } from "@/lib/http";
+import { http } from "@/shared/lib/http";
 import {
   Card,
   CardDescription,

@@ -20,22 +20,21 @@ export const ActionDropdownArchive = ({
 }) => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger>
         <Button variant="ghost" size="icon-sm">
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        onCloseAutoFocus={(e) => e.preventDefault()}
         className="grid gap-2"
       >
-        <DropdownMenuItem asChild>
+        <DropdownMenuItem>
           <ViewArchiveModal id={row.original.id} />
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
+        <DropdownMenuItem>
           <DownloadArchiveModal id={row.original.id} />
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
+        <DropdownMenuItem>
           <DeleteArchiveModal id={row.original.id} />
         </DropdownMenuItem>
       </DropdownMenuContent>

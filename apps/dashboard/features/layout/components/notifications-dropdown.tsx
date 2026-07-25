@@ -134,7 +134,7 @@ export function NotificationsDropdown() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger>
         <Button variant="ghost" size="icon" className="relative h-9 w-9 rounded-lg">
           <Bell className="w-5 h-5 text-muted-foreground" />
           {unreadCount > 0 && (
@@ -213,7 +213,6 @@ export function NotificationsDropdown() {
         <DropdownMenuSeparator className="m-0" />
         <div className="p-2 bg-muted/20 text-center">
           <Button
-            asChild
             variant="ghost"
             className="w-full text-xs text-[#F54A00] hover:text-[#d64100] hover:bg-[#F54A00]/10 font-medium justify-center h-8 gap-1.5"
           >

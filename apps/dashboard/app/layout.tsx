@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
-import "./globals.css";
-import { favicons } from "@/lib/favicons";
+import { Poppins, Noto_Sans, Inter } from "next/font/google";
+import "@repo/ui/globals.css";
+import { favicons } from "@/config/favicons";
 import { TanstackProvider } from "./tanstack-provider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { ConsoleSecurity } from "@/components/console-security";
+import { ConsoleSecurity } from "@/shared/components/console-security";
 import NextTopLoader from "nextjs-toploader";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
+import { cn } from "@/shared/lib/utils";
+
+const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -32,7 +35,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={cn("font-sans", inter.variable)}>
       <body className={`${poppins.className}`}>
         <NextTopLoader color="var(--primary)" showSpinner={false} />
         <ConsoleSecurity />

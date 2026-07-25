@@ -22,7 +22,7 @@ export const FilterDropdownArchive = <TData, TValue>({
   return (
     <div className="ml-2">
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
+        <DropdownMenuTrigger>
           <Button
             variant="outline"
             size={header.column.getFilterValue() ? "sm" : "icon"}
@@ -38,7 +38,7 @@ export const FilterDropdownArchive = <TData, TValue>({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="space-y-2">
-          <DropdownMenuItem asChild className="cursor-pointer w-full">
+          <DropdownMenuItem className="cursor-pointer w-full">
             <Button
               onClick={() => {
                 setColumnFilters?.((prev) => [
@@ -53,7 +53,6 @@ export const FilterDropdownArchive = <TData, TValue>({
           {filterOptions[header.column.id]?.map((option) => (
             <DropdownMenuItem
               key={option.value}
-              asChild
               className="cursor-pointer w-full"
             >
               <Button

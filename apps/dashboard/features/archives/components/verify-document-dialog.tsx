@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { http } from "@/lib/http";
+import { http } from "@/shared/lib/http";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface VerifyDocumentDialogProps {

@@ -13,7 +13,7 @@ import { ViewArchiveModal } from "./view-archive-modal";
 export const ContextMenuArchive = ({ row }: { row: Row<ArchiveDocument> }) => {
   return (
     <ContextMenu>
-      <ContextMenuTrigger asChild>
+      <ContextMenuTrigger>
         <TableRow data-state={row.getIsSelected() && "selected"}>
           {row.getVisibleCells().map((cell) => (
             <TableCell key={cell.id} align="center">
@@ -23,13 +23,13 @@ export const ContextMenuArchive = ({ row }: { row: Row<ArchiveDocument> }) => {
         </TableRow>
       </ContextMenuTrigger>
       <ContextMenuContent className="grid gap-2">
-        <ContextMenuItem asChild>
+        <ContextMenuItem>
           <ViewArchiveModal id={row.original.id} />
         </ContextMenuItem>
-        <ContextMenuItem asChild>
+        <ContextMenuItem>
           <DownloadArchiveModal id={row.original.id} />
         </ContextMenuItem>
-        <ContextMenuItem asChild>
+        <ContextMenuItem>
           <DeleteArchiveModal id={row.original.id} />
         </ContextMenuItem>
       </ContextMenuContent>

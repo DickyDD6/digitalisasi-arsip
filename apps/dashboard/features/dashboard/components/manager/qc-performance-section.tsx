@@ -80,7 +80,7 @@ export function QCPerformanceSection({ isLoading, data }: QCPerformanceSectionPr
             <Button variant="outline" size="icon" className="h-9 w-9">
               <Filter className="w-4 h-4 text-muted-foreground" />
             </Button>
-            <Select value={qcFilter} onValueChange={setQcFilter}>
+            <Select value={qcFilter} onValueChange={(val) => setQcFilter(val || "")}>
               <SelectTrigger className="w-[140px] h-9 text-xs">
                 <SelectValue placeholder="Select Filter" />
               </SelectTrigger>

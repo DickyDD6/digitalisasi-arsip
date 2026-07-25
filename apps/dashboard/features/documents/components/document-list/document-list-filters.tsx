@@ -48,7 +48,7 @@ export function DocumentListFilters({
 
       <div className="flex items-center gap-2 w-full sm:w-auto">
         <Filter className="w-4 h-4 text-muted-foreground shrink-0" />
-        <Select value={selectedStatus} onValueChange={onStatusChange}>
+        <Select value={selectedStatus} onValueChange={(val) => onStatusChange(val || "")}>
           <SelectTrigger className="w-full sm:w-48 h-10 text-xs">
             <SelectValue placeholder="Semua Status" />
           </SelectTrigger>

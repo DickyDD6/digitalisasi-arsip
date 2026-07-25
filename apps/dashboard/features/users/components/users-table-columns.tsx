@@ -11,7 +11,7 @@ export const usersTableColumns: ColumnDef<User>[] = [
       <Checkbox
         checked={
           table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+          table.getIsSomePageRowsSelected()
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -39,46 +39,50 @@ export const usersTableColumns: ColumnDef<User>[] = [
       const pageSize = table.getState().pagination.pageSize;
       return pageIndex * pageSize + row.index + 1;
     },
-    enableColumnFilter: false,
   },
   {
-    id: "nama",
     accessorKey: "name",
-    enableColumnFilter: false,
     header: "Nama",
   },
   {
-    id: "NIP",
-    accessorKey: "nip",
-    enableColumnFilter: false,
-    header: "NIP",
-  },
-  {
     accessorKey: "email",
-    enableColumnFilter: false,
     header: "Email",
   },
   {
-    id: "Peran",
     accessorKey: "role",
-    header: "Peran",
+    header: "Role",
     cell: ({ row }) => {
-      const role = row.original.role as UserRole;
+      const role = row.original.role;
+
+      if (!role) return "-";
+      const roleName =
+        typeof role === "object" && role && "name" in (role as object)
+          ? (role as { name: string }).name
+          : String(role);
+
       return (
         <Badge
-          style={{
-            backgroundColor: `var(--${role})`,
-            color: `var(--${role}-foreground)`,
-          }}
+          variant={
+            roleName === "admin"
+              ? "default"
+              : roleName === "manager"
+              ? "secondary"
+              : "outline"
+          }
+          className="font-normal uppercase"
         >
-          {role.toUpperCase()}
+          {roleName}
         </Badge>
       );
     },
   },
   {
-    id: "actions",
-    header: ({ table }) => <DataTableViewOptions table={table} />,
+    id: "action",
+    header: () => (
+      <div className="flex items-center justify-end">
+        <span>Aksi</span>
+      </div>
+    ),
     cell: ({ row }) => <ActionDropdownUser row={row} />,
   },
 ];

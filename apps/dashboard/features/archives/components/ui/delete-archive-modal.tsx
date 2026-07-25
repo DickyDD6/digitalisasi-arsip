@@ -19,7 +19,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Field, FieldGroup } from "@/components/ui/field";
-import { http } from "@/lib/http";
+import { http } from "@/shared/lib/http";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { Loader2, Trash2 } from "lucide-react";
@@ -130,20 +130,12 @@ export const DeleteArchiveModal = ({ id }: { id: number | number[] }) => {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
+      <DialogTrigger>
         <Button variant="destructive">
           <Trash2 /> Hapus Arsip
         </Button>
       </DialogTrigger>
-      <DialogContent
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        onCloseAutoFocus={(e) => {
-          e.preventDefault();
-          document.dispatchEvent(
-            new KeyboardEvent("keydown", { key: "Escape" }),
-          );
-        }}
-      >
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>
             {Array.isArray(id)

@@ -48,7 +48,7 @@ export const UserDropdown = () => {
   return (
     <>
       <DropdownMenu open={open} onOpenChange={setOpen}>
-        <DropdownMenuTrigger asChild>
+        <DropdownMenuTrigger>
           <Button
             variant="outline"
             className="flex justify-between items-center h-full w-full"
@@ -76,27 +76,27 @@ export const UserDropdown = () => {
             <Badge variant="outline">{roleLabel}</Badge>
           </div>
           <DropdownMenuSeparator />
-          <DropdownMenuItem asChild>
+          <DropdownMenuItem>
             <Link href="/profile">
               <UserRound className="size-4" />
               Profile Saya
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
+          <DropdownMenuItem>
             <Link href="/profile/change-password">
               <KeyRound className="size-4" />
               Ubah Password
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
+          <DropdownMenuItem>
             <Link href="/help">
               <HelpCircle className="size-4" />
               Bantuan
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
+          <DropdownMenuItem>
             <Dialog>
-              <DialogTrigger asChild>
+              <DialogTrigger>
                 <Button variant="destructive" className="w-full justify-start">
                   <LogOut className="size-4" />
                   Keluar
@@ -122,7 +122,7 @@ export const UserDropdown = () => {
                 </p>
 
                 <DialogFooter className="flex justify-end gap-2">
-                  <DialogClose asChild>
+                  <DialogClose>
                     <Button variant="outline">Batal</Button>
                   </DialogClose>
                   <LogoutButton>Ya, Keluar</LogoutButton>

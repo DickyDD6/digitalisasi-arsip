@@ -61,7 +61,7 @@ export function NotificationsCard({ isLoading, notifications }: NotificationsCar
               Update Terbaru Sistem
             </CardDescription>
           </div>
-          <Button asChild variant="ghost" size="sm" className="text-xs text-[#F54A00] hover:text-[#d64100] hover:bg-orange-500/10 gap-1">
+          <Button variant="ghost" size="sm" className="text-xs text-[#F54A00] hover:text-[#d64100] hover:bg-orange-500/10 gap-1">
             <Link href="/notifications">
               Lihat Semua
               <ExternalLink className="w-3 h-3" />

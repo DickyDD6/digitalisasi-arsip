@@ -26,8 +26,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { downloadFile } from "@/lib/download-helper";
-import { http } from "@/lib/http";
+import { downloadFile } from "@/shared/utils/download-helper";
+import { http } from "@/shared/lib/http";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   ColumnDef,
@@ -182,20 +182,12 @@ export const DownloadArchiveModal = ({ id }: { id: number | number[] }) => {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
+      <DialogTrigger>
         <Button variant="ghost" className="justify-start">
           <Download /> Unduh
         </Button>
       </DialogTrigger>
-      <DialogContent
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        onCloseAutoFocus={(e) => {
-          e.preventDefault();
-          document.dispatchEvent(
-            new KeyboardEvent("keydown", { key: "Escape" }),
-          );
-        }}
-      >
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>
             {Array.isArray(id)

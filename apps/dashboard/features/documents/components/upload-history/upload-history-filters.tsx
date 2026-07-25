@@ -32,7 +32,7 @@ export function UploadHistoryFilters({
 
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
           {/* Periode Filter */}
-          <Select value={selectedPeriod} onValueChange={onPeriodChange}>
+          <Select value={selectedPeriod} onValueChange={(val) => onPeriodChange(val || "")}>
             <SelectTrigger className="w-full sm:w-44 h-10 text-xs">
               <SelectValue placeholder="Semua Periode" />
             </SelectTrigger>
@@ -44,7 +44,7 @@ export function UploadHistoryFilters({
           </Select>
 
           {/* Status Filter matching API status parameters: 'menunggu_verifikasi', 'terverifikasi', 'tidak_terverifikasi' */}
-          <Select value={selectedStatus} onValueChange={onStatusChange}>
+          <Select value={selectedStatus} onValueChange={(val) => onStatusChange(val || "")}>
             <SelectTrigger className="w-full sm:w-44 h-10 text-xs">
               <SelectValue placeholder="Semua Status" />
             </SelectTrigger>

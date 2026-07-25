@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
-import { http } from "@/lib/http";
+import { http } from "@/shared/lib/http";
 import { useQuery } from "@tanstack/react-query";
 import { formatDate } from "date-fns";
 import {
@@ -27,7 +27,7 @@ import {
   ZoomOut,
 } from "lucide-react";
 import React, { Dispatch, useState } from "react";
-import { Document, Page } from "@/lib/react-pdf";
+import { Document, Page } from "@/shared/lib/react-pdf";
 import {
   ARCHIVE_DOCUMENT_STATUS,
   ARCHIVE_DOCUMENT_TYPE,
@@ -87,21 +87,12 @@ export const ViewArchiveModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
+      <DialogTrigger>
         <Button variant="ghost" className="justify-start">
           <Eye /> Lihat Detail
         </Button>
       </DialogTrigger>
-      <DialogContent
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        onCloseAutoFocus={(e) => {
-          e.preventDefault();
-          document.dispatchEvent(
-            new KeyboardEvent("keydown", { key: "Escape" }),
-          );
-        }}
-        className="sm:max-w-2xl md:max-w-3xl lg:max-w-6xl h-[90vh] flex flex-col p-0"
-      >
+      <DialogContent className="sm:max-w-2xl md:max-w-3xl lg:max-w-6xl h-[90vh] flex flex-col p-0">
         <DialogHeader className="flex-row gap-4 px-6 pt-6 pb-4 shrink-0">
           <FileText className="size-10 md:size-12" />
           <div className="grid gap-2">
@@ -109,14 +100,14 @@ export const ViewArchiveModal = ({
               {data?.data?.file_name || "Detail Dokumen"}
             </DialogTitle>
             <DialogDescription className="space-x-2">
-              <Badge variant="muted">
+              <Badge variant="secondary">
                 {
                   ARCHIVE_DOCUMENT_TYPE[
                     data?.data?.document_type as ArchiveDocumentTypeKey
                   ]
                 }
               </Badge>
-              <Badge variant="success">
+              <Badge variant="default">
                 {
                   ARCHIVE_DOCUMENT_STATUS[
                     data?.data?.status as ArchiveDocumentStatusKey

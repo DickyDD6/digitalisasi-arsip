@@ -1,10 +1,10 @@
 "use client";
 
-import { useAppForm } from "@/components/forms/form-context";
+import { useAppForm } from "@/shared/components/forms/form-context";
 import {
   AddUserForm,
   AddUserFormOpts,
-} from "@/components/forms/form/users/add-user-form";
+} from "@/shared/components/forms/form/users/add-user-form";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -85,25 +85,14 @@ export const AddUserModal = () => {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
+      <DialogTrigger>
         <Button>
           <UserRoundPlus />
           Tambah Pengguna
         </Button>
       </DialogTrigger>
 
-      <DialogContent
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        onCloseAutoFocus={(e) => {
-          e.preventDefault();
-          document.dispatchEvent(
-            new KeyboardEvent("keydown", { key: "Escape" }),
-          );
-        }}
-        onInteractOutside={() => {
-          form.reset();
-        }}
-      >
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Tambah Pengguna</DialogTitle>
           <DialogDescription>
