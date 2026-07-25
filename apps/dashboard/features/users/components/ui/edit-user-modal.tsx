@@ -99,7 +99,13 @@ export const EditUserModal = ({ id }: { id: number }) => {
     const responseObj = data as unknown as { data?: User };
     const userData = responseObj?.data || (data as unknown as User);
     if (userData && "email" in userData) {
-      form.reset(userData);
+      form.reset({
+        name: userData.name || "",
+        email: userData.email || "",
+        password: "",
+        nip: userData.nip || "",
+        role: userData.role || "uploader",
+      });
     }
   }, [data, form]);
 
