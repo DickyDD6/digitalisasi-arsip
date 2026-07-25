@@ -31,7 +31,7 @@ import { Document, Page } from "@/shared/lib/react-pdf";
 import {
   ARCHIVE_DOCUMENT_STATUS,
   ARCHIVE_DOCUMENT_TYPE,
-} from "@/constants/archive-document";
+} from "@/features/archives/constants/archive-document";
 
 export const ViewArchiveModal = ({
   id,

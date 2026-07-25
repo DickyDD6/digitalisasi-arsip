@@ -1,5 +1,5 @@
 import type { DocumentItem } from "../types/dashboard.types";
-import { ARCHIVE_DOCUMENT_TYPE } from "@/constants/archive-document";
+import { ARCHIVE_DOCUMENT_TYPE } from "@/features/archives/constants/archive-document";
 
 /**
  * Returns human-readable Indonesian document category label from API document_type / category code

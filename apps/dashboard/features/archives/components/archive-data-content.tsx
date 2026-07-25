@@ -12,7 +12,7 @@ import { useArchiveTable } from "../hooks/use-archive-table";
 import {
   ARCHIVE_DOCUMENT_STATUS,
   ARCHIVE_DOCUMENT_TYPE,
-} from "@/constants/archive-document";
+} from "@/features/archives/constants/archive-document";
 
 export function ArchiveDataContent() {
   const {

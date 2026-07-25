@@ -8,7 +8,7 @@ import { ActionDropdownArchive } from "../components/ui/action-dropdown-archive"
 import {
   ARCHIVE_DOCUMENT_STATUS,
   ARCHIVE_DOCUMENT_TYPE,
-} from "@/constants/archive-document";
+} from "@/features/archives/constants/archive-document";
 
 export const archiveTableColumns: ColumnDef<ArchiveDocument>[] = [
   {

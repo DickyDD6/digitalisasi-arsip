@@ -1,5 +1,5 @@
 import { withForm } from "@/shared/components/forms/form-context";
-import { ROLE } from "@/constants/role";
+import { ROLE } from "@/shared/constants/role";
 import { USER_SCHEMA } from "@/features/users/schemas/user.schema";
 import { formOptions, revalidateLogic } from "@tanstack/react-form-nextjs";
 import {

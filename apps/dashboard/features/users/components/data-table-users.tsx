@@ -30,7 +30,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ROLE } from "@/constants/role";
+import { ROLE } from "@/shared/constants/role";
 import { useUsersTable } from "@/features/users/hooks/use-users-table";
 import { useQueryClient } from "@tanstack/react-query";
 import {

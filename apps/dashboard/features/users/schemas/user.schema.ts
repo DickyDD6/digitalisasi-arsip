@@ -1,4 +1,4 @@
-import { ROLE } from "@/constants/role";
+import { ROLE } from "@/shared/constants/role";
 import z from "zod";
 
 const user = z.object({
