@@ -1,9 +1,9 @@
-export interface LoginRequest {
+interface LoginRequest {
   email: string;
   password: string;
 }
 
-export interface LoginResponse {
+interface LoginResponse {
   user: {
     name: string;
     email: string;

@@ -1,5 +1,5 @@
-export type ProdiCode = "TIF" | "TP" | "TI" | "TMI" | "TL" | "PWK";
-export type ProdiName =
+type ProdiCode = "TIF" | "TP" | "TI" | "TMI" | "TL" | "PWK";
+type ProdiName =
   | "Teknik Informatika"
   | "Teknologi Pangan"
   | "Teknik Industri"

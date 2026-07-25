@@ -1,4 +1,4 @@
-export interface User {
+interface User {
   id: number;
   name: string;
   email: string;
@@ -9,7 +9,7 @@ export interface User {
   updatedAt: Date;
 }
 
-export interface UserSchema {
+interface UserSchema {
   name: string;
   email: string;
   password: string;
@@ -17,16 +17,16 @@ export interface UserSchema {
   nip: string | null;
 }
 
-export type UserRole = "MANAGER" | "UPLOADER" | "QC" | "SBAP";
+type UserRole = "MANAGER" | "UPLOADER" | "QC" | "SBAP";
 
-export interface UserParams {
+interface UserParams {
   page?: number;
   per_page?: number;
   role?: UserRole;
   search?: string;
 }
 
-export interface UserStatistic {
+interface UserStatistic {
   total_users: number;
   total_by_role: Record<Lowercase<UserRole>, number>;
   active_users: number;
