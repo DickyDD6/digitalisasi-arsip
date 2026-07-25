@@ -3,6 +3,7 @@ import { Poppins, Inter } from "next/font/google";
 import "@repo/ui/globals.css";
 import { favicons } from "@/config/favicons";
 import { TanstackProvider } from "@/shared/providers/tanstack-provider";
+import { ThemeProvider } from "@/shared/providers/theme-provider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -35,21 +36,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", inter.variable)}>
+    <html lang="id" suppressHydrationWarning className={cn("font-sans", inter.variable)}>
       <body className={`${poppins.className}`}>
         <NextTopLoader color="var(--primary)" showSpinner={false} />
         <ConsoleSecurity />
-        <TanstackProvider>
-          <TooltipProvider>{children}</TooltipProvider>
-          <ReactQueryDevtools initialIsOpen={false} />
-          <Toaster
-            position="top-right"
-            richColors
-            theme="light"
-            closeButton
-            visibleToasts={3}
-          />
-        </TanstackProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <TanstackProvider>
+            <TooltipProvider>{children}</TooltipProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
+            <Toaster
+              position="top-right"
+              richColors
+              theme="system"
+              closeButton
+              visibleToasts={3}
+            />
+          </TanstackProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
