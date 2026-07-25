@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { DocumentItem } from "../../types/dashboard.types";
+import { getDocCategory } from "../../utils/document-mappers";
 
 interface UploaderRecentUploadsProps {
   isLoading?: boolean;
@@ -90,7 +91,7 @@ export function UploaderRecentUploads({
 
                   <div className="flex items-center gap-3 self-end sm:self-center">
                     <Badge variant="outline" className="bg-muted text-muted-foreground text-[11px] rounded-full px-2.5">
-                      {doc.category || doc.document_type || "Dokumen"}
+                      {getDocCategory(doc)}
                     </Badge>
 
                     <Badge

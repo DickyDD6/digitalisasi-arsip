@@ -77,8 +77,8 @@ export function YearlyStatsChart({ isLoading, data }: YearlyStatsChartProps) {
                   iconType="circle"
                   wrapperStyle={{ paddingTop: "12px", fontSize: "12px" }}
                 />
-                <Bar dataKey="nilai" name="Nilai" fill="#00A63E" radius={[4, 4, 0, 0]} stackId="a" />
-                <Bar dataKey="transkrip" name="Transkrip" fill="#155DFC" radius={[4, 4, 0, 0]} stackId="a" />
+                <Bar dataKey="nilai" name="Nilai" fill="var(--chart-1)" radius={[4, 4, 0, 0]} stackId="a" />
+                <Bar dataKey="transkrip" name="Transkrip" fill="var(--chart-2)" radius={[4, 4, 0, 0]} stackId="a" />
               </BarChart>
             </ResponsiveContainer>
           </div>

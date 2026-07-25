@@ -106,7 +106,56 @@ export function useDashboardData(startDate?: string, endDate?: string) {
     : [];
 
   const yearlyStats: YearlyStat[] = [];
-  const documentTypes: DocumentTypeStat[] = [];
+  const documentTypes: DocumentTypeStat[] = (() => {
+    if (!docApi) return [];
+
+    const byType =
+      (docApi as unknown as Record<string, unknown>)?.by_document_type ||
+      (docApi as unknown as Record<string, unknown>)?.document_types ||
+      (docApi as unknown as Record<string, unknown>)?.by_type ||
+      null;
+
+    if (byType && typeof byType === "object") {
+      const colorMap: Record<string, string> = {
+        nilai: "var(--chart-1)",
+        grade: "var(--chart-1)",
+        transkrip: "var(--chart-2)",
+        transcript: "var(--chart-2)",
+        ijazah: "var(--chart-3)",
+        certificate: "var(--chart-3)",
+        berita_acara_sidang: "var(--chart-4)",
+        sidang: "var(--chart-4)",
+      };
+
+      const labelMap: Record<string, string> = {
+        nilai: "Nilai",
+        grade: "Nilai",
+        transkrip: "Transkrip",
+        transcript: "Transkrip",
+        ijazah: "Ijazah",
+        certificate: "Ijazah",
+        berita_acara_sidang: "Berita Acara Sidang",
+        sidang: "Berita Acara Sidang",
+      };
+
+      const total = Object.values(byType as Record<string, number>).reduce(
+        (sum, val) => sum + (typeof val === "number" ? val : 0),
+        0
+      );
+
+      return Object.entries(byType as Record<string, number>)
+        .filter(([, count]) => typeof count === "number" && count > 0)
+        .map(([key, count]) => ({
+          name: labelMap[key.toLowerCase()] ?? key,
+          count,
+          percentage: total > 0 ? Math.round((count / total) * 100) : 0,
+          color: colorMap[key.toLowerCase()] ?? "var(--chart-5)",
+        }));
+    }
+
+    return [];
+  })();
+
   const qcStaffData: QCStaffStat[] = [];
 
   return {
