@@ -9,19 +9,22 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+} from "@repo/ui/dialog";
+import { Button } from "@repo/ui/button";
+import { Label } from "@repo/ui/label";
+import { Input } from "@repo/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@repo/ui/select";
 import { Loader2, Printer } from "lucide-react";
-import { reportService, GenerateReportPayload } from "../services/report.service";
+import {
+  reportService,
+  GenerateReportPayload,
+} from "../services/report.service";
 import { toast } from "sonner";
 
 interface GenerateReportDialogProps {
@@ -47,7 +50,9 @@ export const GenerateReportDialog: React.FC<GenerateReportDialogProps> = ({
   const [endDate, setEndDate] = useState(today);
   const [format, setFormat] = useState<"pdf" | "xlsx" | "csv">("pdf");
   const [type, setType] = useState<"monthly" | "annual" | "custom">("monthly");
-  const [style, setStyle] = useState<"detailed" | "summary" | "executive">("summary");
+  const [style, setStyle] = useState<"detailed" | "summary" | "executive">(
+    "summary",
+  );
 
   const handleGenerate = async () => {
     try {
@@ -65,9 +70,12 @@ export const GenerateReportDialog: React.FC<GenerateReportDialogProps> = ({
       await reportService.generate(payload, filename);
       toast.success("Laporan berhasil di-generate dan di-download!");
       setOpen(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMsg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message || "Terjadi kesalahan saat membuat laporan.";
       toast.error("Gagal membuat laporan", {
-        description: err?.response?.data?.message || "Terjadi kesalahan saat membuat laporan.",
+        description: errorMsg,
       });
     } finally {
       setLoading(false);
@@ -76,7 +84,7 @@ export const GenerateReportDialog: React.FC<GenerateReportDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger>
         {trigger || (
           <Button variant="outline" size="sm" className="mt-4">
             <Printer className="size-4 mr-2" />
@@ -98,7 +106,12 @@ export const GenerateReportDialog: React.FC<GenerateReportDialogProps> = ({
               Tipe
             </Label>
             <div className="col-span-3">
-              <Select value={type} onValueChange={(val: any) => setType(val)}>
+              <Select
+                value={type}
+                onValueChange={(val) =>
+                  val && setType(val as "monthly" | "annual" | "custom")
+                }
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Pilih tipe" />
                 </SelectTrigger>
@@ -116,7 +129,12 @@ export const GenerateReportDialog: React.FC<GenerateReportDialogProps> = ({
               Format
             </Label>
             <div className="col-span-3">
-              <Select value={format} onValueChange={(val: any) => setFormat(val)}>
+              <Select
+                value={format}
+                onValueChange={(val) =>
+                  val && setFormat(val as "pdf" | "xlsx" | "csv")
+                }
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Pilih format" />
                 </SelectTrigger>
@@ -134,14 +152,21 @@ export const GenerateReportDialog: React.FC<GenerateReportDialogProps> = ({
               Gaya
             </Label>
             <div className="col-span-3">
-              <Select value={style} onValueChange={(val: any) => setStyle(val)}>
+              <Select
+                value={style}
+                onValueChange={(val) =>
+                  val && setStyle(val as "summary" | "detailed" | "executive")
+                }
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Pilih gaya" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="summary">Ringkasan (Summary)</SelectItem>
                   <SelectItem value="detailed">Detail (Detailed)</SelectItem>
-                  <SelectItem value="executive">Eksekutif (Executive)</SelectItem>
+                  <SelectItem value="executive">
+                    Eksekutif (Executive)
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -175,7 +200,11 @@ export const GenerateReportDialog: React.FC<GenerateReportDialogProps> = ({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)} disabled={loading}>
+          <Button
+            variant="outline"
+            onClick={() => setOpen(false)}
+            disabled={loading}
+          >
             Batal
           </Button>
           <Button onClick={handleGenerate} disabled={loading}>

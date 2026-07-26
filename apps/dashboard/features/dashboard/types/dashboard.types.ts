@@ -43,13 +43,31 @@ export interface DocumentItem {
   document_type?: string;
   category?: string;
   status: DocumentStatusType | string;
-  created_at: string;
-  verification_note?: string;
+  created_at: string | Date;
+  updated_at?: string | Date;
+  verification_note?: string | null;
   student_number?: string;
+  npm?: string;
+  prodi?: string;
+  department?: string;
+  tahun_ajaran?: string;
+  academic_year?: string;
+  semester?: string;
+  mata_kuliah?: string;
+  course_name?: string;
+  kelas?: string;
+  class_name?: string;
+  tahun_lulus?: string;
+  graduation_year?: string;
+  student_name?: string;
+  uploaded_by_name?: string;
+  verified_by_name?: string;
+  verified_at?: string | Date | null;
   uploader?: DocumentUploader;
   year?: string;
   file_url?: string;
-  file_size?: string;
+  file_size?: number | string;
+  file_size_formatted?: string;
 }
 
 export interface DocumentListResponse {
@@ -124,6 +142,8 @@ export interface YearlyStat {
   year: string;
   nilai: number;
   transkrip: number;
+  ijazah: number;
+  bas: number;
   total: number;
 }
 
@@ -135,11 +155,16 @@ export interface DocumentTypeStat {
 }
 
 export interface QCStaffStat {
+  id?: number;
   staff: string;
+  role?: string;
+  email?: string;
   terverifikasi: number;
   ditolak: number;
   avgTime: string;
   successRate: string;
+  isOnline?: boolean;
+  lastSeen?: string;
 }
 
 export interface NotificationItem {
@@ -152,4 +177,6 @@ export interface NotificationItem {
   bgColor: string;
   textColor: string;
   iconColor: string;
+  /** URL tujuan saat notifikasi diklik. Opsional. */
+  href?: string;
 }

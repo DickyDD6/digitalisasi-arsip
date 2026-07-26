@@ -5,8 +5,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@repo/ui/card";
+import { Skeleton } from "@repo/ui/skeleton";
 import {
   ResponsiveContainer,
   PieChart,
@@ -21,7 +21,10 @@ interface DocumentDistributionChartProps {
   data: DocumentTypeStat[];
 }
 
-export function DocumentDistributionChart({ isLoading, data }: DocumentDistributionChartProps) {
+export function DocumentDistributionChart({
+  isLoading,
+  data,
+}: DocumentDistributionChartProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   if (isLoading) {
@@ -43,7 +46,9 @@ export function DocumentDistributionChart({ isLoading, data }: DocumentDistribut
   }
 
   const hasData = data && data.length > 0;
-  const totalCount = hasData ? data.reduce((acc, curr) => acc + curr.count, 0) : 0;
+  const totalCount = hasData
+    ? data.reduce((acc, curr) => acc + curr.count, 0)
+    : 0;
 
   return (
     <Card className="lg:col-span-1 border border-border/60 bg-card shadow-sm flex flex-col justify-between">
@@ -84,7 +89,10 @@ export function DocumentDistributionChart({ isLoading, data }: DocumentDistribut
                     ))}
                   </Pie>
                   <RechartsTooltip
-                    formatter={(value: any, name: any) => [`${value.toLocaleString()} Dokumen`, name]}
+                    formatter={(value) => [
+                      `${typeof value === "number" ? value.toLocaleString() : (value ?? "")} Dokumen`,
+                      "",
+                    ]}
                     contentStyle={{
                       backgroundColor: "rgba(255, 255, 255, 0.95)",
                       borderRadius: "8px",
@@ -97,7 +105,9 @@ export function DocumentDistributionChart({ isLoading, data }: DocumentDistribut
 
               {/* Center Donut Label */}
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <span className="text-xs text-muted-foreground font-medium">Total</span>
+                <span className="text-xs text-muted-foreground font-medium">
+                  Total
+                </span>
                 <span className="text-lg font-bold text-foreground">
                   {totalCount.toLocaleString()}
                 </span>
@@ -107,13 +117,18 @@ export function DocumentDistributionChart({ isLoading, data }: DocumentDistribut
             {/* Custom Legend Grid */}
             <div className="w-full grid grid-cols-2 gap-2 text-xs pt-2">
               {data.map((item, idx) => (
-                <div key={idx} className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-muted/50 transition-colors">
+                <div
+                  key={idx}
+                  className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-muted/50 transition-colors"
+                >
                   <span
                     className="w-2.5 h-2.5 rounded-full shrink-0"
                     style={{ backgroundColor: item.color }}
                   />
                   <div className="flex flex-col truncate">
-                    <span className="font-medium text-foreground truncate">{item.name}</span>
+                    <span className="font-medium text-foreground truncate">
+                      {item.name}
+                    </span>
                     <span className="text-[11px] text-muted-foreground">
                       {item.count.toLocaleString()} ({item.percentage}%)
                     </span>

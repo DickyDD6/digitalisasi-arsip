@@ -2,20 +2,20 @@ import {
   PageDescription,
   PageHeader,
   PageTitle,
-} from "@/components/page-header";
+} from "@/shared/components/page-header";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@repo/ui/card";
 import { FileText } from "lucide-react";
 import { Metadata } from "next";
 import { ArchiveDataContent } from "@/features/archives/components/archive-data-content";
 
 export const metadata: Metadata = {
-  title: "Management Arsip",
+  title: "Management Arsip - Manager",
   description:
     "Melihat, mengunduh, dan menghapus dokumen dan transkrip nilai siswa.",
 };

@@ -2,8 +2,8 @@
 
 import React, { useRef, useState } from "react";
 import { UploadCloud, FileText, X, CheckCircle2 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui/card";
+import { Button } from "@repo/ui/button";
 
 interface FileDropzoneProps {
   selectedFile: File | null;
@@ -74,7 +74,8 @@ export function FileDropzone({
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                 </div>
                 <p className="text-[11px] text-muted-foreground">
-                  {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • PDF Document
+                  {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • PDF
+                  Document
                 </p>
               </div>
             </div>

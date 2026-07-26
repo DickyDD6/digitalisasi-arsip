@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@repo/ui/card";
 import { ViewArchiveModal } from "@/features/archives/components/ui/view-archive-modal";
 import { useDocumentList } from "../hooks/use-document-list";
 import { useDocumentDownload } from "../hooks/use-document-download";
@@ -56,7 +56,11 @@ export function UploaderDocumentListView() {
             onView={handleView}
             onDownload={handleDownload}
           />
-          <DocumentListPagination meta={meta} page={page} onPageChange={setPage} />
+          <DocumentListPagination
+            meta={meta}
+            page={page}
+            onPageChange={setPage}
+          />
         </CardContent>
       </Card>
 

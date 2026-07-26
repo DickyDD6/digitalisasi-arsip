@@ -1,7 +1,7 @@
 "use client";
 
 import { documentListService } from "../services/document-list.service";
-import { downloadFile } from "@/lib/download-helper";
+import { downloadFile } from "@/shared/utils/download-helper";
 import { toast } from "sonner";
 
 export function useDocumentDownload() {

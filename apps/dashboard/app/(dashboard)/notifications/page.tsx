@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   Bell,
@@ -9,8 +9,6 @@ import {
   Clock,
   Search,
   CheckCheck,
-  Trash2,
-  SlidersHorizontal,
   Info,
   AlertTriangle,
 } from "lucide-react";
@@ -22,19 +20,17 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@repo/ui/card";
+import { Button } from "@repo/ui/button";
+import { Input } from "@repo/ui/input";
+import { Badge } from "@repo/ui/badge";
 import { toast } from "sonner";
 
 const READ_NOTIFS_KEY = "digital_archive_read_notifications";
 const DELETED_NOTIFS_KEY = "digital_archive_deleted_notifications";
 
 export default function NotificationsPage() {
-  const { data: user } = useQuery(authQueries.userMe());
-  const role = user?.role || "manager";
+  useQuery(authQueries.userMe());
 
   const auditQuery = useQuery(dashboardQueries.auditLogStats());
   const pendingQuery = useQuery(dashboardQueries.pendingDocuments(10, 1));
@@ -43,25 +39,37 @@ export default function NotificationsPage() {
   const [activeCategory, setActiveCategory] = useState("Semua");
   const [activeTab, setActiveTab] = useState<"all" | "unread">("all");
 
-  const [readIds, setReadIds] = useState<number[]>([]);
-  const [deletedIds, setDeletedIds] = useState<number[]>([]);
-
-  useEffect(() => {
+  const [readIds, setReadIds] = useState<number[]>(() => {
+    if (typeof window === "undefined") return [];
     try {
-      const savedRead = localStorage.getItem(READ_NOTIFS_KEY);
-      if (savedRead) setReadIds(JSON.parse(savedRead));
-
-      const savedDeleted = localStorage.getItem(DELETED_NOTIFS_KEY);
-      if (savedDeleted) setDeletedIds(JSON.parse(savedDeleted));
+      const saved = localStorage.getItem(READ_NOTIFS_KEY);
+      return saved ? JSON.parse(saved) : [];
     } catch {
+      return [];
     }
-  }, []);
+  });
+
+  const [deletedIds, setDeletedIds] = useState<number[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const saved = localStorage.getItem(DELETED_NOTIFS_KEY);
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
 
   const saveReadIds = (ids: number[]) => {
     setReadIds(ids);
     try {
       localStorage.setItem(READ_NOTIFS_KEY, JSON.stringify(ids));
-    } catch {
+    } catch (error) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn(
+          "Failed to save read notifications to localStorage:",
+          error,
+        );
+      }
     }
   };
 
@@ -69,7 +77,13 @@ export default function NotificationsPage() {
     setDeletedIds(ids);
     try {
       localStorage.setItem(DELETED_NOTIFS_KEY, JSON.stringify(ids));
-    } catch {
+    } catch (error) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn(
+          "Failed to save deleted notifications to localStorage:",
+          error,
+        );
+      }
     }
   };
 
@@ -93,7 +107,8 @@ export default function NotificationsPage() {
       category: "System",
       priority: "Penting",
       title: "Sistem Maintenance Terjadwal",
-      message: "Sistem akan mengalami pemeliharaan rutin pada akhir pekan ini pukul 00:00 - 04:00 WIB.",
+      message:
+        "Sistem akan mengalami pemeliharaan rutin pada akhir pekan ini pukul 00:00 - 04:00 WIB.",
       time: "5 Menit yang Lalu",
       isToday: true,
       type: "warning",
@@ -144,15 +159,18 @@ export default function NotificationsPage() {
         id: log.id || idx + 100,
         category,
         priority,
-        title: log.user?.name ? `Aktivitas ${log.user.name}` : "Aktivitas Sistem",
+        title: log.user?.name
+          ? `Aktivitas ${log.user.name}`
+          : "Aktivitas Sistem",
         message: log.description || "Aktivitas sistem tercatat.",
         time: log.date?.time ? `${log.date.time} WIB` : "Hari ini",
         isToday: true,
-        type: actionStr.includes("reject") || actionStr.includes("delete")
-          ? "destructive"
-          : actionStr.includes("verify")
-            ? "success"
-            : "info",
+        type:
+          actionStr.includes("reject") || actionStr.includes("delete")
+            ? "destructive"
+            : actionStr.includes("verify")
+              ? "success"
+              : "info",
       });
     });
 
@@ -165,7 +183,9 @@ export default function NotificationsPage() {
 
   const totalCount = activeList.length;
   const unreadCount = activeList.filter((n) => !readIds.includes(n.id)).length;
-  const highPriorityCount = activeList.filter((n) => n.priority === "Penting").length;
+  const highPriorityCount = activeList.filter(
+    (n) => n.priority === "Penting",
+  ).length;
   const todayCount = activeList.filter((n) => n.isToday).length;
 
   const categoryCounts = useMemo(() => {
@@ -180,7 +200,8 @@ export default function NotificationsPage() {
     return activeList.filter((item) => {
       if (activeTab === "unread" && readIds.includes(item.id)) return false;
 
-      if (activeCategory !== "Semua" && item.category !== activeCategory) return false;
+      if (activeCategory !== "Semua" && item.category !== activeCategory)
+        return false;
 
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
@@ -194,7 +215,9 @@ export default function NotificationsPage() {
   }, [activeList, readIds, activeTab, activeCategory, searchQuery]);
 
   const handleMarkAllAsRead = () => {
-    const allIds = Array.from(new Set([...readIds, ...activeList.map((n) => n.id)]));
+    const allIds = Array.from(
+      new Set([...readIds, ...activeList.map((n) => n.id)]),
+    );
     saveReadIds(allIds);
     toast.success("Semua notifikasi ditandai telah dibaca.");
   };
@@ -243,7 +266,9 @@ export default function NotificationsPage() {
         <Card className="border border-border/60 bg-card shadow-sm p-4 sm:p-5">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <p className="text-xs text-muted-foreground font-normal">Total Notifikasi</p>
+              <p className="text-xs text-muted-foreground font-normal">
+                Total Notifikasi
+              </p>
               <p className="text-2xl font-semibold tracking-tight text-[#155DFC]">
                 {totalCount}
               </p>
@@ -258,7 +283,9 @@ export default function NotificationsPage() {
         <Card className="border border-border/60 bg-card shadow-sm p-4 sm:p-5">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <p className="text-xs text-muted-foreground font-normal">Belum Dibaca</p>
+              <p className="text-xs text-muted-foreground font-normal">
+                Belum Dibaca
+              </p>
               <p className="text-2xl font-semibold tracking-tight text-[#F54A00]">
                 {unreadCount}
               </p>
@@ -273,7 +300,9 @@ export default function NotificationsPage() {
         <Card className="border border-border/60 bg-card shadow-sm p-4 sm:p-5">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <p className="text-xs text-muted-foreground font-normal">Prioritas Tinggi</p>
+              <p className="text-xs text-muted-foreground font-normal">
+                Prioritas Tinggi
+              </p>
               <p className="text-2xl font-semibold tracking-tight text-[#E7000B]">
                 {highPriorityCount}
               </p>
@@ -288,7 +317,9 @@ export default function NotificationsPage() {
         <Card className="border border-border/60 bg-card shadow-sm p-4 sm:p-5">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <p className="text-xs text-muted-foreground font-normal">Hari Ini</p>
+              <p className="text-xs text-muted-foreground font-normal">
+                Hari Ini
+              </p>
               <p className="text-2xl font-semibold tracking-tight text-[#00A63E]">
                 {todayCount}
               </p>
@@ -313,31 +344,33 @@ export default function NotificationsPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          {["Semua", "System", "Upload", "Verifikasi", "User", "Archive"].map((cat) => (
-            <Button
-              key={cat}
-              variant={activeCategory === cat ? "default" : "outline"}
-              size="sm"
-              onClick={() => setActiveCategory(cat)}
-              className={
-                activeCategory === cat
-                  ? "h-8 text-xs rounded-xl bg-[#F54A00] text-white font-medium gap-1.5"
-                  : "h-8 text-xs rounded-xl bg-card border-border/60 font-normal gap-1.5 text-muted-foreground hover:text-foreground"
-              }
-            >
-              {cat}
-              <Badge
-                variant="secondary"
+          {["Semua", "System", "Upload", "Verifikasi", "User", "Archive"].map(
+            (cat) => (
+              <Button
+                key={cat}
+                variant={activeCategory === cat ? "default" : "outline"}
+                size="sm"
+                onClick={() => setActiveCategory(cat)}
                 className={
                   activeCategory === cat
-                    ? "bg-white/20 text-white text-[10px] px-1.5 py-0"
-                    : "bg-muted text-muted-foreground text-[10px] px-1.5 py-0"
+                    ? "h-8 text-xs rounded-xl bg-[#F54A00] text-white font-medium gap-1.5"
+                    : "h-8 text-xs rounded-xl bg-card border-border/60 font-normal gap-1.5 text-muted-foreground hover:text-foreground"
                 }
               >
-                {categoryCounts[cat] || 0}
-              </Badge>
-            </Button>
-          ))}
+                {cat}
+                <Badge
+                  variant="secondary"
+                  className={
+                    activeCategory === cat
+                      ? "bg-white/20 text-white text-[10px] px-1.5 py-0"
+                      : "bg-muted text-muted-foreground text-[10px] px-1.5 py-0"
+                  }
+                >
+                  {categoryCounts[cat] || 0}
+                </Badge>
+              </Button>
+            ),
+          )}
         </div>
       </div>
 
@@ -347,19 +380,21 @@ export default function NotificationsPage() {
         <div className="grid grid-cols-2 border-b border-border/60 bg-muted/40">
           <button
             onClick={() => setActiveTab("all")}
-            className={`py-3.5 text-xs font-semibold text-center transition-colors border-b-2 ${activeTab === "all"
+            className={`py-3.5 text-xs font-semibold text-center transition-colors border-b-2 ${
+              activeTab === "all"
                 ? "border-[#F54A00] text-[#F54A00] bg-card"
                 : "border-transparent text-muted-foreground hover:text-foreground"
-              }`}
+            }`}
           >
             Semua ({totalCount})
           </button>
           <button
             onClick={() => setActiveTab("unread")}
-            className={`py-3.5 text-xs font-semibold text-center transition-colors border-b-2 ${activeTab === "unread"
+            className={`py-3.5 text-xs font-semibold text-center transition-colors border-b-2 ${
+              activeTab === "unread"
                 ? "border-[#F54A00] text-[#F54A00] bg-card"
                 : "border-transparent text-muted-foreground hover:text-foreground"
-              }`}
+            }`}
           >
             Belum Dibaca ({unreadCount})
           </button>
@@ -373,8 +408,9 @@ export default function NotificationsPage() {
               return (
                 <div
                   key={item.id}
-                  className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors ${isRead ? "bg-card opacity-75" : "bg-muted/30"
-                    }`}
+                  className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors ${
+                    isRead ? "bg-card opacity-75" : "bg-muted/30"
+                  }`}
                 >
                   <div className="flex items-start gap-3.5">
                     {item.type === "destructive" ? (
@@ -389,7 +425,9 @@ export default function NotificationsPage() {
 
                     <div className="space-y-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="text-sm font-semibold text-foreground">{item.title}</h4>
+                        <h4 className="text-sm font-semibold text-foreground">
+                          {item.title}
+                        </h4>
                         {!isRead && (
                           <span className="w-2 h-2 rounded-full bg-rose-600 inline-block" />
                         )}
@@ -406,7 +444,9 @@ export default function NotificationsPage() {
                           onClick={() => handleToggleRead(item.id)}
                           className="h-auto p-0 text-[11px] text-[#F54A00] font-medium"
                         >
-                          {isRead ? "Tandai Belum Dibaca" : "Tandai Sudah Dibaca"}
+                          {isRead
+                            ? "Tandai Belum Dibaca"
+                            : "Tandai Sudah Dibaca"}
                         </Button>
                         <span>•</span>
                         <Button
@@ -440,7 +480,9 @@ export default function NotificationsPage() {
             })
           ) : (
             <div className="p-12 text-center text-xs text-muted-foreground space-y-1">
-              <p className="font-medium text-foreground">Tidak ada notifikasi</p>
+              <p className="font-medium text-foreground">
+                Tidak ada notifikasi
+              </p>
               <p>Tidak ada notifikasi yang sesuai dengan filter saat ini.</p>
             </div>
           )}

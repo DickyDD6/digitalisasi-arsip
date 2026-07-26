@@ -1,11 +1,11 @@
 "use client";
 
-import { useAppForm } from "@/components/forms/form-context";
+import { useAppForm } from "@/shared/components/forms/form-context";
 import {
   AddUserForm,
   AddUserFormOpts,
-} from "@/components/forms/form/users/add-user-form";
-import { Button } from "@/components/ui/button";
+} from "@/shared/components/forms/form/users/add-user-form";
+import { Button } from "@repo/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -14,7 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@repo/ui/dialog";
 import { useUserCreate } from "@/features/users/hooks/use-user-create";
 import { isAxiosError } from "axios";
 import { UserRoundPlus } from "lucide-react";
@@ -85,25 +85,14 @@ export const AddUserModal = () => {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
+      <DialogTrigger>
         <Button>
           <UserRoundPlus />
           Tambah Pengguna
         </Button>
       </DialogTrigger>
 
-      <DialogContent
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        onCloseAutoFocus={(e) => {
-          e.preventDefault();
-          document.dispatchEvent(
-            new KeyboardEvent("keydown", { key: "Escape" }),
-          );
-        }}
-        onInteractOutside={() => {
-          form.reset();
-        }}
-      >
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Tambah Pengguna</DialogTitle>
           <DialogDescription>

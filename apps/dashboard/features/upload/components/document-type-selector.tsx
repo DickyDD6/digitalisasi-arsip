@@ -1,9 +1,13 @@
 "use client";
 
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui/card";
 
-export type DocumentTypeOption = "nilai" | "transkrip" | "ijazah" | "berita_acara_sidang";
+export type DocumentTypeOption =
+  | "nilai"
+  | "transkrip"
+  | "ijazah"
+  | "berita_acara_sidang";
 
 interface DocumentTypeSelectorProps {
   selectedType: DocumentTypeOption | null;

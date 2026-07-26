@@ -1,4 +1,4 @@
-import { http } from "@/lib/http";
+import { http } from "@/shared/lib/http";
 
 export interface DocumentListParams {
   page?: number;
@@ -8,8 +8,13 @@ export interface DocumentListParams {
 }
 
 export const documentListService = {
-  getDocuments: async (params: DocumentListParams = {}): Promise<ApiResponse<ArchiveDocument[]>> => {
-    const { data } = await http.get<ApiResponse<ArchiveDocument[]>>("/api/documents", { params });
+  getDocuments: async (
+    params: DocumentListParams = {},
+  ): Promise<ApiResponse<ArchiveDocument[]>> => {
+    const { data } = await http.get<ApiResponse<ArchiveDocument[]>>(
+      "/api/documents",
+      { params },
+    );
     return data;
   },
 

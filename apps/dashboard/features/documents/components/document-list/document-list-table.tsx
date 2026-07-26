@@ -1,7 +1,7 @@
 import React from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@repo/ui/badge";
+import { Button } from "@repo/ui/button";
+import { Skeleton } from "@repo/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -9,7 +9,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@repo/ui/table";
 import { Download, Eye, FileText } from "lucide-react";
 import {
   resolveDocumentStatus,
@@ -53,19 +53,34 @@ export function DocumentListTable({
       <Table>
         <TableHeader className="bg-muted/50">
           <TableRow>
-            <TableHead className="font-semibold text-xs text-foreground">Nama Dokumen</TableHead>
-            <TableHead className="font-semibold text-xs text-foreground">Jenis</TableHead>
-            <TableHead className="font-semibold text-xs text-foreground">Ukuran</TableHead>
-            <TableHead className="font-semibold text-xs text-foreground">Tanggal Upload</TableHead>
-            <TableHead className="font-semibold text-xs text-foreground">Status</TableHead>
-            <TableHead className="font-semibold text-xs text-foreground text-right">Aksi</TableHead>
+            <TableHead className="font-semibold text-xs text-foreground">
+              Nama Dokumen
+            </TableHead>
+            <TableHead className="font-semibold text-xs text-foreground">
+              Jenis
+            </TableHead>
+            <TableHead className="font-semibold text-xs text-foreground">
+              Ukuran
+            </TableHead>
+            <TableHead className="font-semibold text-xs text-foreground">
+              Tanggal Upload
+            </TableHead>
+            <TableHead className="font-semibold text-xs text-foreground">
+              Status
+            </TableHead>
+            <TableHead className="font-semibold text-xs text-foreground text-right">
+              Aksi
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {documents.map((doc) => {
             const status = resolveDocumentStatus(doc.status);
             return (
-              <TableRow key={doc.id} className="hover:bg-muted/30 transition-colors">
+              <TableRow
+                key={doc.id}
+                className="hover:bg-muted/30 transition-colors"
+              >
                 <TableCell className="font-medium text-xs text-foreground">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-[#DBEAFE] text-[#155DFC] flex items-center justify-center shrink-0">
@@ -77,7 +92,10 @@ export function DocumentListTable({
                   </div>
                 </TableCell>
                 <TableCell className="text-xs text-muted-foreground">
-                  <Badge variant="outline" className="bg-muted text-muted-foreground text-[11px] rounded-full px-2.5">
+                  <Badge
+                    variant="outline"
+                    className="bg-muted text-muted-foreground text-[11px] rounded-full px-2.5"
+                  >
                     {doc.document_type || "Dokumen"}
                   </Badge>
                 </TableCell>

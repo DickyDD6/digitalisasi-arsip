@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   experimental: {
     authInterrupts: true,
   },
+  transpilePackages: ["@repo/ui"],
 };
 
 export default nextConfig;

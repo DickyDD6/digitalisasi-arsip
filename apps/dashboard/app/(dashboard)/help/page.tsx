@@ -2,21 +2,21 @@ import {
   PageDescription,
   PageHeader,
   PageTitle,
-} from "@/components/page-header";
+} from "@/shared/components/page-header";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+} from "@repo/ui/accordion";
+import { Button } from "@repo/ui/button";
+import { Card, CardContent, CardHeader } from "@repo/ui/card";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "@/components/ui/input-group";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from "@repo/ui/input-group";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/tabs";
 import {
   Book,
   ExternalLink,
@@ -341,12 +341,7 @@ export default function HelpPage() {
               </p>
             </CardHeader>
             <CardContent className="w-full min-h-0 overflow-auto">
-              <Accordion
-                type="single"
-                collapsible
-                className="w-full"
-                defaultValue="item-1"
-              >
+              <Accordion className="w-full" defaultValue={["item-1"]}>
                 {[
                   "Semua",
                   "Umum",

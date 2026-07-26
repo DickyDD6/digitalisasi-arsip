@@ -11,7 +11,11 @@ export interface SidebarMenuItemConfig {
 export const ROLE_PERMISSIONS: Record<string, UserRole[]> = {
   "/": ["manager", "qc", "uploader", "sbap"],
   "/manage-archive": ["manager"],
-  "/document-list": ["uploader", "manager"],
+  "/verification": ["qc", "manager"],
+  "/verification-history": ["qc", "manager"],
+  "/verified-documents": ["qc", "manager"],
+  "/rejected-documents": ["qc", "manager"],
+  "/document-list": ["uploader", "manager", "qc", "sbap"],
   "/upload-document": ["uploader", "manager"],
   "/upload-history": ["uploader", "manager"],
   "/notifications": ["manager", "qc", "uploader", "sbap"],
@@ -21,11 +25,14 @@ export const ROLE_PERMISSIONS: Record<string, UserRole[]> = {
   "/profile": ["manager", "qc", "uploader", "sbap"],
   "/system-settings": ["manager", "qc", "uploader", "sbap"],
   "/help": ["manager", "qc", "uploader", "sbap"],
+  "/search-archive": ["sbap", "manager"],
+  "/available-archives": ["sbap", "manager"],
+  "/download-history": ["sbap", "manager"],
 };
 
 export function hasPermission(
   role: UserRole | undefined,
-  path: string
+  path: string,
 ): boolean {
   if (!role) return false;
   const allowed = ROLE_PERMISSIONS[path];
@@ -35,7 +42,7 @@ export function hasPermission(
 
 export function canAccessMenu(
   role: UserRole | undefined,
-  allowedRoles: UserRole[]
+  allowedRoles: UserRole[],
 ): boolean {
   if (!role) return false;
   return allowedRoles.includes(role);

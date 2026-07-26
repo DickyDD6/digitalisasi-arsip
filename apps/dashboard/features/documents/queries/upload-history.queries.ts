@@ -1,5 +1,8 @@
 import { queryOptions } from "@tanstack/react-query";
-import { uploadHistoryService, FetchUploadHistoryParams } from "../services/upload-history.service";
+import {
+  uploadHistoryService,
+  FetchUploadHistoryParams,
+} from "../services/upload-history.service";
 import { dashboardService } from "@/features/dashboard/services/dashboard.service";
 
 export const uploadHistoryQueries = {

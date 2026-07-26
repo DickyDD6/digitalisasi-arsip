@@ -3,8 +3,8 @@ import {
   PageDescription,
   PageHeader,
   PageTitle,
-} from "@/components/page-header";
-import { Button } from "@/components/ui/button";
+} from "@/shared/components/page-header";
+import { Button } from "@repo/ui/button";
 import { LogActivityContent } from "@/features/log-activity/components/log-activity-content";
 
 export default function LogActivityPage() {

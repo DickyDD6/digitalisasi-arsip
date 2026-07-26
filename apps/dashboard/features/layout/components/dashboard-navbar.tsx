@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarTrigger } from "@repo/ui/sidebar";
 import Image from "next/image";
 import { Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/button";
 import { NotificationsDropdown } from "./notifications-dropdown";
 import { SearchCommandDialog } from "./search-command-dialog";
+import { ThemeToggle } from "@/shared/components/theme-toggle";
 
 export const DashboardNavbar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -66,6 +67,7 @@ export const DashboardNavbar = () => {
             </kbd>
           </Button>
 
+          <ThemeToggle />
           <NotificationsDropdown />
         </div>
       </nav>

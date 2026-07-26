@@ -4,26 +4,20 @@ import {
   PageHeader,
   PageTitle,
   PageDescription,
-} from "@/components/page-header";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Field, FieldContent, FieldLabel } from "@/components/ui/field";
+} from "@/shared/components/page-header";
+import { Alert, AlertDescription, AlertTitle } from "@repo/ui/alert";
+import { Badge } from "@repo/ui/badge";
+import { Card, CardContent, CardHeader } from "@repo/ui/card";
+import { Field, FieldContent, FieldLabel } from "@repo/ui/field";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "@/components/ui/input-group";
-import { Separator } from "@/components/ui/separator";
+} from "@repo/ui/input-group";
+import { Separator } from "@repo/ui/separator";
 import { authQueries } from "@/features/auth/queries/auth.queries";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Mail,
-  School,
-  Shield,
-  UserCircle,
-  UserRound,
-} from "lucide-react";
+import { Mail, School, Shield, UserCircle, UserRound } from "lucide-react";
 
 const ROLE_LABELS: Record<string, string> = {
   manager: "Manager Arsip",
@@ -37,7 +31,7 @@ export default function ProfilePage() {
 
   const userName = user?.name ?? "User";
   const userEmail = user?.email ?? "";
-  const roleLabel = user?.role ? ROLE_LABELS[user.role] ?? user.role : "User";
+  const roleLabel = user?.role ? (ROLE_LABELS[user.role] ?? user.role) : "User";
 
   return (
     <>
@@ -114,7 +108,8 @@ export default function ProfilePage() {
         <Shield className="size-4 text-blue-600 dark:text-blue-400" />
         <AlertTitle>Informasi Keamanan</AlertTitle>
         <AlertDescription className="text-inherit font-light">
-          Email dan fakultas tidak dapat diubah sendiri. Hubungi administrator sistem untuk perubahan data tersebut.
+          Email dan fakultas tidak dapat diubah sendiri. Hubungi administrator
+          sistem untuk perubahan data tersebut.
         </AlertDescription>
       </Alert>
     </>

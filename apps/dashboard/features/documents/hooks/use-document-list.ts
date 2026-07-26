@@ -15,7 +15,9 @@ export function useDocumentList() {
     page,
     per_page: 10,
     search: searchQuery,
-    ...(selectedStatus && selectedStatus !== "all" ? { status: selectedStatus } : {}),
+    ...(selectedStatus && selectedStatus !== "all"
+      ? { status: selectedStatus }
+      : {}),
   };
 
   const listQuery = useQuery(documentListQueries.list(params));

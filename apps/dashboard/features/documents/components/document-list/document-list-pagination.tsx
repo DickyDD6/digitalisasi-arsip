@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/button";
 
 interface PaginationMeta {
   current_page: number;
@@ -23,7 +23,8 @@ export function DocumentListPagination({
   return (
     <div className="flex items-center justify-between pt-2">
       <p className="text-xs text-muted-foreground">
-        Menampilkan Halaman {meta.current_page} dari {meta.last_page} ({meta.total} Dokumen)
+        Menampilkan Halaman {meta.current_page} dari {meta.last_page} (
+        {meta.total} Dokumen)
       </p>
       <div className="flex items-center gap-2">
         <Button

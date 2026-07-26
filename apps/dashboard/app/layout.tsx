@@ -1,15 +1,19 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
-import "./globals.css";
-import { favicons } from "@/lib/favicons";
-import { TanstackProvider } from "./tanstack-provider";
+import { Poppins, Inter } from "next/font/google";
+import "@repo/ui/globals.css";
+import { favicons } from "@/config/favicons";
+import { TanstackProvider } from "@/shared/providers/tanstack-provider";
+import { ThemeProvider } from "@/shared/providers/theme-provider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { ConsoleSecurity } from "@/components/console-security";
+import { Toaster } from "@repo/ui/sonner";
+import { TooltipProvider } from "@repo/ui/tooltip";
+import { ConsoleSecurity } from "@/shared/components/console-security";
 import NextTopLoader from "nextjs-toploader";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
+import { cn } from "@repo/ui/lib/utils";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -32,21 +36,31 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html
+      lang="id"
+      suppressHydrationWarning
+      className={cn("font-sans", inter.variable)}
+    >
       <body className={`${poppins.className}`}>
         <NextTopLoader color="var(--primary)" showSpinner={false} />
         <ConsoleSecurity />
-        <TanstackProvider>
-          <TooltipProvider>{children}</TooltipProvider>
-          <ReactQueryDevtools initialIsOpen={false} />
-          <Toaster
-            position="top-right"
-            richColors
-            theme="light"
-            closeButton
-            visibleToasts={3}
-          />
-        </TanstackProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <TanstackProvider>
+            <TooltipProvider>{children}</TooltipProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
+            <Toaster
+              position="top-right"
+              richColors
+              closeButton
+              visibleToasts={3}
+            />
+          </TanstackProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

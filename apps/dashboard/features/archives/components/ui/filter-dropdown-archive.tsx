@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@repo/ui/dropdown-menu";
 import { ColumnFiltersState, Header } from "@tanstack/react-table";
 import { Funnel } from "lucide-react";
 
@@ -19,44 +19,42 @@ export const FilterDropdownArchive = <TData, TValue>({
   setColumnFilters,
   filterOptions,
 }: FilterDropdownArchiveProps<TData, TValue>) => {
+  const currentFilter = header.column.getFilterValue();
+
   return (
     <div className="ml-2">
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="outline"
-            size={header.column.getFilterValue() ? "sm" : "icon"}
-          >
-            {header.column.getFilterValue() ? (
-              <>
-                {header.column.getFilterValue()?.toString()}
-                <Funnel />
-              </>
-            ) : (
-              <Funnel />
-            )}
-          </Button>
+        <DropdownMenuTrigger
+          render={
+            <Button variant="outline" size={currentFilter ? "sm" : "icon"} />
+          }
+        >
+          {currentFilter ? (
+            <>
+              {currentFilter.toString()}
+              <Funnel className="w-3.5 h-3.5 ml-1" />
+            </>
+          ) : (
+            <Funnel className="w-3.5 h-3.5" />
+          )}
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="space-y-2">
-          <DropdownMenuItem asChild className="cursor-pointer w-full">
-            <Button
-              onClick={() => {
-                setColumnFilters?.((prev) => [
-                  ...prev.filter((filter) => filter.id !== header.column.id),
-                ]);
-              }}
-              variant={"destructive"}
-            >
-              Reset Filter
-            </Button>
+        <DropdownMenuContent className="space-y-1">
+          <DropdownMenuItem
+            variant="destructive"
+            onClick={() => {
+              setColumnFilters?.((prev) => [
+                ...prev.filter((filter) => filter.id !== header.column.id),
+              ]);
+            }}
+            className="cursor-pointer font-medium"
+          >
+            Reset Filter
           </DropdownMenuItem>
-          {filterOptions[header.column.id]?.map((option) => (
-            <DropdownMenuItem
-              key={option.value}
-              asChild
-              className="cursor-pointer w-full"
-            >
-              <Button
+          {filterOptions[header.column.id]?.map((option) => {
+            const isSelected = currentFilter === option.value;
+            return (
+              <DropdownMenuItem
+                key={option.value}
                 onClick={() => {
                   setColumnFilters?.((prev) => [
                     ...prev.filter((filter) => filter.id !== header.column.id),
@@ -66,16 +64,12 @@ export const FilterDropdownArchive = <TData, TValue>({
                     },
                   ]);
                 }}
-                variant={
-                  header.column.getFilterValue() === option.value
-                    ? "default"
-                    : "ghost"
-                }
+                className={`cursor-pointer ${isSelected ? "font-bold text-[#F54A00]" : ""}`}
               >
                 {option.label}
-              </Button>
-            </DropdownMenuItem>
-          ))}
+              </DropdownMenuItem>
+            );
+          })}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

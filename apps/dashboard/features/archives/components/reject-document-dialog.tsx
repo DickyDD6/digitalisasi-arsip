@@ -8,20 +8,20 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+} from "@repo/ui/dialog";
+import { Button } from "@repo/ui/button";
+import { Label } from "@repo/ui/label";
+import { Textarea } from "@repo/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@repo/ui/select";
 import { XCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { http } from "@/lib/http";
+import { http } from "@/shared/lib/http";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface RejectDocumentDialogProps {
@@ -53,9 +53,12 @@ export const RejectDocumentDialog: React.FC<RejectDocumentDialogProps> = ({
       toast.success("Dokumen ditolak!");
       queryClient.invalidateQueries({ queryKey: ["documents"] });
       onOpenChange(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMsg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message || "Terjadi kesalahan.";
       toast.error("Gagal menolak dokumen", {
-        description: err?.response?.data?.message || "Terjadi kesalahan.",
+        description: errorMsg,
       });
     } finally {
       setLoading(false);
@@ -84,15 +87,26 @@ export const RejectDocumentDialog: React.FC<RejectDocumentDialogProps> = ({
             <Label htmlFor="reason" className="text-xs font-semibold">
               Alasan Penolakan <span className="text-red-500">*</span>
             </Label>
-            <Select value={reason} onValueChange={setReason}>
+            <Select
+              value={reason}
+              onValueChange={(val) => setReason(val || "")}
+            >
               <SelectTrigger className="h-9">
                 <SelectValue placeholder="Pilih Alasan Penolakan" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="unclear_scan">File Scan Tidak Jelas / Buram</SelectItem>
-                <SelectItem value="mismatch_data">NIM / Nama Mahasiswa Tidak Cocok</SelectItem>
-                <SelectItem value="corrupt_file">File Rusak / Tidak Bisa Dibuka</SelectItem>
-                <SelectItem value="wrong_type">Kategori Dokumen Salah</SelectItem>
+                <SelectItem value="unclear_scan">
+                  File Scan Tidak Jelas / Buram
+                </SelectItem>
+                <SelectItem value="mismatch_data">
+                  NIM / Nama Mahasiswa Tidak Cocok
+                </SelectItem>
+                <SelectItem value="corrupt_file">
+                  File Rusak / Tidak Bisa Dibuka
+                </SelectItem>
+                <SelectItem value="wrong_type">
+                  Kategori Dokumen Salah
+                </SelectItem>
                 <SelectItem value="other">Lainnya</SelectItem>
               </SelectContent>
             </Select>
@@ -114,7 +128,12 @@ export const RejectDocumentDialog: React.FC<RejectDocumentDialogProps> = ({
         </div>
 
         <DialogFooter className="gap-2 pt-2">
-          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)} disabled={loading}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onOpenChange(false)}
+            disabled={loading}
+          >
             Batal
           </Button>
           <Button

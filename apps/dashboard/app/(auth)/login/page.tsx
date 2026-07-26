@@ -1,20 +1,20 @@
 "use client";
 
-import { useAppForm } from "@/components/forms/form-context";
+import { useAppForm } from "@/shared/components/forms/form-context";
 import {
   LoginForm,
   loginFormOptions,
-} from "@/components/forms/form/auth/login";
+} from "@/shared/components/forms/form/auth/login";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { FieldSet } from "@/components/ui/field";
+} from "@repo/ui/card";
+import { FieldSet } from "@repo/ui/field";
 import { useLogin } from "@/features/auth/hooks/use-login";
-import { useTimeAgo } from "@/lib/hooks/use-time-ago";
+import { useTimeAgo } from "@/shared/hooks/use-time-ago";
 import { isAxiosError } from "axios";
 import Image from "next/image";
 import { useRouter } from "nextjs-toploader/app";
@@ -45,7 +45,8 @@ export default function LoginPage() {
           const lockedUntil = err.response?.data?.locked_until;
 
           const errorMsg =
-            backendMsg || "Email atau password salah. Silakan periksa kembali credentials Anda.";
+            backendMsg ||
+            "Email atau password salah. Silakan periksa kembali credentials Anda.";
 
           if (status === 401 || status === 422 || status === 400) {
             toast.error("Login Gagal", {

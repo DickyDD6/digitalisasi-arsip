@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@repo/ui/dropdown-menu";
 import { Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { DeleteArchiveModal } from "./delete-archive-modal";
@@ -20,22 +20,17 @@ export const ActionDropdownArchive = ({
 }) => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon-sm">
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
+      <DropdownMenuTrigger render={<Button variant="ghost" size="icon-sm" />}>
+        <MoreHorizontal className="h-4 w-4" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        onCloseAutoFocus={(e) => e.preventDefault()}
-        className="grid gap-2"
-      >
-        <DropdownMenuItem asChild>
+      <DropdownMenuContent className="grid gap-2">
+        <DropdownMenuItem>
           <ViewArchiveModal id={row.original.id} />
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
+        <DropdownMenuItem>
           <DownloadArchiveModal id={row.original.id} />
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
+        <DropdownMenuItem>
           <DeleteArchiveModal id={row.original.id} />
         </DropdownMenuItem>
       </DropdownMenuContent>

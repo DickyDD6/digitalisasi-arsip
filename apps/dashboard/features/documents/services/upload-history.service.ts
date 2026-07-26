@@ -1,4 +1,4 @@
-import { http } from "@/lib/http";
+import { http } from "@/shared/lib/http";
 
 export interface FetchUploadHistoryParams {
   page?: number;
@@ -11,7 +11,7 @@ export interface FetchUploadHistoryParams {
 
 export const uploadHistoryService = {
   getUploadHistory: async (params: FetchUploadHistoryParams = {}) => {
-    const cleanParams: Record<string, any> = {
+    const cleanParams: Record<string, string | number> = {
       page: params.page ?? 1,
       per_page: params.per_page ?? 500,
       sort_by: params.sort_by ?? "created_at",
@@ -24,7 +24,7 @@ export const uploadHistoryService = {
 
     const { data } = await http.get<ApiResponse<ArchiveDocument[]>>(
       "/api/documents",
-      { params: cleanParams }
+      { params: cleanParams },
     );
     return data;
   },

@@ -1,11 +1,11 @@
 "use client";
 
-import { useAppForm } from "@/components/forms/form-context";
+import { useAppForm } from "@/shared/components/forms/form-context";
 import {
   EditUserForm,
   EditUserFormOpts,
-} from "@/components/forms/form/users/edit-user-form";
-import { Button } from "@/components/ui/button";
+} from "@/shared/components/forms/form/users/edit-user-form";
+import { Button } from "@repo/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -14,10 +14,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@repo/ui/dialog";
 import { useUserUpdate } from "@/features/users/hooks/use-user-update";
 import { useUserUpdateDetail } from "@/features/users/hooks/use-user-detail";
-import { USER_SCHEMA } from "@/schemas/user.schema";
+import { USER_SCHEMA } from "@/features/users/schemas/user.schema";
 import { isAxiosError } from "axios";
 import { Edit } from "lucide-react";
 import { useEffect } from "react";
@@ -96,9 +96,16 @@ export const EditUserModal = ({ id }: { id: number }) => {
   });
 
   useEffect(() => {
-    const userData = (data as any)?.data || data;
-    if (userData) {
-      form.reset(userData as any);
+    const responseObj = data as unknown as { data?: User };
+    const userData = responseObj?.data || (data as unknown as User);
+    if (userData && "email" in userData) {
+      form.reset({
+        name: userData.name || "",
+        email: userData.email || "",
+        password: "",
+        nip: userData.nip || "",
+        role: userData.role || "uploader",
+      });
     }
   }, [data, form]);
 
@@ -116,21 +123,13 @@ export const EditUserModal = ({ id }: { id: number }) => {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
+      <DialogTrigger>
         <Button variant="ghost" className="w-full justify-start">
           <Edit />
           Edit
         </Button>
       </DialogTrigger>
-      <DialogContent
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        onCloseAutoFocus={(e) => {
-          e.preventDefault();
-          document.dispatchEvent(
-            new KeyboardEvent("keydown", { key: "Escape" }),
-          );
-        }}
-      >
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit Data Pengguna</DialogTitle>
           <DialogDescription>Perbarui Informasi Pengguna</DialogDescription>

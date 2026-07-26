@@ -1,6 +1,7 @@
+"use client";
+
 import React from "react";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@repo/ui/card";
 
 export function QCHeaderBanner() {
   return (
@@ -14,11 +15,6 @@ export function QCHeaderBanner() {
             <CardDescription className="text-sm text-muted-foreground mt-1">
               Verifikasi dan validasi dokumen yang diunggah oleh Tim Uploader
             </CardDescription>
-          </div>
-          <div className="flex items-center gap-2 self-start md:self-auto">
-            <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-200">
-              QC Active Role
-            </Badge>
           </div>
         </div>
       </CardHeader>

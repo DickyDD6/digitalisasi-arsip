@@ -8,7 +8,8 @@ import {
   Upload,
   History,
   FileCheck,
-  Printer,
+  FileX,
+  Clock,
   Search,
 } from "lucide-react";
 import React from "react";
@@ -77,27 +78,46 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
 
   {
     label: "Verifikasi Dokumen",
-    link: "/document-list?status=menunggu_verifikasi",
+    link: "/verification?status=menunggu_verifikasi",
+    icon: Clock,
+    allowedRoles: ["qc"],
+  },
+  {
+    label: "Dokumen Terverifikasi",
+    link: "/verified-documents",
     icon: FileCheck,
     allowedRoles: ["qc"],
   },
   {
+    label: "Dokumen Ditolak",
+    link: "/rejected-documents",
+    icon: FileX,
+    allowedRoles: ["qc"],
+  },
+  {
     label: "Riwayat Verifikasi",
-    link: "/document-list?status=terverifikasi",
+    link: "/verification-history",
     icon: History,
     allowedRoles: ["qc"],
   },
 
+  // SBAP (Subbagian Akademik) Menu Items (English Route Names)
   {
-    label: "Pencarian Arsip",
-    link: "/document-list?status=terverifikasi",
+    label: "Cari Arsip",
+    link: "/search-archive",
     icon: Search,
     allowedRoles: ["sbap"],
   },
   {
-    label: "Cetak Transkrip",
-    link: "/document-list?tab=print",
-    icon: Printer,
+    label: "Arsip Tersedia",
+    link: "/available-archives",
+    icon: FileCheck,
+    allowedRoles: ["sbap"],
+  },
+  {
+    label: "Riwayat Download",
+    link: "/download-history",
+    icon: History,
     allowedRoles: ["sbap"],
   },
 ];

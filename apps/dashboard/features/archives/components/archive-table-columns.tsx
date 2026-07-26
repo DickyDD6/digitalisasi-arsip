@@ -1,14 +1,14 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@repo/ui/badge";
+import { Checkbox } from "@repo/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
-import { DataTableViewOptions } from "@/components/ui/data-table";
+import { DataTableViewOptions } from "@repo/ui/data-table";
 import { ActionDropdownArchive } from "../components/ui/action-dropdown-archive";
 import {
   ARCHIVE_DOCUMENT_STATUS,
   ARCHIVE_DOCUMENT_TYPE,
-} from "@/constants/archive-document";
+} from "@/features/archives/constants/archive-document";
 
 export const archiveTableColumns: ColumnDef<ArchiveDocument>[] = [
   {
@@ -16,8 +16,7 @@ export const archiveTableColumns: ColumnDef<ArchiveDocument>[] = [
     header: ({ table }) => (
       <Checkbox
         checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+          table.getIsAllPageRowsSelected() || table.getIsSomePageRowsSelected()
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -62,9 +61,10 @@ export const archiveTableColumns: ColumnDef<ArchiveDocument>[] = [
     accessorKey: "document_type",
     header: "Jenis Dokumen",
     cell: ({ row }) => (
-      <Badge variant="muted">
-        {ARCHIVE_DOCUMENT_TYPE[row.original.document_type as ArchiveDocumentTypeKey] ||
-          row.original.document_type}
+      <Badge variant="secondary">
+        {ARCHIVE_DOCUMENT_TYPE[
+          row.original.document_type as ArchiveDocumentTypeKey
+        ] || row.original.document_type}
       </Badge>
     ),
     enableHiding: false,
@@ -84,16 +84,17 @@ export const archiveTableColumns: ColumnDef<ArchiveDocument>[] = [
       const status = row.original.status;
       const statusLower = String(status).toLowerCase();
 
-      const variant: "success" | "warning" | "error" = statusLower.includes("terverifikasi") &&
-        !statusLower.includes("tidak")
-        ? "success"
-        : statusLower.includes("tidak") || statusLower.includes("reject")
-        ? "error"
-        : "warning";
+      const badgeVariant: "default" | "outline" | "destructive" =
+        statusLower.includes("terverifikasi") && !statusLower.includes("tidak")
+          ? "default"
+          : statusLower.includes("tidak") || statusLower.includes("reject")
+            ? "destructive"
+            : "outline";
 
       return (
-        <Badge variant={variant}>
-          {ARCHIVE_DOCUMENT_STATUS[status as ArchiveDocumentStatusKey] || status}
+        <Badge variant={badgeVariant}>
+          {ARCHIVE_DOCUMENT_STATUS[status as ArchiveDocumentStatusKey] ||
+            status}
         </Badge>
       );
     },

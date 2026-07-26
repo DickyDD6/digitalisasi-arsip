@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { Upload, Clock, FileX } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Card } from "@repo/ui/card";
 
 export function UploaderQuickActions() {
   return (
@@ -14,8 +14,12 @@ export function UploaderQuickActions() {
               <Upload className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h3 className="text-base font-semibold text-white">Upload Dokumen Baru</h3>
-              <p className="text-xs text-white/80 mt-0.5">Unggah Nilai, Transkrip, atau Ijazah</p>
+              <h3 className="text-base font-semibold text-white">
+                Upload Dokumen Baru
+              </h3>
+              <p className="text-xs text-white/80 mt-0.5">
+                Unggah Nilai, Transkrip, atau Ijazah
+              </p>
             </div>
           </div>
         </Card>
@@ -29,8 +33,12 @@ export function UploaderQuickActions() {
               <Clock className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h3 className="text-base font-semibold text-white">Dokumen Pending</h3>
-              <p className="text-xs text-white/80 mt-0.5">Lihat Status Dokumentasi</p>
+              <h3 className="text-base font-semibold text-white">
+                Dokumen Pending
+              </h3>
+              <p className="text-xs text-white/80 mt-0.5">
+                Lihat Status Dokumentasi
+              </p>
             </div>
           </div>
         </Card>
@@ -44,8 +52,12 @@ export function UploaderQuickActions() {
               <FileX className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h3 className="text-base font-semibold text-white">Dokumen Ditolak</h3>
-              <p className="text-xs text-white/80 mt-0.5">Perbaiki Dokumen Invalid</p>
+              <h3 className="text-base font-semibold text-white">
+                Dokumen Ditolak
+              </h3>
+              <p className="text-xs text-white/80 mt-0.5">
+                Perbaiki Dokumen Invalid
+              </p>
             </div>
           </div>
         </Card>

@@ -1,4 +1,4 @@
-import { http } from "@/lib/http";
+import { http } from "@/shared/lib/http";
 import type {
   DashboardStatsResponse,
   DocumentStatisticsResponse,
@@ -14,15 +14,18 @@ export const dashboardService = {
     if (startDate) params.start_date = startDate;
     if (endDate) params.end_date = endDate;
 
-    const response = await http.get<DashboardStatsResponse>("/api/reports/dashboard", {
-      params,
-    });
+    const response = await http.get<DashboardStatsResponse>(
+      "/api/reports/dashboard",
+      {
+        params,
+      },
+    );
     return response.data;
   },
 
   getDocumentStatistics: async () => {
     const response = await http.get<DocumentStatisticsResponse>(
-      "/api/documents/statistics"
+      "/api/documents/statistics",
     );
     return response.data;
   },
@@ -34,19 +37,19 @@ export const dashboardService = {
 
     const response = await http.get<AuditLogStatisticsResponse>(
       "/api/audit-logs/statistics",
-      { params }
+      { params },
     );
     return response.data;
   },
 
   getUserStatistics: async () => {
     const response = await http.get<UserStatisticsResponse>(
-      "/api/users/statistics"
+      "/api/users/statistics",
     );
     return response.data;
   },
 
-  getDocuments: async (params?: Record<string, any>) => {
+  getDocuments: async (params?: Record<string, unknown>) => {
     const response = await http.get<DocumentListResponse>("/api/documents", {
       params,
     });
@@ -54,14 +57,23 @@ export const dashboardService = {
   },
 
   getPendingDocuments: async (perPage = 15, page = 1) => {
-    const response = await http.get<DocumentListResponse>("/api/documents/pending", {
-      params: { per_page: perPage, page },
-    });
+    const response = await http.get<DocumentListResponse>(
+      "/api/documents/pending",
+      {
+        params: { per_page: perPage, page },
+      },
+    );
     return response.data;
   },
 
-  verifyDocument: async (documentId: number, payload: VerifyDocumentPayload) => {
-    const response = await http.patch(`/api/documents/${documentId}/verify`, payload);
+  verifyDocument: async (
+    documentId: number,
+    payload: VerifyDocumentPayload,
+  ) => {
+    const response = await http.patch(
+      `/api/documents/${documentId}/verify`,
+      payload,
+    );
     return response.data;
   },
 };

@@ -1,13 +1,13 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@repo/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -16,8 +16,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Field, FieldGroup } from "@/components/ui/field";
+} from "@repo/ui/dialog";
+import { Field, FieldGroup } from "@repo/ui/field";
 import {
   Table,
   TableBody,
@@ -25,9 +25,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { downloadFile } from "@/lib/download-helper";
-import { http } from "@/lib/http";
+} from "@repo/ui/table";
+import { downloadFile } from "@/shared/utils/download-helper";
+import { http } from "@/shared/lib/http";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   ColumnDef,
@@ -182,20 +182,12 @@ export const DownloadArchiveModal = ({ id }: { id: number | number[] }) => {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
+      <DialogTrigger>
         <Button variant="ghost" className="justify-start">
           <Download /> Unduh
         </Button>
       </DialogTrigger>
-      <DialogContent
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        onCloseAutoFocus={(e) => {
-          e.preventDefault();
-          document.dispatchEvent(
-            new KeyboardEvent("keydown", { key: "Escape" }),
-          );
-        }}
-      >
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>
             {Array.isArray(id)
@@ -230,9 +222,9 @@ export const DownloadArchiveModal = ({ id }: { id: number | number[] }) => {
                             {header.isPlaceholder
                               ? null
                               : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
-                              )}
+                                  header.column.columnDef.header,
+                                  header.getContext(),
+                                )}
                           </TableHead>
                         ))}
                       </TableRow>

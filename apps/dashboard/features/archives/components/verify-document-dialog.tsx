@@ -8,13 +8,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+} from "@repo/ui/dialog";
+import { Button } from "@repo/ui/button";
+import { Label } from "@repo/ui/label";
+import { Textarea } from "@repo/ui/textarea";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { http } from "@/lib/http";
+import { http } from "@/shared/lib/http";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface VerifyDocumentDialogProps {
@@ -44,9 +44,12 @@ export const VerifyDocumentDialog: React.FC<VerifyDocumentDialogProps> = ({
       toast.success("Dokumen berhasil diverifikasi!");
       queryClient.invalidateQueries({ queryKey: ["documents"] });
       onOpenChange(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMsg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message || "Terjadi kesalahan.";
       toast.error("Gagal memverifikasi dokumen", {
-        description: err?.response?.data?.message || "Terjadi kesalahan.",
+        description: errorMsg,
       });
     } finally {
       setLoading(false);
@@ -62,7 +65,9 @@ export const VerifyDocumentDialog: React.FC<VerifyDocumentDialogProps> = ({
               <CheckCircle2 className="size-6" />
             </div>
             <div className="text-left">
-              <DialogTitle className="text-base">Verifikasi Dokumen</DialogTitle>
+              <DialogTitle className="text-base">
+                Verifikasi Dokumen
+              </DialogTitle>
               <DialogDescription className="text-xs">
                 {documentTitle}
               </DialogDescription>
@@ -85,7 +90,12 @@ export const VerifyDocumentDialog: React.FC<VerifyDocumentDialogProps> = ({
         </div>
 
         <DialogFooter className="gap-2 pt-2">
-          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)} disabled={loading}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onOpenChange(false)}
+            disabled={loading}
+          >
             Batal
           </Button>
           <Button

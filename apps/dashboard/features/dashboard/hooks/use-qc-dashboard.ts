@@ -15,13 +15,21 @@ export function useQCDashboard() {
   const pendingDocs = pendingQuery.data?.data || [];
 
   const verifyMutation = useMutation({
-    mutationFn: ({ id, status }: { id: number; status: "verified" | "rejected" }) =>
-      dashboardService.verifyDocument(id, { status }),
+    mutationFn: ({
+      id,
+      status,
+      note,
+    }: {
+      id: number;
+      status: "verified" | "rejected";
+      note?: string;
+    }) =>
+      dashboardService.verifyDocument(id, { status, verification_note: note }),
     onSuccess: (res, variables) => {
       toast.success(
         variables.status === "verified"
           ? "Dokumen berhasil diverifikasi!"
-          : "Dokumen ditolak."
+          : "Dokumen ditolak.",
       );
       queryClient.invalidateQueries({ queryKey: dashboardQueries.all });
     },

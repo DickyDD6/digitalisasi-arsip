@@ -1,10 +1,10 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/button";
 import {
   DataTableColumnHeader,
   DataTablePagination,
-} from "@/components/ui/data-table";
+} from "@repo/ui/data-table";
 import {
   Empty,
   EmptyContent,
@@ -12,7 +12,7 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty";
+} from "@repo/ui/empty";
 import {
   Select,
   SelectContent,
@@ -21,7 +21,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@repo/ui/select";
 import {
   Table,
   TableBody,
@@ -29,8 +29,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { ROLE } from "@/constants/role";
+} from "@repo/ui/table";
+import { ROLE } from "@/shared/constants/role";
 import { useUsersTable } from "@/features/users/hooks/use-users-table";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -71,8 +71,8 @@ export const DataTableUsers = () => {
   const userMeta = usersResponse?.meta;
 
   const currentUser =
-    queryClient.getQueryData<any>(["auth", "me"]) ||
-    queryClient.getQueryData<any>(["current", "user"]);
+    queryClient.getQueryData<User>(["auth", "me"]) ||
+    queryClient.getQueryData<User>(["current", "user"]);
 
   const data = useMemo(() => users || [], [users]);
   const columns = useMemo(() => usersTableColumns, []);
@@ -150,17 +150,19 @@ export const DataTableUsers = () => {
                       />
                       {header.column.getCanFilter() && (
                         <Select
-                          value={roleFilter}
+                          value={roleFilter || "all"}
                           onValueChange={(value) =>
                             setRoleFilter(
-                              value === "all" ? undefined : (value as UserRole),
+                              (value as string) === "all"
+                                ? undefined
+                                : (value as UserRole),
                             )
                           }
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Filter Peran" />
                           </SelectTrigger>
-                          <SelectContent position={"popper"}>
+                          <SelectContent>
                             <SelectGroup>
                               <SelectLabel>Filter Peran</SelectLabel>
                               <SelectItem value="all">Semua Peran</SelectItem>

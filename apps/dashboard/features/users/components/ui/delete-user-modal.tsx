@@ -1,14 +1,14 @@
 "use client";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@repo/ui/alert";
+import { Button } from "@repo/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@repo/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -17,8 +17,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Field, FieldGroup } from "@/components/ui/field";
+} from "@repo/ui/dialog";
+import { Field, FieldGroup } from "@repo/ui/field";
 import { useUserDelete } from "@/features/users/hooks/use-user-delete";
 import { useUserDeleteDetail } from "@/features/users/hooks/use-user-detail";
 import { useUserDeleteMultiple } from "@/features/users/hooks/use-user-delete";
@@ -161,29 +161,24 @@ export const DeleteUserModal = ({ id }: { id: number | number[] }) => {
         setOpenDialog(open);
       }}
     >
-      <DialogTrigger asChild>
+      <DialogTrigger>
         <Button
           variant={"destructive"}
           className="justify-start w-full"
           disabled={
             isLoading ||
-            (singleQuery as any)?.data?.role === "manager" ||
-            (multipleQuery as any)?.some?.((user: any) => user.role === "manager")
+            (singleQuery as unknown as { data?: User })?.data?.role ===
+              "manager" ||
+            (Array.isArray(multipleQuery) &&
+              (multipleQuery as unknown as User[]).some(
+                (user) => user.role === "manager",
+              ))
           }
         >
           <Trash2 /> Hapus Pengguna
         </Button>
       </DialogTrigger>
-      <DialogContent
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        onCloseAutoFocus={(e) => {
-          e.preventDefault();
-          document.dispatchEvent(
-            new KeyboardEvent("keydown", { key: "Escape" }),
-          );
-        }}
-        className={"sm:max-h-lg sm:max-w-2xl"}
-      >
+      <DialogContent className={"sm:max-h-lg sm:max-w-2xl"}>
         <DialogHeader>
           <DialogTitle>
             {Array.isArray(id)
@@ -230,12 +225,13 @@ export const DeleteUserModal = ({ id }: { id: number | number[] }) => {
                   <span className="font-medium">
                     {Array.isArray(id)
                       ? Array.isArray(multipleQuery)
-                        ? multipleQuery
-                            .map((item: any) => item.name)
+                        ? (multipleQuery as unknown as User[])
+                            .map((item) => item.name)
                             .filter(Boolean)
                             .join(", ")
                         : "-"
-                      : (singleQuery as any)?.data?.name || "-"}
+                      : (singleQuery as unknown as { data?: User })?.data
+                          ?.name || "-"}
                   </span>
                 </Field>
                 <Field
@@ -248,12 +244,13 @@ export const DeleteUserModal = ({ id }: { id: number | number[] }) => {
                   <span className="font-medium">
                     {Array.isArray(id)
                       ? Array.isArray(multipleQuery)
-                        ? (multipleQuery as any[])
-                            .map((item: any) => item.email)
+                        ? (multipleQuery as unknown as User[])
+                            .map((item) => item.email)
                             .filter(Boolean)
                             .join(", ")
                         : "-"
-                      : (singleQuery as any)?.data?.email || "-"}
+                      : (singleQuery as unknown as { data?: User })?.data
+                          ?.email || "-"}
                   </span>
                 </Field>
                 <Field
@@ -266,12 +263,13 @@ export const DeleteUserModal = ({ id }: { id: number | number[] }) => {
                   <span className="font-medium">
                     {Array.isArray(id)
                       ? Array.isArray(multipleQuery)
-                        ? (multipleQuery as any[])
-                            .map((item: any) => item.nip)
+                        ? (multipleQuery as unknown as User[])
+                            .map((item) => item.nip)
                             .filter(Boolean)
                             .join(", ")
                         : "-"
-                      : (singleQuery as any)?.data?.nip || "-"}
+                      : (singleQuery as unknown as { data?: User })?.data
+                          ?.nip || "-"}
                   </span>
                 </Field>
                 <Field
@@ -284,12 +282,13 @@ export const DeleteUserModal = ({ id }: { id: number | number[] }) => {
                   <span className="font-medium">
                     {Array.isArray(id)
                       ? Array.isArray(multipleQuery)
-                        ? (multipleQuery as any[])
-                            .map((item: any) => item.role)
+                        ? (multipleQuery as unknown as User[])
+                            .map((item) => item.role)
                             .filter(Boolean)
                             .join(", ")
                         : "-"
-                      : (singleQuery as any)?.data?.role || "-"}
+                      : (singleQuery as unknown as { data?: User })?.data
+                          ?.role || "-"}
                   </span>
                 </Field>
               </FieldGroup>
