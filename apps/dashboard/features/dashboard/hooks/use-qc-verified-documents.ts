@@ -21,14 +21,14 @@ export function useQCVerifiedDocuments({
       search: search || undefined,
       per_page: 100,
       page: 1,
-    })
+    }),
   );
 
   const rawDocs: DocumentItem[] = query.data?.data || [];
 
   // Filter verified documents using getNormalizedStatus(doc) to capture all API status variants
   const allVerifiedDocs = rawDocs.filter(
-    (doc) => getNormalizedStatus(doc) === "verified"
+    (doc) => getNormalizedStatus(doc) === "verified",
   );
 
   // Apply category filter using normalized getDocCategory helper

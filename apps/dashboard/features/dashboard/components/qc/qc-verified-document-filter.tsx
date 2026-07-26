@@ -6,7 +6,12 @@ import { Card, CardContent } from "@repo/ui/card";
 import { Input } from "@repo/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@repo/ui/tabs";
 
-export type QCFilterCategoryOption = "all" | "Nilai" | "Transkrip" | "Ijazah" | "Sidang";
+export type QCFilterCategoryOption =
+  | "all"
+  | "Nilai"
+  | "Transkrip"
+  | "Ijazah"
+  | "Sidang";
 
 interface QCVerifiedDocumentFilterProps {
   searchQuery: string;

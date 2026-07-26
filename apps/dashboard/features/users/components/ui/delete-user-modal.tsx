@@ -167,8 +167,12 @@ export const DeleteUserModal = ({ id }: { id: number | number[] }) => {
           className="justify-start w-full"
           disabled={
             isLoading ||
-            (singleQuery as unknown as { data?: User })?.data?.role === "manager" ||
-            (Array.isArray(multipleQuery) && (multipleQuery as unknown as User[]).some((user) => user.role === "manager"))
+            (singleQuery as unknown as { data?: User })?.data?.role ===
+              "manager" ||
+            (Array.isArray(multipleQuery) &&
+              (multipleQuery as unknown as User[]).some(
+                (user) => user.role === "manager",
+              ))
           }
         >
           <Trash2 /> Hapus Pengguna
@@ -226,7 +230,8 @@ export const DeleteUserModal = ({ id }: { id: number | number[] }) => {
                             .filter(Boolean)
                             .join(", ")
                         : "-"
-                      : (singleQuery as unknown as { data?: User })?.data?.name || "-"}
+                      : (singleQuery as unknown as { data?: User })?.data
+                          ?.name || "-"}
                   </span>
                 </Field>
                 <Field
@@ -244,7 +249,8 @@ export const DeleteUserModal = ({ id }: { id: number | number[] }) => {
                             .filter(Boolean)
                             .join(", ")
                         : "-"
-                      : (singleQuery as unknown as { data?: User })?.data?.email || "-"}
+                      : (singleQuery as unknown as { data?: User })?.data
+                          ?.email || "-"}
                   </span>
                 </Field>
                 <Field
@@ -262,7 +268,8 @@ export const DeleteUserModal = ({ id }: { id: number | number[] }) => {
                             .filter(Boolean)
                             .join(", ")
                         : "-"
-                      : (singleQuery as unknown as { data?: User })?.data?.nip || "-"}
+                      : (singleQuery as unknown as { data?: User })?.data
+                          ?.nip || "-"}
                   </span>
                 </Field>
                 <Field
@@ -280,7 +287,8 @@ export const DeleteUserModal = ({ id }: { id: number | number[] }) => {
                             .filter(Boolean)
                             .join(", ")
                         : "-"
-                      : (singleQuery as unknown as { data?: User })?.data?.role || "-"}
+                      : (singleQuery as unknown as { data?: User })?.data
+                          ?.role || "-"}
                   </span>
                 </Field>
               </FieldGroup>

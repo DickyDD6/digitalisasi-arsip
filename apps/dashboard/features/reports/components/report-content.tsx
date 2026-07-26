@@ -18,7 +18,9 @@ export const ReportContent = () => {
           <CardContent className="p-4 flex items-center justify-between">
             <div>
               <p className="text-xs text-muted-foreground">Total Dokumen</p>
-              <h3 className="text-2xl font-bold">{stats?.total_documents ?? 0}</h3>
+              <h3 className="text-2xl font-bold">
+                {stats?.total_documents ?? 0}
+              </h3>
             </div>
             <div className="p-3 bg-primary/10 rounded-full">
               <FileText className="size-6 text-primary" />
@@ -43,7 +45,9 @@ export const ReportContent = () => {
         <Card>
           <CardContent className="p-4 flex items-center justify-between">
             <div>
-              <p className="text-xs text-muted-foreground">Pending Verifikasi</p>
+              <p className="text-xs text-muted-foreground">
+                Pending Verifikasi
+              </p>
               <h3 className="text-2xl font-bold text-yellow-600">
                 {stats?.pending_documents ?? 0}
               </h3>
@@ -75,7 +79,8 @@ export const ReportContent = () => {
           <CardContent className="p-6">
             <CardTitle className="text-lg">Laporan Statistik</CardTitle>
             <p className="text-sm text-muted-foreground mt-2">
-              Statistik penggunaan sistem, jumlah dokumen, dan aktivitas pengguna.
+              Statistik penggunaan sistem, jumlah dokumen, dan aktivitas
+              pengguna.
             </p>
             <GenerateReportDialog
               reportTitle="Laporan Statistik"
@@ -114,7 +119,8 @@ export const ReportContent = () => {
           <CardContent className="p-6">
             <CardTitle className="text-lg">Laporan Audit</CardTitle>
             <p className="text-sm text-muted-foreground mt-2">
-              Daftar aktivitas audit sistem, termasuk akses dokumen dan perubahan data.
+              Daftar aktivitas audit sistem, termasuk akses dokumen dan
+              perubahan data.
             </p>
             <GenerateReportDialog
               reportTitle="Laporan Audit"

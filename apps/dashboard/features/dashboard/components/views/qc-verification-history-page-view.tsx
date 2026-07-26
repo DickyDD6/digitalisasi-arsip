@@ -20,14 +20,17 @@ import { ViewArchiveModal } from "@/features/archives/components/ui/view-archive
 
 export function QCVerificationHistoryPageView() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "verified" | "rejected">("all");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "verified" | "rejected"
+  >("all");
   const [viewModalDocId, setViewModalDocId] = useState<number | null>(null);
 
   // Fetch live API verification history using React Query hook
-  const { isLoading, historyDocs, refetchHistory, stats } = useQCVerificationHistory({
-    search: searchQuery,
-    statusFilter,
-  });
+  const { isLoading, historyDocs, refetchHistory, stats } =
+    useQCVerificationHistory({
+      search: searchQuery,
+      statusFilter,
+    });
 
   return (
     <div className="flex flex-col gap-6 w-full pb-12">
@@ -41,7 +44,8 @@ export function QCVerificationHistoryPageView() {
                 <span>Riwayat Verifikasi Dokumen</span>
               </CardTitle>
               <CardDescription className="text-sm text-muted-foreground mt-1">
-                Daftar seluruh riwayat verifikasi dan penolakan dokumen yang telah diproses oleh Tim QC
+                Daftar seluruh riwayat verifikasi dan penolakan dokumen yang
+                telah diproses oleh Tim QC
               </CardDescription>
             </div>
 
@@ -85,7 +89,10 @@ export function QCVerificationHistoryPageView() {
           {isLoading ? (
             <div className="p-6 space-y-4">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="p-4 space-y-2 border border-border/40 rounded-xl">
+                <div
+                  key={i}
+                  className="p-4 space-y-2 border border-border/40 rounded-xl"
+                >
                   <div className="flex justify-between">
                     <Skeleton className="h-5 w-64" />
                     <Skeleton className="h-5 w-24 rounded-full" />
@@ -107,9 +114,12 @@ export function QCVerificationHistoryPageView() {
           ) : (
             <div className="py-14 px-6 text-center">
               <History className="w-10 h-10 text-muted-foreground mx-auto mb-2 opacity-50" />
-              <p className="text-sm font-semibold text-foreground">Tidak Ada Riwayat Verifikasi</p>
+              <p className="text-sm font-semibold text-foreground">
+                Tidak Ada Riwayat Verifikasi
+              </p>
               <p className="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
-                Dokumen yang telah diverifikasi atau ditolak oleh QC akan secara otomatis tampil di sini.
+                Dokumen yang telah diverifikasi atau ditolak oleh QC akan secara
+                otomatis tampil di sini.
               </p>
             </div>
           )}

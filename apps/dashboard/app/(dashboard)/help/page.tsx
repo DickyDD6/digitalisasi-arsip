@@ -341,10 +341,7 @@ export default function HelpPage() {
               </p>
             </CardHeader>
             <CardContent className="w-full min-h-0 overflow-auto">
-              <Accordion
-                className="w-full"
-                defaultValue={["item-1"]}
-              >
+              <Accordion className="w-full" defaultValue={["item-1"]}>
                 {[
                   "Semua",
                   "Umum",

@@ -75,13 +75,19 @@ export function MetadataForm({
         {!documentType ? (
           <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground my-auto">
             <FileSearch className="w-12 h-12 stroke-[1.5] text-muted-foreground/50 mb-3" />
-            <p className="text-sm font-medium">Pilih jenis dokumen di sebelah kiri</p>
+            <p className="text-sm font-medium">
+              Pilih jenis dokumen di sebelah kiri
+            </p>
             <p className="text-xs text-muted-foreground/70 mt-1 max-w-xs">
-              Formulir isian metadata akan muncul secara otomatis sesuai dengan tipe dokumen yang Anda pilih.
+              Formulir isian metadata akan muncul secara otomatis sesuai dengan
+              tipe dokumen yang Anda pilih.
             </p>
           </div>
         ) : (
-          <form onSubmit={onSubmit} className="flex flex-col justify-between h-full space-y-5">
+          <form
+            onSubmit={onSubmit}
+            className="flex flex-col justify-between h-full space-y-5"
+          >
             <div className="space-y-4">
               {/* Program Studi (All document types) */}
               <div className="space-y-1.5 w-full">
@@ -116,7 +122,9 @@ export function MetadataForm({
                     </Label>
                     <Select
                       value={formData.tahun_ajaran}
-                      onValueChange={(val) => onChange("tahun_ajaran", val || "")}
+                      onValueChange={(val) =>
+                        onChange("tahun_ajaran", val || "")
+                      }
                       required
                     >
                       <SelectTrigger className="w-full h-10 text-xs">

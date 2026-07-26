@@ -26,7 +26,10 @@ export function ManageArchiveContainer() {
   const userRole = user?.role?.toLowerCase();
 
   // If user is QC and accessing pending verification or standard archive page
-  if (userRole === "qc" && (statusParam === "menunggu_verifikasi" || !statusParam)) {
+  if (
+    userRole === "qc" &&
+    (statusParam === "menunggu_verifikasi" || !statusParam)
+  ) {
     return <QCVerificationPageView />;
   }
 
@@ -42,7 +45,8 @@ export function ManageArchiveContainer() {
       <Card className="w-full">
         <CardHeader>
           <CardTitle className="flex items-center gap-1">
-            <FileText className="text-primary size-4 md:size-6" /> Dokumen Arsip Digital
+            <FileText className="text-primary size-4 md:size-6" /> Dokumen Arsip
+            Digital
           </CardTitle>
           <CardDescription>
             Dokumen Nilai dan Transkrip Nilai (2000-2010)

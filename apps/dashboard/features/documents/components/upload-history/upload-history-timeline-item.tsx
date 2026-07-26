@@ -40,8 +40,8 @@ export function UploadHistoryTimelineItem({
           isVerified
             ? "bg-[#DCFCE7] text-[#00A63E]"
             : isRejected
-            ? "bg-[#FFE2E2] text-[#E7000B]"
-            : "bg-[#FEF9C2] text-[#D08700]"
+              ? "bg-[#FFE2E2] text-[#E7000B]"
+              : "bg-[#FEF9C2] text-[#D08700]"
         }`}
       >
         {isVerified ? (
@@ -56,9 +56,7 @@ export function UploadHistoryTimelineItem({
       {/* Details Box */}
       <div className="flex-1 pt-0.5 space-y-1">
         <div className="flex items-center gap-2">
-          <h4 className="text-sm font-bold text-foreground">
-            {item.title}
-          </h4>
+          <h4 className="text-sm font-bold text-foreground">{item.title}</h4>
           <span className="text-xs text-muted-foreground font-normal">
             • {item.timeStr}
           </span>

@@ -36,8 +36,8 @@ export const reportService = {
         payload.format === "pdf"
           ? "application/pdf"
           : payload.format === "xlsx"
-          ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-          : "text/csv",
+            ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            : "text/csv",
     });
     downloadFile(blob, filename);
     return true;

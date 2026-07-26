@@ -14,19 +14,24 @@ import { Badge } from "@repo/ui/badge";
 import { Skeleton } from "@repo/ui/skeleton";
 import { useQCVerifiedDocuments } from "../../hooks/use-qc-verified-documents";
 import { QCVerifiedDocumentStats } from "../qc/qc-verified-document-stats";
-import { QCVerifiedDocumentFilter, type QCFilterCategoryOption } from "../qc/qc-verified-document-filter";
+import {
+  QCVerifiedDocumentFilter,
+  type QCFilterCategoryOption,
+} from "../qc/qc-verified-document-filter";
 import { QCVerifiedDocumentItem } from "../qc/qc-verified-document-item";
 import { ViewArchiveModal } from "@/features/archives/components/ui/view-archive-modal";
 
 export function QCVerifiedDocumentsPageView() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<QCFilterCategoryOption>("all");
+  const [categoryFilter, setCategoryFilter] =
+    useState<QCFilterCategoryOption>("all");
   const [viewModalDocId, setViewModalDocId] = useState<number | null>(null);
 
-  const { isLoading, verifiedDocs, refetchVerified, stats } = useQCVerifiedDocuments({
-    search: searchQuery,
-    categoryFilter,
-  });
+  const { isLoading, verifiedDocs, refetchVerified, stats } =
+    useQCVerifiedDocuments({
+      search: searchQuery,
+      categoryFilter,
+    });
 
   return (
     <div className="flex flex-col gap-6 w-full pb-12">
@@ -40,7 +45,8 @@ export function QCVerifiedDocumentsPageView() {
                 <span>Dokumen Terverifikasi</span>
               </CardTitle>
               <CardDescription className="text-sm text-muted-foreground mt-1">
-                Daftar seluruh arsip dokumen yang telah memenuhi standar Quality Control dan terverifikasi
+                Daftar seluruh arsip dokumen yang telah memenuhi standar Quality
+                Control dan terverifikasi
               </CardDescription>
             </div>
 
@@ -74,7 +80,10 @@ export function QCVerifiedDocumentsPageView() {
         <div className="flex items-center justify-between px-1">
           <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
             <span>Daftar Dokumen Terverifikasi</span>
-            <Badge variant="secondary" className="font-normal text-xs bg-emerald-500/10 text-emerald-600">
+            <Badge
+              variant="secondary"
+              className="font-normal text-xs bg-emerald-500/10 text-emerald-600"
+            >
               {verifiedDocs.length} Dokumen
             </Badge>
           </h3>
@@ -114,9 +123,12 @@ export function QCVerifiedDocumentsPageView() {
               <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center mb-3">
                 <FileCheck className="w-7 h-7" />
               </div>
-              <h4 className="text-lg font-semibold text-foreground">Tidak Ada Dokumen Terverifikasi</h4>
+              <h4 className="text-lg font-semibold text-foreground">
+                Tidak Ada Dokumen Terverifikasi
+              </h4>
               <p className="text-xs text-muted-foreground mt-1 max-w-sm">
-                Belum ada dokumen yang sesuai dengan kriteria pencarian atau kategori ini.
+                Belum ada dokumen yang sesuai dengan kriteria pencarian atau
+                kategori ini.
               </p>
             </CardContent>
           </Card>

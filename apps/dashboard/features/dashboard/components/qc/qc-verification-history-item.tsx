@@ -1,7 +1,15 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, XCircle, Clock, FileText, User, Calendar, Eye } from "lucide-react";
+import {
+  CheckCircle2,
+  XCircle,
+  Clock,
+  FileText,
+  User,
+  Calendar,
+  Eye,
+} from "lucide-react";
 import { Button } from "@repo/ui/button";
 import { Badge } from "@repo/ui/badge";
 import type { DocumentItem } from "../../types/dashboard.types";
@@ -40,7 +48,9 @@ export function QCVerificationHistoryItem({
             <FileText className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-foreground truncate">{docTitle}</h4>
+            <h4 className="text-sm font-semibold text-foreground truncate">
+              {docTitle}
+            </h4>
             <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mt-0.5">
               <span className="flex items-center gap-1">
                 <User className="w-3.5 h-3.5 text-muted-foreground/70" />
@@ -49,7 +59,9 @@ export function QCVerificationHistoryItem({
               <span>•</span>
               <span className="flex items-center gap-1">
                 <Calendar className="w-3.5 h-3.5 text-muted-foreground/70" />
-                <span>Diverifikasi oleh {verifierName} pada {processedAt}</span>
+                <span>
+                  Diverifikasi oleh {verifierName} pada {processedAt}
+                </span>
               </span>
             </div>
           </div>
@@ -110,7 +122,9 @@ export function QCVerificationHistoryItem({
       {/* Bottom Row: Note Container if verification note exists */}
       {doc.verification_note && (
         <div className="p-3 rounded-lg bg-muted/40 text-xs text-foreground/90 border border-border/40">
-          <span className="font-medium text-muted-foreground">Catatan Verifikasi: </span>
+          <span className="font-medium text-muted-foreground">
+            Catatan Verifikasi:{" "}
+          </span>
           <span>{noteText}</span>
         </div>
       )}

@@ -21,13 +21,15 @@ import type { QCFilterCategoryOption } from "../qc/qc-verified-document-filter";
 
 export function QCRejectedDocumentsPageView() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<QCFilterCategoryOption>("all");
+  const [categoryFilter, setCategoryFilter] =
+    useState<QCFilterCategoryOption>("all");
   const [viewModalDocId, setViewModalDocId] = useState<number | null>(null);
 
-  const { isLoading, rejectedDocs, refetchRejected, stats } = useQCRejectedDocuments({
-    search: searchQuery,
-    categoryFilter,
-  });
+  const { isLoading, rejectedDocs, refetchRejected, stats } =
+    useQCRejectedDocuments({
+      search: searchQuery,
+      categoryFilter,
+    });
 
   return (
     <div className="flex flex-col gap-6 w-full pb-12">
@@ -41,7 +43,8 @@ export function QCRejectedDocumentsPageView() {
                 <span>Dokumen Ditolak</span>
               </CardTitle>
               <CardDescription className="text-sm text-muted-foreground mt-1">
-                Daftar seluruh dokumen yang ditolak beserta catatan dan alasan penolakan dari Tim Quality Control
+                Daftar seluruh dokumen yang ditolak beserta catatan dan alasan
+                penolakan dari Tim Quality Control
               </CardDescription>
             </div>
 
@@ -75,7 +78,10 @@ export function QCRejectedDocumentsPageView() {
         <div className="flex items-center justify-between px-1">
           <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
             <span>Daftar Dokumen Ditolak</span>
-            <Badge variant="secondary" className="font-normal text-xs bg-rose-500/10 text-rose-600">
+            <Badge
+              variant="secondary"
+              className="font-normal text-xs bg-rose-500/10 text-rose-600"
+            >
               {rejectedDocs.length} Dokumen
             </Badge>
           </h3>
@@ -116,9 +122,12 @@ export function QCRejectedDocumentsPageView() {
               <div className="w-14 h-14 rounded-2xl bg-rose-500/10 text-rose-600 flex items-center justify-center mb-3">
                 <FileX className="w-7 h-7" />
               </div>
-              <h4 className="text-lg font-semibold text-foreground">Tidak Ada Dokumen Ditolak</h4>
+              <h4 className="text-lg font-semibold text-foreground">
+                Tidak Ada Dokumen Ditolak
+              </h4>
               <p className="text-xs text-muted-foreground mt-1 max-w-sm">
-                Tidak ada catatan dokumen yang ditolak untuk kriteria pencarian ini.
+                Tidak ada catatan dokumen yang ditolak untuk kriteria pencarian
+                ini.
               </p>
             </CardContent>
           </Card>

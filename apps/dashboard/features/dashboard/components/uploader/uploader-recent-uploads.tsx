@@ -61,8 +61,10 @@ export function UploaderRecentUploads({
           <div className="divide-y divide-border/60">
             {documents.map((doc) => {
               const statusStr = String(doc.status);
-              const isVerified = statusStr === "verified" || statusStr === "terverifikasi";
-              const isRejected = statusStr === "rejected" || statusStr === "tidak_terverifikasi";
+              const isVerified =
+                statusStr === "verified" || statusStr === "terverifikasi";
+              const isRejected =
+                statusStr === "rejected" || statusStr === "tidak_terverifikasi";
 
               return (
                 <div
@@ -90,7 +92,10 @@ export function UploaderRecentUploads({
                   </div>
 
                   <div className="flex items-center gap-3 self-end sm:self-center">
-                    <Badge variant="outline" className="bg-muted text-muted-foreground text-[11px] rounded-full px-2.5">
+                    <Badge
+                      variant="outline"
+                      className="bg-muted text-muted-foreground text-[11px] rounded-full px-2.5"
+                    >
                       {getDocCategory(doc)}
                     </Badge>
 
@@ -100,11 +105,15 @@ export function UploaderRecentUploads({
                         isVerified
                           ? "bg-[#DCFCE7] text-[#00A63E] border-emerald-200 text-[11px] rounded-full px-2.5"
                           : isRejected
-                          ? "bg-[#FFE2E2] text-[#E7000B] border-rose-200 text-[11px] rounded-full px-2.5"
-                          : "bg-[#FEF9C2] text-[#D08700] border-amber-200 text-[11px] rounded-full px-2.5"
+                            ? "bg-[#FFE2E2] text-[#E7000B] border-rose-200 text-[11px] rounded-full px-2.5"
+                            : "bg-[#FEF9C2] text-[#D08700] border-amber-200 text-[11px] rounded-full px-2.5"
                       }
                     >
-                      {isVerified ? "Terverifikasi" : isRejected ? "Ditolak" : "Menunggu Verifikasi"}
+                      {isVerified
+                        ? "Terverifikasi"
+                        : isRejected
+                          ? "Ditolak"
+                          : "Menunggu Verifikasi"}
                     </Badge>
 
                     <Button

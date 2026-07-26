@@ -23,12 +23,13 @@ export function useQCDashboard() {
       id: number;
       status: "verified" | "rejected";
       note?: string;
-    }) => dashboardService.verifyDocument(id, { status, verification_note: note }),
+    }) =>
+      dashboardService.verifyDocument(id, { status, verification_note: note }),
     onSuccess: (res, variables) => {
       toast.success(
         variables.status === "verified"
           ? "Dokumen berhasil diverifikasi!"
-          : "Dokumen ditolak."
+          : "Dokumen ditolak.",
       );
       queryClient.invalidateQueries({ queryKey: dashboardQueries.all });
     },

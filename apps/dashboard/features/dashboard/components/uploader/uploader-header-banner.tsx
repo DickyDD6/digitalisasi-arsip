@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@repo/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@repo/ui/card";
 
 export function UploaderHeaderBanner() {
   return (
@@ -15,7 +10,8 @@ export function UploaderHeaderBanner() {
             Dashboard Manajer Arsip Nilai
           </CardTitle>
           <CardDescription className="text-sm text-muted-foreground mt-1">
-            Sistem Informasi Pengelolaan Arsip Dokumen Nilai dan Transkrip Mahasiswa Fakultas Teknik (2000-2010)
+            Sistem Informasi Pengelolaan Arsip Dokumen Nilai dan Transkrip
+            Mahasiswa Fakultas Teknik (2000-2010)
           </CardDescription>
         </div>
       </CardHeader>

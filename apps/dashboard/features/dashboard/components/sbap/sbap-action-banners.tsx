@@ -30,7 +30,10 @@ export function SBAPActionBanners() {
       </Link>
 
       {/* 2. Arsip Terverifikasi Card */}
-      <Link href="/available-archives" className="group block focus:outline-none">
+      <Link
+        href="/available-archives"
+        className="group block focus:outline-none"
+      >
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#155DFC] to-[#1447E6] p-6 text-white shadow-lg transition-all duration-300 hover:scale-[1.01] hover:shadow-xl">
           <div className="p-3 rounded-full bg-white/20 backdrop-blur-md shrink-0 w-fit">
             <FileCheck className="w-6 h-6 text-white" />

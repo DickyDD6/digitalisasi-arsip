@@ -5,7 +5,8 @@ import { Skeleton } from "@repo/ui/skeleton";
 
 export const metadata: Metadata = {
   title: "Dokumen Ditolak - Quality Control",
-  description: "Daftar seluruh dokumen yang ditolak beserta catatan dan alasan penolakan dari Tim Quality Control.",
+  description:
+    "Daftar seluruh dokumen yang ditolak beserta catatan dan alasan penolakan dari Tim Quality Control.",
 };
 
 export default function RejectedDocumentsPage() {

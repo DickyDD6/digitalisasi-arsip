@@ -44,7 +44,7 @@ export const UserDropdown = () => {
 
   const userName = user?.name ?? "User";
   const userEmail = user?.email ?? "";
-  const roleLabel = user?.role ? ROLE_LABELS[user.role] ?? user.role : "User";
+  const roleLabel = user?.role ? (ROLE_LABELS[user.role] ?? user.role) : "User";
 
   return (
     <>
@@ -60,14 +60,18 @@ export const UserDropdown = () => {
           <div className="flex gap-2 items-center">
             <UserRound />
             <div className="grid text-left">
-              <p className="font-medium text-sm truncate max-w-[120px]">{userName}</p>
-              <p className="text-xs text-muted-foreground truncate max-w-[120px]">{roleLabel}</p>
+              <p className="font-medium text-sm truncate max-w-[120px]">
+                {userName}
+              </p>
+              <p className="text-xs text-muted-foreground truncate max-w-[120px]">
+                {roleLabel}
+              </p>
             </div>
           </div>
           <ChevronDown
             className={cn(
               "transition-all duration-300",
-              open ? "rotate-180" : "rotate-0"
+              open ? "rotate-180" : "rotate-0",
             )}
           />
         </DropdownMenuTrigger>
@@ -88,7 +92,10 @@ export const UserDropdown = () => {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link href="/profile/change-password" className="flex items-center gap-2 w-full">
+            <Link
+              href="/profile/change-password"
+              className="flex items-center gap-2 w-full"
+            >
               <KeyRound className="size-4" />
               Ubah Password
             </Link>
@@ -123,7 +130,9 @@ export const UserDropdown = () => {
                 <LogOut className="size-5 text-red-600 dark:text-rose-400" />
               </div>
               <div className="grid">
-                <p className="font-semibold text-base text-foreground">Konfirmasi Keluar</p>
+                <p className="font-semibold text-base text-foreground">
+                  Konfirmasi Keluar
+                </p>
                 <p className="text-xs text-muted-foreground">
                   Apakah Anda yakin ingin keluar?
                 </p>
@@ -132,7 +141,8 @@ export const UserDropdown = () => {
           </DialogHeader>
 
           <p className="text-sm text-muted-foreground">
-            Anda akan keluar dari sistem dan harus login kembali untuk mengakses dashboard.
+            Anda akan keluar dari sistem dan harus login kembali untuk mengakses
+            dashboard.
           </p>
 
           <DialogFooter className="flex justify-end gap-2 pt-2">

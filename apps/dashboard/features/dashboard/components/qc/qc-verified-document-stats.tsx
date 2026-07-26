@@ -22,7 +22,9 @@ export function QCVerifiedDocumentStats({
       {/* Card 1: Total Terverifikasi */}
       <Card className="border border-border/60 bg-card shadow-xs p-5">
         <div className="space-y-1">
-          <span className="text-xs font-medium text-muted-foreground">Total Terverifikasi</span>
+          <span className="text-xs font-medium text-muted-foreground">
+            Total Terverifikasi
+          </span>
           <div className="text-3xl font-extrabold text-[#00C951]">
             {isLoading ? <Skeleton className="h-9 w-12" /> : stats.total}
           </div>
@@ -32,9 +34,15 @@ export function QCVerifiedDocumentStats({
       {/* Card 2: Transkrip Nilai */}
       <Card className="border border-border/60 bg-card shadow-xs p-5">
         <div className="space-y-1">
-          <span className="text-xs font-medium text-muted-foreground">Transkrip Nilai</span>
+          <span className="text-xs font-medium text-muted-foreground">
+            Transkrip Nilai
+          </span>
           <div className="text-3xl font-extrabold text-[#1E40AF]">
-            {isLoading ? <Skeleton className="h-9 w-12" /> : stats.transcriptCount}
+            {isLoading ? (
+              <Skeleton className="h-9 w-12" />
+            ) : (
+              stats.transcriptCount
+            )}
           </div>
         </div>
       </Card>
@@ -42,7 +50,9 @@ export function QCVerifiedDocumentStats({
       {/* Card 3: Nilai & Ijazah */}
       <Card className="border border-border/60 bg-card shadow-xs p-5">
         <div className="space-y-1">
-          <span className="text-xs font-medium text-muted-foreground">Nilai & Ijazah</span>
+          <span className="text-xs font-medium text-muted-foreground">
+            Nilai & Ijazah
+          </span>
           <div className="text-3xl font-extrabold text-[#D08700]">
             {isLoading ? <Skeleton className="h-9 w-12" /> : stats.otherCount}
           </div>

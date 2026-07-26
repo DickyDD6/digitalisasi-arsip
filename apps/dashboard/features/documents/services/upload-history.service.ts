@@ -24,7 +24,7 @@ export const uploadHistoryService = {
 
     const { data } = await http.get<ApiResponse<ArchiveDocument[]>>(
       "/api/documents",
-      { params: cleanParams }
+      { params: cleanParams },
     );
     return data;
   },

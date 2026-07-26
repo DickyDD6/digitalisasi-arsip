@@ -16,35 +16,47 @@ import type { PeriodType } from "../../types/dashboard.types";
 const YearlyStatsChart = dynamic(
   () => import("../manager/yearly-stats-chart").then((m) => m.YearlyStatsChart),
   {
-    loading: () => <Skeleton className="h-[350px] w-full rounded-xl col-span-2" />,
+    loading: () => (
+      <Skeleton className="h-[350px] w-full rounded-xl col-span-2" />
+    ),
     ssr: false,
-  }
+  },
 );
 
 const DocumentDistributionChart = dynamic(
   () =>
     import("../manager/document-distribution-chart").then(
-      (m) => m.DocumentDistributionChart
+      (m) => m.DocumentDistributionChart,
     ),
   {
     loading: () => <Skeleton className="h-[350px] w-full rounded-xl" />,
     ssr: false,
-  }
+  },
 );
 
 const QCPerformanceSection = dynamic(
-  () => import("../manager/qc-performance-section").then((m) => m.QCPerformanceSection),
+  () =>
+    import("../manager/qc-performance-section").then(
+      (m) => m.QCPerformanceSection,
+    ),
   {
     loading: () => <Skeleton className="h-[280px] w-full rounded-xl" />,
     ssr: false,
-  }
+  },
 );
 
 export function ManagerDashboardView() {
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>("hari");
-  const [customDates, setCustomDates] = useState<{ start?: string; end?: string }>({});
+  const [customDates, setCustomDates] = useState<{
+    start?: string;
+    end?: string;
+  }>({});
 
-  const handleSelectPeriod = (period: PeriodType, startDate?: string, endDate?: string) => {
+  const handleSelectPeriod = (
+    period: PeriodType,
+    startDate?: string,
+    endDate?: string,
+  ) => {
     setSelectedPeriod(period);
     if (period === "custom" && startDate && endDate) {
       setCustomDates({ start: startDate, end: endDate });
@@ -115,7 +127,11 @@ export function ManagerDashboardView() {
 
       {/* 5. Charts & Visualizations Section (2 Columns) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <YearlyStatsChart isLoading={isLoading} data={yearlyStats} periodLabel={periodLabel} />
+        <YearlyStatsChart
+          isLoading={isLoading}
+          data={yearlyStats}
+          periodLabel={periodLabel}
+        />
         <DocumentDistributionChart isLoading={isLoading} data={documentTypes} />
       </div>
 
@@ -124,8 +140,14 @@ export function ManagerDashboardView() {
 
       {/* 7. Verification Status & Notifications Grid (2 Columns) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <StatusAlerts isLoading={isLoading} pendingDocuments={primaryMetrics.pendingDocuments} />
-        <NotificationsCard isLoading={isLoading} notifications={notificationsData} />
+        <StatusAlerts
+          isLoading={isLoading}
+          pendingDocuments={primaryMetrics.pendingDocuments}
+        />
+        <NotificationsCard
+          isLoading={isLoading}
+          notifications={notificationsData}
+        />
       </div>
     </div>
   );

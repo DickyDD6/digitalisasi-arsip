@@ -20,11 +20,7 @@ import {
   TrendingUp,
   FileStack,
 } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from "@repo/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@repo/ui/dialog";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
 import { Badge } from "@repo/ui/badge";
@@ -52,22 +48,37 @@ interface AdvancedFilters {
 const RECENT_SEARCHES_KEY = "digital_archive_recent_searches";
 
 const QUICK_FILTERS = [
-  { label: "Menunggu Verifikasi", type: "status", value: "menunggu_verifikasi" },
+  {
+    label: "Menunggu Verifikasi",
+    type: "status",
+    value: "menunggu_verifikasi",
+  },
   { label: "Terverifikasi", type: "status", value: "terverifikasi" },
   { label: "Ditolak", type: "status", value: "tidak_terverifikasi" },
   { label: "Nilai", type: "document_type", value: "nilai" },
   { label: "Transkrip", type: "document_type", value: "transkrip" },
   { label: "Ijazah", type: "document_type", value: "ijazah" },
-  { label: "Berita Acara Sidang", type: "document_type", value: "berita_acara_sidang" },
+  {
+    label: "Berita Acara Sidang",
+    type: "document_type",
+    value: "berita_acara_sidang",
+  },
   { label: "Semester Genap", type: "semester", value: "genap" },
   { label: "Semester Ganjil", type: "semester", value: "ganjil" },
 ];
 
-export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogProps) {
+export function SearchCommandDialog({
+  open,
+  onOpenChange,
+}: SearchCommandDialogProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeSearch, setActiveSearch] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState<string | undefined>(undefined);
-  const [selectedDocType, setSelectedDocType] = useState<string | undefined>(undefined);
+  const [selectedStatus, setSelectedStatus] = useState<string | undefined>(
+    undefined,
+  );
+  const [selectedDocType, setSelectedDocType] = useState<string | undefined>(
+    undefined,
+  );
 
   // Filter panel visibility toggle
   const [showFilterPanel, setShowFilterPanel] = useState(false);
@@ -107,7 +118,10 @@ export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogP
     const trimmed = query.trim();
     if (!trimmed || trimmed.length < 2) return;
     setRecentSearches((prev) => {
-      const updated = [trimmed, ...prev.filter((item) => item !== trimmed)].slice(0, 5);
+      const updated = [
+        trimmed,
+        ...prev.filter((item) => item !== trimmed),
+      ].slice(0, 5);
       try {
         localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
       } catch (error) {
@@ -138,7 +152,10 @@ export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogP
       localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
     } catch (error) {
       if (process.env.NODE_ENV !== "production") {
-        console.warn("Failed to remove recent search from localStorage:", error);
+        console.warn(
+          "Failed to remove recent search from localStorage:",
+          error,
+        );
       }
     }
   };
@@ -149,7 +166,10 @@ export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogP
       localStorage.removeItem(RECENT_SEARCHES_KEY);
     } catch (error) {
       if (process.env.NODE_ENV !== "production") {
-        console.warn("Failed to clear recent searches from localStorage:", error);
+        console.warn(
+          "Failed to clear recent searches from localStorage:",
+          error,
+        );
       }
     }
   };
@@ -162,16 +182,23 @@ export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogP
   if (selectedDocType) queryParams.document_type = selectedDocType;
 
   if (appliedFilters.nim) queryParams.nim = appliedFilters.nim;
-  if (appliedFilters.student_name) queryParams.student_name = appliedFilters.student_name;
-  if (appliedFilters.mata_kuliah) queryParams.mata_kuliah = appliedFilters.mata_kuliah;
-  if (appliedFilters.tahun_akademik) queryParams.tahun_akademik = appliedFilters.tahun_akademik;
+  if (appliedFilters.student_name)
+    queryParams.student_name = appliedFilters.student_name;
+  if (appliedFilters.mata_kuliah)
+    queryParams.mata_kuliah = appliedFilters.mata_kuliah;
+  if (appliedFilters.tahun_akademik)
+    queryParams.tahun_akademik = appliedFilters.tahun_akademik;
   if (appliedFilters.semester) queryParams.semester = appliedFilters.semester;
-  if (appliedFilters.document_type && !selectedDocType) queryParams.document_type = appliedFilters.document_type;
-  if (appliedFilters.status && !selectedStatus) queryParams.status = appliedFilters.status;
-  if (appliedFilters.date_from) queryParams.date_from = appliedFilters.date_from;
+  if (appliedFilters.document_type && !selectedDocType)
+    queryParams.document_type = appliedFilters.document_type;
+  if (appliedFilters.status && !selectedStatus)
+    queryParams.status = appliedFilters.status;
+  if (appliedFilters.date_from)
+    queryParams.date_from = appliedFilters.date_from;
   if (appliedFilters.date_to) queryParams.date_to = appliedFilters.date_to;
 
-  const activeAppliedCount = Object.values(appliedFilters).filter(Boolean).length;
+  const activeAppliedCount =
+    Object.values(appliedFilters).filter(Boolean).length;
   const isQueryActive =
     !!activeSearch.trim() ||
     !!selectedStatus ||
@@ -189,11 +216,19 @@ export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogP
     saveRecentSearch(term);
   };
 
-  const handleTogglePill = (filter: { label: string; type: string; value: string }) => {
+  const handleTogglePill = (filter: {
+    label: string;
+    type: string;
+    value: string;
+  }) => {
     if (filter.type === "status") {
-      setSelectedStatus((prev) => (prev === filter.value ? undefined : filter.value));
+      setSelectedStatus((prev) =>
+        prev === filter.value ? undefined : filter.value,
+      );
     } else if (filter.type === "document_type") {
-      setSelectedDocType((prev) => (prev === filter.value ? undefined : filter.value));
+      setSelectedDocType((prev) =>
+        prev === filter.value ? undefined : filter.value,
+      );
     } else if (filter.type === "semester") {
       setAppliedFilters((prev) => ({
         ...prev,
@@ -267,7 +302,8 @@ export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogP
                     Pencarian Lanjutan Dokumen
                   </DialogTitle>
                   <p className="text-xs text-white/80 mt-0.5">
-                    Live searching berdasarkan NIM, Nama Mahasiswa, Mata Kuliah, Tipe Dokumen, atau Status
+                    Live searching berdasarkan NIM, Nama Mahasiswa, Mata Kuliah,
+                    Tipe Dokumen, atau Status
                   </p>
                 </div>
               </div>
@@ -294,7 +330,10 @@ export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogP
                 />
                 <div className="absolute right-3 flex items-center gap-2">
                   {searchResultsQuery.isFetching && (
-                    <Badge variant="secondary" className="bg-[#F54A00]/10 text-[#F54A00] text-[10px] animate-pulse">
+                    <Badge
+                      variant="secondary"
+                      className="bg-[#F54A00]/10 text-[#F54A00] text-[10px] animate-pulse"
+                    >
                       Mencari...
                     </Badge>
                   )}
@@ -350,8 +389,10 @@ export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogP
                 {QUICK_FILTERS.map((pill, idx) => {
                   const isActive =
                     (pill.type === "status" && selectedStatus === pill.value) ||
-                    (pill.type === "document_type" && selectedDocType === pill.value) ||
-                    (pill.type === "semester" && appliedFilters.semester === pill.value);
+                    (pill.type === "document_type" &&
+                      selectedDocType === pill.value) ||
+                    (pill.type === "semester" &&
+                      appliedFilters.semester === pill.value);
 
                   return (
                     <Button
@@ -374,75 +415,173 @@ export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogP
               {/* ACTIVE FILTER CHIPS */}
               {activeAppliedCount > 0 && (
                 <div className="flex flex-wrap gap-1.5 pt-1">
-                  <span className="text-[10px] text-muted-foreground self-center">Filter aktif:</span>
+                  <span className="text-[10px] text-muted-foreground self-center">
+                    Filter aktif:
+                  </span>
                   {appliedFilters.nim && (
-                    <Badge variant="secondary" className="text-[10px] gap-1 pl-2 pr-1 py-0.5 bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800">
+                    <Badge
+                      variant="secondary"
+                      className="text-[10px] gap-1 pl-2 pr-1 py-0.5 bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800"
+                    >
                       NIM: {appliedFilters.nim}
-                      <button onClick={() => setAppliedFilters((p) => ({ ...p, nim: undefined }))} className="hover:text-rose-600">
+                      <button
+                        onClick={() =>
+                          setAppliedFilters((p) => ({ ...p, nim: undefined }))
+                        }
+                        className="hover:text-rose-600"
+                      >
                         <X className="w-3 h-3" />
                       </button>
                     </Badge>
                   )}
                   {appliedFilters.student_name && (
-                    <Badge variant="secondary" className="text-[10px] gap-1 pl-2 pr-1 py-0.5 bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800">
+                    <Badge
+                      variant="secondary"
+                      className="text-[10px] gap-1 pl-2 pr-1 py-0.5 bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800"
+                    >
                       Nama: {appliedFilters.student_name}
-                      <button onClick={() => setAppliedFilters((p) => ({ ...p, student_name: undefined }))} className="hover:text-rose-600">
+                      <button
+                        onClick={() =>
+                          setAppliedFilters((p) => ({
+                            ...p,
+                            student_name: undefined,
+                          }))
+                        }
+                        className="hover:text-rose-600"
+                      >
                         <X className="w-3 h-3" />
                       </button>
                     </Badge>
                   )}
                   {appliedFilters.mata_kuliah && (
-                    <Badge variant="secondary" className="text-[10px] gap-1 pl-2 pr-1 py-0.5 bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800">
+                    <Badge
+                      variant="secondary"
+                      className="text-[10px] gap-1 pl-2 pr-1 py-0.5 bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800"
+                    >
                       MK: {appliedFilters.mata_kuliah}
-                      <button onClick={() => setAppliedFilters((p) => ({ ...p, mata_kuliah: undefined }))} className="hover:text-rose-600">
+                      <button
+                        onClick={() =>
+                          setAppliedFilters((p) => ({
+                            ...p,
+                            mata_kuliah: undefined,
+                          }))
+                        }
+                        className="hover:text-rose-600"
+                      >
                         <X className="w-3 h-3" />
                       </button>
                     </Badge>
                   )}
                   {appliedFilters.tahun_akademik && (
-                    <Badge variant="secondary" className="text-[10px] gap-1 pl-2 pr-1 py-0.5 bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800">
+                    <Badge
+                      variant="secondary"
+                      className="text-[10px] gap-1 pl-2 pr-1 py-0.5 bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800"
+                    >
                       Tahun: {appliedFilters.tahun_akademik}
-                      <button onClick={() => setAppliedFilters((p) => ({ ...p, tahun_akademik: undefined }))} className="hover:text-rose-600">
+                      <button
+                        onClick={() =>
+                          setAppliedFilters((p) => ({
+                            ...p,
+                            tahun_akademik: undefined,
+                          }))
+                        }
+                        className="hover:text-rose-600"
+                      >
                         <X className="w-3 h-3" />
                       </button>
                     </Badge>
                   )}
                   {appliedFilters.semester && (
-                    <Badge variant="secondary" className="text-[10px] gap-1 pl-2 pr-1 py-0.5 bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800">
+                    <Badge
+                      variant="secondary"
+                      className="text-[10px] gap-1 pl-2 pr-1 py-0.5 bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800"
+                    >
                       Semester: {appliedFilters.semester}
-                      <button onClick={() => setAppliedFilters((p) => ({ ...p, semester: undefined }))} className="hover:text-rose-600">
+                      <button
+                        onClick={() =>
+                          setAppliedFilters((p) => ({
+                            ...p,
+                            semester: undefined,
+                          }))
+                        }
+                        className="hover:text-rose-600"
+                      >
                         <X className="w-3 h-3" />
                       </button>
                     </Badge>
                   )}
                   {appliedFilters.document_type && (
-                    <Badge variant="secondary" className="text-[10px] gap-1 pl-2 pr-1 py-0.5 bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800">
+                    <Badge
+                      variant="secondary"
+                      className="text-[10px] gap-1 pl-2 pr-1 py-0.5 bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800"
+                    >
                       Jenis: {appliedFilters.document_type}
-                      <button onClick={() => setAppliedFilters((p) => ({ ...p, document_type: undefined }))} className="hover:text-rose-600">
+                      <button
+                        onClick={() =>
+                          setAppliedFilters((p) => ({
+                            ...p,
+                            document_type: undefined,
+                          }))
+                        }
+                        className="hover:text-rose-600"
+                      >
                         <X className="w-3 h-3" />
                       </button>
                     </Badge>
                   )}
                   {appliedFilters.status && (
-                    <Badge variant="secondary" className="text-[10px] gap-1 pl-2 pr-1 py-0.5 bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800">
+                    <Badge
+                      variant="secondary"
+                      className="text-[10px] gap-1 pl-2 pr-1 py-0.5 bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800"
+                    >
                       Status: {appliedFilters.status}
-                      <button onClick={() => setAppliedFilters((p) => ({ ...p, status: undefined }))} className="hover:text-rose-600">
+                      <button
+                        onClick={() =>
+                          setAppliedFilters((p) => ({
+                            ...p,
+                            status: undefined,
+                          }))
+                        }
+                        className="hover:text-rose-600"
+                      >
                         <X className="w-3 h-3" />
                       </button>
                     </Badge>
                   )}
                   {appliedFilters.date_from && (
-                    <Badge variant="secondary" className="text-[10px] gap-1 pl-2 pr-1 py-0.5 bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800">
+                    <Badge
+                      variant="secondary"
+                      className="text-[10px] gap-1 pl-2 pr-1 py-0.5 bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800"
+                    >
                       Dari: {appliedFilters.date_from}
-                      <button onClick={() => setAppliedFilters((p) => ({ ...p, date_from: undefined }))} className="hover:text-rose-600">
+                      <button
+                        onClick={() =>
+                          setAppliedFilters((p) => ({
+                            ...p,
+                            date_from: undefined,
+                          }))
+                        }
+                        className="hover:text-rose-600"
+                      >
                         <X className="w-3 h-3" />
                       </button>
                     </Badge>
                   )}
                   {appliedFilters.date_to && (
-                    <Badge variant="secondary" className="text-[10px] gap-1 pl-2 pr-1 py-0.5 bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800">
+                    <Badge
+                      variant="secondary"
+                      className="text-[10px] gap-1 pl-2 pr-1 py-0.5 bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800"
+                    >
                       Sampai: {appliedFilters.date_to}
-                      <button onClick={() => setAppliedFilters((p) => ({ ...p, date_to: undefined }))} className="hover:text-rose-600">
+                      <button
+                        onClick={() =>
+                          setAppliedFilters((p) => ({
+                            ...p,
+                            date_to: undefined,
+                          }))
+                        }
+                        className="hover:text-rose-600"
+                      >
                         <X className="w-3 h-3" />
                       </button>
                     </Badge>
@@ -520,11 +659,13 @@ export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogP
                       className="w-full h-9 text-xs rounded-lg border border-border/60 bg-background px-3 text-foreground focus:outline-none focus:ring-1 focus:ring-[#F54A00]"
                     >
                       <option value="">Semua Tahun</option>
-                      {Array.from({ length: 12 }, (_, i) => 2015 + i).map((year) => (
-                        <option key={year} value={`${year}/${year + 1}`}>
-                          {year}/{year + 1}
-                        </option>
-                      ))}
+                      {Array.from({ length: 12 }, (_, i) => 2015 + i).map(
+                        (year) => (
+                          <option key={year} value={`${year}/${year + 1}`}>
+                            {year}/{year + 1}
+                          </option>
+                        ),
+                      )}
                     </select>
                   </div>
                   {/* Semester */}
@@ -558,7 +699,9 @@ export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogP
                       <option value="nilai">Nilai</option>
                       <option value="transkrip">Transkrip</option>
                       <option value="ijazah">Ijazah</option>
-                      <option value="berita_acara_sidang">Berita Acara Sidang</option>
+                      <option value="berita_acara_sidang">
+                        Berita Acara Sidang
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -573,11 +716,15 @@ export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogP
                     </label>
                     <select
                       value={filterStatusVerifikasi}
-                      onChange={(e) => setFilterStatusVerifikasi(e.target.value)}
+                      onChange={(e) =>
+                        setFilterStatusVerifikasi(e.target.value)
+                      }
                       className="w-full h-9 text-xs rounded-lg border border-border/60 bg-background px-3 text-foreground focus:outline-none focus:ring-1 focus:ring-[#F54A00]"
                     >
                       <option value="">Semua Status</option>
-                      <option value="menunggu_verifikasi">Menunggu Verifikasi</option>
+                      <option value="menunggu_verifikasi">
+                        Menunggu Verifikasi
+                      </option>
                       <option value="terverifikasi">Terverifikasi</option>
                       <option value="tidak_terverifikasi">Ditolak</option>
                     </select>
@@ -635,7 +782,8 @@ export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogP
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold text-foreground flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-[#F54A00]" />
-                    Hasil Pencarian Real-Time ({searchResultsQuery.data?.data?.length ?? 0})
+                    Hasil Pencarian Real-Time (
+                    {searchResultsQuery.data?.data?.length ?? 0})
                   </span>
                   <span className="text-[11px] text-muted-foreground">
                     Klik item untuk melihat langsung detail dokumen
@@ -652,8 +800,12 @@ export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogP
                   <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
                     {searchResultsQuery.data.data.map((doc) => {
                       const statusStr = String(doc.status);
-                      const isVerified = statusStr === "verified" || statusStr === "terverifikasi";
-                      const isRejected = statusStr === "rejected" || statusStr === "tidak_terverifikasi";
+                      const isVerified =
+                        statusStr === "verified" ||
+                        statusStr === "terverifikasi";
+                      const isRejected =
+                        statusStr === "rejected" ||
+                        statusStr === "tidak_terverifikasi";
 
                       return (
                         <div
@@ -667,11 +819,21 @@ export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogP
                             </div>
                             <div className="space-y-0.5">
                               <p className="text-xs font-semibold text-foreground group-hover:text-[#F54A00] transition-colors">
-                                {doc.title || doc.file_name || `Dokumen #${doc.id}`}
+                                {doc.title ||
+                                  doc.file_name ||
+                                  `Dokumen #${doc.id}`}
                               </p>
                               <p className="text-[11px] text-muted-foreground">
-                                {doc.category || doc.document_type || "Dokumen Arsip"} • Uploaded {new Date(doc.created_at).toLocaleDateString("id-ID")}
-                                {doc.uploader?.name ? ` oleh ${doc.uploader.name}` : ""}
+                                {doc.category ||
+                                  doc.document_type ||
+                                  "Dokumen Arsip"}{" "}
+                                • Uploaded{" "}
+                                {new Date(doc.created_at).toLocaleDateString(
+                                  "id-ID",
+                                )}
+                                {doc.uploader?.name
+                                  ? ` oleh ${doc.uploader.name}`
+                                  : ""}
                               </p>
                             </div>
                           </div>
@@ -705,7 +867,9 @@ export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogP
                   </div>
                 ) : (
                   <div className="p-8 text-center text-xs text-muted-foreground border border-dashed rounded-xl space-y-1">
-                    <p className="font-medium text-foreground">Dokumen tidak ditemukan</p>
+                    <p className="font-medium text-foreground">
+                      Dokumen tidak ditemukan
+                    </p>
                     <p>Tidak ada dokumen yang sesuai dengan kata kunci.</p>
                   </div>
                 )}
@@ -740,7 +904,9 @@ export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogP
                       >
                         <div className="flex items-center gap-3">
                           <Search className="w-4 h-4 text-muted-foreground group-hover:text-[#F54A00] transition-colors" />
-                          <span className="text-xs text-foreground font-medium">{item}</span>
+                          <span className="text-xs text-foreground font-medium">
+                            {item}
+                          </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Button
@@ -758,7 +924,8 @@ export function SearchCommandDialog({ open, onOpenChange }: SearchCommandDialogP
                   </div>
                 ) : (
                   <div className="p-6 text-center text-xs text-muted-foreground border border-dashed rounded-xl">
-                    Belum ada riwayat pencarian. Ketik kata kunci di atas untuk mencari secara langsung.
+                    Belum ada riwayat pencarian. Ketik kata kunci di atas untuk
+                    mencari secara langsung.
                   </div>
                 )}
               </div>

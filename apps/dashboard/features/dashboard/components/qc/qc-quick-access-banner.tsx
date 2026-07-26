@@ -9,7 +9,9 @@ interface QCQuickAccessBannerProps {
   pendingCount?: number;
 }
 
-export function QCQuickAccessBanner({ pendingCount = 0 }: QCQuickAccessBannerProps) {
+export function QCQuickAccessBanner({
+  pendingCount = 0,
+}: QCQuickAccessBannerProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {/* 1. Dokumen Pending Card */}

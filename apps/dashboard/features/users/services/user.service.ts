@@ -2,7 +2,9 @@ import { http } from "@/shared/lib/http";
 
 export const userService = {
   async getUsers(params?: UserParams): Promise<ApiResponse<User[]>> {
-    const { data } = await http.get<ApiResponse<User[]>>("/api/users", { params });
+    const { data } = await http.get<ApiResponse<User[]>>("/api/users", {
+      params,
+    });
     return data;
   },
 
@@ -16,8 +18,14 @@ export const userService = {
     return data;
   },
 
-  async updateUser(id: number, payload: Partial<UserSchema>): Promise<ApiResponse<User>> {
-    const { data } = await http.patch<ApiResponse<User>>(`/api/users/${id}`, payload);
+  async updateUser(
+    id: number,
+    payload: Partial<UserSchema>,
+  ): Promise<ApiResponse<User>> {
+    const { data } = await http.patch<ApiResponse<User>>(
+      `/api/users/${id}`,
+      payload,
+    );
     return data;
   },
 
@@ -27,12 +35,17 @@ export const userService = {
   },
 
   async deleteUserMultiple(ids: number[]): Promise<ApiResponse<User[]>> {
-    const { data } = await http.post<ApiResponse<User[]>>("/api/users/delete-multiple", { ids });
+    const { data } = await http.post<ApiResponse<User[]>>(
+      "/api/users/delete-multiple",
+      { ids },
+    );
     return data;
   },
 
   async getUsersStatistic(): Promise<ApiResponse<UserStatistic>> {
-    const { data } = await http.get<ApiResponse<UserStatistic>>("/api/users/statistics");
+    const { data } = await http.get<ApiResponse<UserStatistic>>(
+      "/api/users/statistics",
+    );
     return data;
   },
 };

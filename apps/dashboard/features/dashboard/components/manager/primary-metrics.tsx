@@ -1,6 +1,13 @@
 import React from "react";
 import Link from "next/link";
-import { FileText, FileCheck, Clock, AlertTriangle, ArrowUpRight, ChevronRight } from "lucide-react";
+import {
+  FileText,
+  FileCheck,
+  Clock,
+  AlertTriangle,
+  ArrowUpRight,
+  ChevronRight,
+} from "lucide-react";
 import { Card, CardContent } from "@repo/ui/card";
 import { Skeleton } from "@repo/ui/skeleton";
 
@@ -34,15 +41,18 @@ export function PrimaryMetrics({ isLoading, metrics }: PrimaryMetricsProps) {
     );
   }
 
-  const verifiedPercentage = metrics.totalDocuments > 0
-    ? ((metrics.verifiedDocuments / metrics.totalDocuments) * 100).toFixed(1)
-    : "0.0";
-  const pendingPercentage = metrics.totalDocuments > 0
-    ? ((metrics.pendingDocuments / metrics.totalDocuments) * 100).toFixed(1)
-    : "0.0";
-  const rejectedPercentage = metrics.totalDocuments > 0
-    ? ((metrics.rejectedDocuments / metrics.totalDocuments) * 100).toFixed(1)
-    : "0.0";
+  const verifiedPercentage =
+    metrics.totalDocuments > 0
+      ? ((metrics.verifiedDocuments / metrics.totalDocuments) * 100).toFixed(1)
+      : "0.0";
+  const pendingPercentage =
+    metrics.totalDocuments > 0
+      ? ((metrics.pendingDocuments / metrics.totalDocuments) * 100).toFixed(1)
+      : "0.0";
+  const rejectedPercentage =
+    metrics.totalDocuments > 0
+      ? ((metrics.rejectedDocuments / metrics.totalDocuments) * 100).toFixed(1)
+      : "0.0";
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -52,7 +62,9 @@ export function PrimaryMetrics({ isLoading, metrics }: PrimaryMetricsProps) {
           <CardContent className="p-5">
             <div className="flex items-center justify-between gap-3">
               <div className="space-y-1">
-                <p className="text-xs font-medium text-muted-foreground">Total Dokumen Terdigitalisasi</p>
+                <p className="text-xs font-medium text-muted-foreground">
+                  Total Dokumen Terdigitalisasi
+                </p>
                 <p className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
                   {metrics.totalDocuments.toLocaleString()}
                 </p>
@@ -78,7 +90,9 @@ export function PrimaryMetrics({ isLoading, metrics }: PrimaryMetricsProps) {
           <CardContent className="p-5">
             <div className="flex items-center justify-between gap-3">
               <div className="space-y-1">
-                <p className="text-xs font-medium text-muted-foreground">Terverifikasi</p>
+                <p className="text-xs font-medium text-muted-foreground">
+                  Terverifikasi
+                </p>
                 <p className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
                   {metrics.verifiedDocuments.toLocaleString()}
                 </p>
@@ -88,7 +102,9 @@ export function PrimaryMetrics({ isLoading, metrics }: PrimaryMetricsProps) {
               </div>
             </div>
             <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
-              <span className="text-emerald-600 font-semibold">{verifiedPercentage}%</span>
+              <span className="text-emerald-600 font-semibold">
+                {verifiedPercentage}%
+              </span>
               <span>dari total arsip</span>
             </div>
             <p className="text-xs text-muted-foreground mt-1 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
@@ -104,7 +120,9 @@ export function PrimaryMetrics({ isLoading, metrics }: PrimaryMetricsProps) {
           <CardContent className="p-5">
             <div className="flex items-center justify-between gap-3">
               <div className="space-y-1">
-                <p className="text-xs font-medium text-muted-foreground">Menunggu Verifikasi</p>
+                <p className="text-xs font-medium text-muted-foreground">
+                  Menunggu Verifikasi
+                </p>
                 <p className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
                   {metrics.pendingDocuments.toLocaleString()}
                 </p>
@@ -114,7 +132,9 @@ export function PrimaryMetrics({ isLoading, metrics }: PrimaryMetricsProps) {
               </div>
             </div>
             <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
-              <span className="text-amber-600 font-semibold">{pendingPercentage}%</span>
+              <span className="text-amber-600 font-semibold">
+                {pendingPercentage}%
+              </span>
               <span>perlu tindak lanjut QC</span>
             </div>
             <p className="text-xs text-muted-foreground mt-1 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
@@ -130,7 +150,9 @@ export function PrimaryMetrics({ isLoading, metrics }: PrimaryMetricsProps) {
           <CardContent className="p-5">
             <div className="flex items-center justify-between gap-3">
               <div className="space-y-1">
-                <p className="text-xs font-medium text-muted-foreground">Ditolak / Perlu Perbaikan</p>
+                <p className="text-xs font-medium text-muted-foreground">
+                  Ditolak / Perlu Perbaikan
+                </p>
                 <p className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
                   {metrics.rejectedDocuments.toLocaleString()}
                 </p>
@@ -140,7 +162,9 @@ export function PrimaryMetrics({ isLoading, metrics }: PrimaryMetricsProps) {
               </div>
             </div>
             <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
-              <span className="text-rose-600 font-semibold">{rejectedPercentage}%</span>
+              <span className="text-rose-600 font-semibold">
+                {rejectedPercentage}%
+              </span>
               <span>perlu re-upload uploader</span>
             </div>
             <p className="text-xs text-muted-foreground mt-1 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">

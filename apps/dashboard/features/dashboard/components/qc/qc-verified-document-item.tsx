@@ -1,7 +1,14 @@
 "use client";
 
 import React from "react";
-import { FileCheck, CheckCircle2, User, Calendar, HardDrive, Eye } from "lucide-react";
+import {
+  FileCheck,
+  CheckCircle2,
+  User,
+  Calendar,
+  HardDrive,
+  Eye,
+} from "lucide-react";
 import { Card } from "@repo/ui/card";
 import { Button } from "@repo/ui/button";
 import { Badge } from "@repo/ui/badge";
@@ -100,25 +107,33 @@ export function QCVerifiedDocumentItem({
                 <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                   PRODI
                 </span>
-                <p className="font-semibold text-foreground mt-0.5 truncate">{prodi}</p>
+                <p className="font-semibold text-foreground mt-0.5 truncate">
+                  {prodi}
+                </p>
               </div>
               <div>
                 <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                   TAHUN AJARAN
                 </span>
-                <p className="font-semibold text-foreground mt-0.5">{academicYear}</p>
+                <p className="font-semibold text-foreground mt-0.5">
+                  {academicYear}
+                </p>
               </div>
               <div>
                 <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                   SEMESTER
                 </span>
-                <p className="font-semibold text-foreground mt-0.5">{semester}</p>
+                <p className="font-semibold text-foreground mt-0.5">
+                  {semester}
+                </p>
               </div>
               <div>
                 <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                   MATA KULIAH
                 </span>
-                <p className="font-semibold text-foreground mt-0.5 truncate">{courseName}</p>
+                <p className="font-semibold text-foreground mt-0.5 truncate">
+                  {courseName}
+                </p>
               </div>
               <div>
                 <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
@@ -139,19 +154,25 @@ export function QCVerifiedDocumentItem({
                 <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                   NAMA MAHASISWA
                 </span>
-                <p className="font-semibold text-foreground mt-0.5 truncate">{studentName}</p>
+                <p className="font-semibold text-foreground mt-0.5 truncate">
+                  {studentName}
+                </p>
               </div>
               <div>
                 <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                   PRODI
                 </span>
-                <p className="font-semibold text-foreground mt-0.5 truncate">{prodi}</p>
+                <p className="font-semibold text-foreground mt-0.5 truncate">
+                  {prodi}
+                </p>
               </div>
               <div>
                 <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                   TAHUN LULUS
                 </span>
-                <p className="font-semibold text-foreground mt-0.5">{graduationYear}</p>
+                <p className="font-semibold text-foreground mt-0.5">
+                  {graduationYear}
+                </p>
               </div>
             </div>
           )}

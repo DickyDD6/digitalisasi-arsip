@@ -24,9 +24,14 @@ export const authService = {
   async me(): Promise<AuthUser | null> {
     try {
       const res = await http.get<{ data: AuthUser }>("/api/auth/me");
-      return res.data?.data ?? (res.data as unknown as { user?: AuthUser })?.user ?? null;
+      return (
+        res.data?.data ??
+        (res.data as unknown as { user?: AuthUser })?.user ??
+        null
+      );
     } catch (err: unknown) {
-      const status = (err as { response?: { status?: number } })?.response?.status;
+      const status = (err as { response?: { status?: number } })?.response
+        ?.status;
       if (status === 401 || status === 419) {
         return null;
       }

@@ -21,7 +21,12 @@ import type { DocumentItem } from "../../types/dashboard.types";
 // Helper to determine if a document is Urgent strictly based on API status, title, or file name
 function checkIsUrgent(doc: DocumentItem): boolean {
   const d = doc as unknown as Record<string, unknown>;
-  if (d.is_urgent === true || doc.status === "urgent" || doc.status === "menunggu_verifikasi_urgent") return true;
+  if (
+    d.is_urgent === true ||
+    doc.status === "urgent" ||
+    doc.status === "menunggu_verifikasi_urgent"
+  )
+    return true;
   const fileName = doc.file_name?.toLowerCase() || "";
   const title = doc.title?.toLowerCase() || "";
   return (
@@ -42,8 +47,12 @@ export function QCVerificationPageView() {
   } = useQCDashboard();
 
   // Modal state management
-  const [verifyModalDoc, setVerifyModalDoc] = useState<DocumentItem | null>(null);
-  const [rejectModalDoc, setRejectModalDoc] = useState<DocumentItem | null>(null);
+  const [verifyModalDoc, setVerifyModalDoc] = useState<DocumentItem | null>(
+    null,
+  );
+  const [rejectModalDoc, setRejectModalDoc] = useState<DocumentItem | null>(
+    null,
+  );
   const [viewModalDocId, setViewModalDocId] = useState<number | null>(null);
 
   // Sort documents by urgency (Urgent first)
@@ -106,9 +115,15 @@ export function QCVerificationPageView() {
         {/* Card 1: Total Pending */}
         <Card className="border border-border/60 bg-card shadow-xs p-5 flex flex-col justify-between">
           <div className="space-y-1">
-            <span className="text-xs font-medium text-muted-foreground">Total Pending</span>
+            <span className="text-xs font-medium text-muted-foreground">
+              Total Pending
+            </span>
             <div className="text-3xl font-extrabold text-[#D08700]">
-              {isLoading ? <Skeleton className="h-9 w-12" /> : sortedPendingDocs.length}
+              {isLoading ? (
+                <Skeleton className="h-9 w-12" />
+              ) : (
+                sortedPendingDocs.length
+              )}
             </div>
           </div>
         </Card>
@@ -116,7 +131,9 @@ export function QCVerificationPageView() {
         {/* Card 2: Prioritas Tinggi */}
         <Card className="border border-border/60 bg-card shadow-xs p-5 flex flex-col justify-between">
           <div className="space-y-1">
-            <span className="text-xs font-medium text-muted-foreground">Prioritas Tinggi</span>
+            <span className="text-xs font-medium text-muted-foreground">
+              Prioritas Tinggi
+            </span>
             <div className="text-3xl font-extrabold text-[#E7000B]">
               {isLoading ? <Skeleton className="h-9 w-12" /> : urgentCount}
             </div>
@@ -126,10 +143,16 @@ export function QCVerificationPageView() {
         {/* Card 3: Status Antrean */}
         <Card className="border border-border/60 bg-card shadow-xs p-5 flex flex-col justify-between">
           <div className="space-y-1">
-            <span className="text-xs font-medium text-muted-foreground">Status Antrean</span>
+            <span className="text-xs font-medium text-muted-foreground">
+              Status Antrean
+            </span>
             <div className="text-xl font-bold text-foreground flex items-center gap-2 pt-1">
               <Clock className="w-5 h-5 text-amber-500" />
-              <span>{sortedPendingDocs.length > 0 ? "Memerlukan Verifikasi" : "Antrean Kosong"}</span>
+              <span>
+                {sortedPendingDocs.length > 0
+                  ? "Memerlukan Verifikasi"
+                  : "Antrean Kosong"}
+              </span>
             </div>
           </div>
         </Card>
@@ -185,9 +208,12 @@ export function QCVerificationPageView() {
               <div className="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center mb-3">
                 <FileCheck className="w-7 h-7" />
               </div>
-              <h4 className="text-lg font-semibold text-foreground">Semua Dokumen Telah Diverifikasi</h4>
+              <h4 className="text-lg font-semibold text-foreground">
+                Semua Dokumen Telah Diverifikasi
+              </h4>
               <p className="text-xs text-muted-foreground mt-1 max-w-sm">
-                Saat ini tidak ada dokumen pending yang membutuhkan tindakan verifikasi.
+                Saat ini tidak ada dokumen pending yang membutuhkan tindakan
+                verifikasi.
               </p>
             </CardContent>
           </Card>

@@ -26,10 +26,7 @@ export const FilterDropdownArchive = <TData, TValue>({
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
-            <Button
-              variant="outline"
-              size={currentFilter ? "sm" : "icon"}
-            />
+            <Button variant="outline" size={currentFilter ? "sm" : "icon"} />
           }
         >
           {currentFilter ? (

@@ -45,7 +45,8 @@ export default function LoginPage() {
           const lockedUntil = err.response?.data?.locked_until;
 
           const errorMsg =
-            backendMsg || "Email atau password salah. Silakan periksa kembali credentials Anda.";
+            backendMsg ||
+            "Email atau password salah. Silakan periksa kembali credentials Anda.";
 
           if (status === 401 || status === 422 || status === 400) {
             toast.error("Login Gagal", {

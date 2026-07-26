@@ -12,13 +12,18 @@ export function useAuth() {
   const userQuery = useQuery(authQueries.userMe());
 
   const loginMutation = useMutation({
-    mutationFn: (credentials: LoginCredentials) => authService.login(credentials),
+    mutationFn: (credentials: LoginCredentials) =>
+      authService.login(credentials),
     onSuccess: (data) => {
-      const user = data?.data?.user ?? (data as unknown as { user?: User })?.user;
+      const user =
+        data?.data?.user ?? (data as unknown as { user?: User })?.user;
       if (user) {
         queryClient.setQueryData(["auth", "me"], user);
         if (typeof window !== "undefined") {
-          document.documentElement.setAttribute("data-role", user.role || "default");
+          document.documentElement.setAttribute(
+            "data-role",
+            user.role || "default",
+          );
         }
         toast.success("Login Berhasil", {
           description: `Selamat datang kembali, ${user.name}!`,

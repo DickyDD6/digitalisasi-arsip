@@ -68,7 +68,8 @@ export function DataTableArchive<TData extends ArchiveDocument, TValue>({
   globalFilter,
   setGlobalFilter,
 }: DataTableProps<TData, TValue>) {
-  const [localPagination, setLocalPagination] = useState<PaginationState>(pagination);
+  const [localPagination, setLocalPagination] =
+    useState<PaginationState>(pagination);
 
   useEffect(() => {
     if (!isFetching && !isPending) {
@@ -110,10 +111,14 @@ export function DataTableArchive<TData extends ArchiveDocument, TValue>({
           </span>
           <div className="flex gap-4">
             <DownloadArchiveModal
-              id={table.getSelectedRowModel().rows.map((row) => row.original.id)}
+              id={table
+                .getSelectedRowModel()
+                .rows.map((row) => row.original.id)}
             />
             <DeleteArchiveModal
-              id={table.getSelectedRowModel().rows.map((row) => row.original.id)}
+              id={table
+                .getSelectedRowModel()
+                .rows.map((row) => row.original.id)}
             />
           </div>
         </div>
@@ -131,7 +136,8 @@ export function DataTableArchive<TData extends ArchiveDocument, TValue>({
                         column={header.column}
                         title={header.column.columnDef.header as string}
                       />
-                      {header.column.getCanFilter() && filterOptions?.[header.column.id] ? (
+                      {header.column.getCanFilter() &&
+                      filterOptions?.[header.column.id] ? (
                         <FilterDropdownArchive
                           header={header}
                           setColumnFilters={setColumnFilters}
@@ -140,7 +146,10 @@ export function DataTableArchive<TData extends ArchiveDocument, TValue>({
                       ) : null}
                     </div>
                   ) : header.isPlaceholder ? null : (
-                    flexRender(header.column.columnDef.header, header.getContext())
+                    flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )
                   )}
                 </TableHead>
               ))}
@@ -150,7 +159,10 @@ export function DataTableArchive<TData extends ArchiveDocument, TValue>({
         <TableBody>
           {isPending ? (
             <TableRow>
-              <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center">
+              <TableCell
+                colSpan={table.getAllColumns().length}
+                className="h-24 text-center"
+              >
                 <div className="flex flex-col items-center gap-2">
                   <Loader2 className="animate-spin" />
                   Sedang memuat data...
@@ -159,33 +171,50 @@ export function DataTableArchive<TData extends ArchiveDocument, TValue>({
             </TableRow>
           ) : isError ? (
             <TableRow>
-              <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center">
+              <TableCell
+                colSpan={table.getAllColumns().length}
+                className="h-24 text-center"
+              >
                 <Empty>
                   <EmptyHeader>
-                    <EmptyMedia><CloudAlert /></EmptyMedia>
+                    <EmptyMedia>
+                      <CloudAlert />
+                    </EmptyMedia>
                     <EmptyTitle>Gagal memuat data</EmptyTitle>
-                    <EmptyDescription>Terjadi kesalahan saat mengambil data arsip.</EmptyDescription>
+                    <EmptyDescription>
+                      Terjadi kesalahan saat mengambil data arsip.
+                    </EmptyDescription>
                   </EmptyHeader>
-                  <EmptyContent><Button>Muat Ulang Data</Button></EmptyContent>
+                  <EmptyContent>
+                    <Button>Muat Ulang Data</Button>
+                  </EmptyContent>
                 </Empty>
               </TableCell>
             </TableRow>
           ) : table.getRowModel().rows?.length > 0 ? (
-            table.getRowModel().rows.map((row) => (
-              <ContextMenuArchive key={row.id} row={row} />
-            ))
+            table
+              .getRowModel()
+              .rows.map((row) => <ContextMenuArchive key={row.id} row={row} />)
           ) : (
             <TableRow>
-              <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center">
+              <TableCell
+                colSpan={table.getAllColumns().length}
+                className="h-24 text-center"
+              >
                 <Empty>
                   <EmptyHeader>
-                    <EmptyMedia><FileX /></EmptyMedia>
+                    <EmptyMedia>
+                      <FileX />
+                    </EmptyMedia>
                     <EmptyTitle>Tidak ada data</EmptyTitle>
                     <EmptyDescription>
-                      Tidak ditemukan arsip yang sesuai dengan kriteria pencarian atau filter yang diterapkan.
+                      Tidak ditemukan arsip yang sesuai dengan kriteria
+                      pencarian atau filter yang diterapkan.
                     </EmptyDescription>
                   </EmptyHeader>
-                  <EmptyContent><Button variant="outline">Hapus Filter</Button></EmptyContent>
+                  <EmptyContent>
+                    <Button variant="outline">Hapus Filter</Button>
+                  </EmptyContent>
                 </Empty>
               </TableCell>
             </TableRow>

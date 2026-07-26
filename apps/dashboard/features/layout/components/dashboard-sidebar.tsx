@@ -41,7 +41,7 @@ export const DashboardSidebar = () => {
   const roleLabel = role ? (ROLE_LABELS[role] ?? role) : "Dashboard";
 
   const accessibleItems = SIDEBAR_ITEMS.filter((item) =>
-    canAccessMenu(role, item.allowedRoles)
+    canAccessMenu(role, item.allowedRoles),
   );
 
   const handlePrefetch = (link: string) => {
@@ -50,7 +50,9 @@ export const DashboardSidebar = () => {
     } else if (link === "/manage-archive") {
       queryClient.prefetchQuery(archiveQueries.list());
     } else if (link === "/document-list") {
-      queryClient.prefetchQuery(documentListQueries.list({ page: 1, per_page: 15 }));
+      queryClient.prefetchQuery(
+        documentListQueries.list({ page: 1, per_page: 15 }),
+      );
     } else if (link === "/upload-history") {
       queryClient.prefetchQuery(uploadHistoryQueries.list());
     } else if (link === "/system-settings") {
@@ -63,12 +65,14 @@ export const DashboardSidebar = () => {
       <SidebarHeader className="shadow-sm py-3.5">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton className="hover:bg-transparent focus:bg-transparent active:bg-transparent cursor-default overflow-hidden p-0">
+            <SidebarMenuButton className="hover:bg-transparent focus:bg-transparent active:bg-transparent cursor-default overflow-hidden p-0 group-data-[collapsible=icon]:p-0!">
               <div className="w-8 h-8 rounded-lg bg-primary text-primary-foreground shrink-0 flex items-center justify-center aspect-square">
                 <FolderArchive className="size-4" />
               </div>
               <div className="grid leading-tight group-data-[collapsible=icon]:hidden">
-                <h2 className="text-sm font-semibold text-foreground truncate">Dashboard</h2>
+                <h2 className="text-sm font-semibold text-foreground truncate">
+                  Dashboard
+                </h2>
                 <p className="text-muted-foreground text-xs font-medium truncate">
                   {roleLabel}
                 </p>

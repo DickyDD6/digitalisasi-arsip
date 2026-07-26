@@ -1,7 +1,15 @@
 "use client";
 
 import React from "react";
-import { FileX, XCircle, User, Calendar, HardDrive, AlertCircle, Eye } from "lucide-react";
+import {
+  FileX,
+  XCircle,
+  User,
+  Calendar,
+  HardDrive,
+  AlertCircle,
+  Eye,
+} from "lucide-react";
 import { Card } from "@repo/ui/card";
 import { Button } from "@repo/ui/button";
 import { Badge } from "@repo/ui/badge";
@@ -99,7 +107,9 @@ export function QCRejectedDocumentItem({
           <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/60 text-xs text-rose-900 dark:text-rose-200 flex items-start gap-2.5">
             <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
             <div className="space-y-0.5">
-              <span className="font-bold text-rose-700 dark:text-rose-300">Alasan Penolakan: </span>
+              <span className="font-bold text-rose-700 dark:text-rose-300">
+                Alasan Penolakan:{" "}
+              </span>
               <p className="leading-relaxed">{rejectionNote}</p>
             </div>
           </div>
@@ -113,25 +123,33 @@ export function QCRejectedDocumentItem({
                 <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                   PRODI
                 </span>
-                <p className="font-semibold text-foreground mt-0.5 truncate">{prodi}</p>
+                <p className="font-semibold text-foreground mt-0.5 truncate">
+                  {prodi}
+                </p>
               </div>
               <div>
                 <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                   TAHUN AJARAN
                 </span>
-                <p className="font-semibold text-foreground mt-0.5">{academicYear}</p>
+                <p className="font-semibold text-foreground mt-0.5">
+                  {academicYear}
+                </p>
               </div>
               <div>
                 <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                   SEMESTER
                 </span>
-                <p className="font-semibold text-foreground mt-0.5">{semester}</p>
+                <p className="font-semibold text-foreground mt-0.5">
+                  {semester}
+                </p>
               </div>
               <div>
                 <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                   MATA KULIAH
                 </span>
-                <p className="font-semibold text-foreground mt-0.5 truncate">{courseName}</p>
+                <p className="font-semibold text-foreground mt-0.5 truncate">
+                  {courseName}
+                </p>
               </div>
               <div>
                 <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
@@ -152,19 +170,25 @@ export function QCRejectedDocumentItem({
                 <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                   NAMA MAHASISWA
                 </span>
-                <p className="font-semibold text-foreground mt-0.5 truncate">{studentName}</p>
+                <p className="font-semibold text-foreground mt-0.5 truncate">
+                  {studentName}
+                </p>
               </div>
               <div>
                 <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                   PRODI
                 </span>
-                <p className="font-semibold text-foreground mt-0.5 truncate">{prodi}</p>
+                <p className="font-semibold text-foreground mt-0.5 truncate">
+                  {prodi}
+                </p>
               </div>
               <div>
                 <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                   TAHUN LULUS
                 </span>
-                <p className="font-semibold text-foreground mt-0.5">{graduationYear}</p>
+                <p className="font-semibold text-foreground mt-0.5">
+                  {graduationYear}
+                </p>
               </div>
             </div>
           )}

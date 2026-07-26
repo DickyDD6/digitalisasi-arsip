@@ -6,7 +6,8 @@ export const dashboardQueries = {
   stats: (startDate?: string, endDate?: string) =>
     queryOptions({
       queryKey: [...dashboardQueries.all, "reports-stats", startDate, endDate],
-      queryFn: () => dashboardService.getReportDashboardStats(startDate, endDate),
+      queryFn: () =>
+        dashboardService.getReportDashboardStats(startDate, endDate),
       staleTime: 1000 * 60 * 5,
     }),
   documentStats: () =>
@@ -17,7 +18,12 @@ export const dashboardQueries = {
     }),
   auditLogStats: (startDate?: string, endDate?: string) =>
     queryOptions({
-      queryKey: [...dashboardQueries.all, "audit-log-stats", startDate, endDate],
+      queryKey: [
+        ...dashboardQueries.all,
+        "audit-log-stats",
+        startDate,
+        endDate,
+      ],
       queryFn: () => dashboardService.getAuditLogStatistics(startDate, endDate),
       staleTime: 1000 * 60 * 5,
     }),

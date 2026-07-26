@@ -10,8 +10,7 @@ export const usersTableColumns: ColumnDef<User>[] = [
     header: ({ table }) => (
       <Checkbox
         checked={
-          table.getIsAllPageRowsSelected() ||
-          table.getIsSomePageRowsSelected()
+          table.getIsAllPageRowsSelected() || table.getIsSomePageRowsSelected()
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -66,8 +65,8 @@ export const usersTableColumns: ColumnDef<User>[] = [
             roleName === "admin"
               ? "default"
               : roleName === "manager"
-              ? "secondary"
-              : "outline"
+                ? "secondary"
+                : "outline"
           }
           className="font-normal uppercase"
         >

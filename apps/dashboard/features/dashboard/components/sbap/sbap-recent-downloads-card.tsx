@@ -3,7 +3,13 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { dashboardQueries } from "../../queries/dashboard.queries";
 import { Download, ExternalLink, FileText, CheckCircle2 } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@repo/ui/card";
 import { Button } from "@repo/ui/button";
 import { Badge } from "@repo/ui/badge";
 import { Skeleton } from "@repo/ui/skeleton";
@@ -13,10 +19,12 @@ interface SBAPRecentDownloadsCardProps {
   onDownload: (docId: number) => void;
 }
 
-export function SBAPRecentDownloadsCard({ onDownload }: SBAPRecentDownloadsCardProps) {
+export function SBAPRecentDownloadsCard({
+  onDownload,
+}: SBAPRecentDownloadsCardProps) {
   // Directly fetch verified documents from API
   const docsQuery = useQuery(
-    dashboardQueries.documents({ status: "verified", per_page: 5 })
+    dashboardQueries.documents({ status: "verified", per_page: 5 }),
   );
   const isLoading = docsQuery.isLoading;
 
@@ -66,7 +74,8 @@ export function SBAPRecentDownloadsCard({ onDownload }: SBAPRecentDownloadsCardP
                       {item.title || item.file_name}
                     </p>
                     <p className="text-[11px] text-muted-foreground">
-                      NPM: {item.npm || item.student_number || "-"} • {item.prodi || "Teknik Informatika"} •{" "}
+                      NPM: {item.npm || item.student_number || "-"} •{" "}
+                      {item.prodi || "Teknik Informatika"} •{" "}
                       {new Date(item.created_at).toLocaleDateString("id-ID", {
                         day: "numeric",
                         month: "short",

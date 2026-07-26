@@ -20,7 +20,10 @@ export const notificationsService = {
    */
   async getNotifications(): Promise<NotificationItemData[]> {
     try {
-      const res = await http.get<ApiResponse<NotificationItemData[]>>("/api/notifications");
+      const res =
+        await http.get<ApiResponse<NotificationItemData[]>>(
+          "/api/notifications",
+        );
       if (res.data?.data) {
         return res.data.data;
       }
@@ -31,7 +34,7 @@ export const notificationsService = {
     try {
       const savedRead = localStorage.getItem(READ_NOTIFS_KEY);
       const readIds: number[] = savedRead ? JSON.parse(savedRead) : [];
-      
+
       const defaultItems: NotificationItemData[] = [
         {
           id: 101,
@@ -67,7 +70,10 @@ export const notificationsService = {
         const saved = localStorage.getItem(READ_NOTIFS_KEY);
         const readIds: number[] = saved ? JSON.parse(saved) : [];
         if (!readIds.includes(id)) {
-          localStorage.setItem(READ_NOTIFS_KEY, JSON.stringify([...readIds, id]));
+          localStorage.setItem(
+            READ_NOTIFS_KEY,
+            JSON.stringify([...readIds, id]),
+          );
         }
       } catch {
         // ignore storage error

@@ -25,7 +25,10 @@ http.interceptors.request.use(async (config) => {
       }
     } catch (error) {
       if (process.env.NODE_ENV !== "production") {
-        console.warn("Request cookies unavailable in current execution context:", error);
+        console.warn(
+          "Request cookies unavailable in current execution context:",
+          error,
+        );
       }
     }
   } else {
@@ -54,5 +57,5 @@ http.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );

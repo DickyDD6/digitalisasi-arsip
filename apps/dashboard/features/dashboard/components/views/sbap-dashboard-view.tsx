@@ -8,12 +8,7 @@ import { SBAPActionBanners } from "../sbap/sbap-action-banners";
 import { SBAPRecentDownloadsCard } from "../sbap/sbap-recent-downloads-card";
 
 export function SBAPDashboardView() {
-  const {
-    isLoading,
-    stats,
-    verifiedDocs,
-    handleDownload,
-  } = useSBAPDashboard();
+  const { isLoading, stats, verifiedDocs, handleDownload } = useSBAPDashboard();
 
   return (
     <div className="flex flex-col gap-6 w-full pb-10">

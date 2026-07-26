@@ -44,7 +44,8 @@ export default function Unauthorized() {
             Sesi Tidak Terautentikasi
           </h1>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Anda harus login terlebih dahulu atau tidak memiliki izin akses untuk membuka halaman ini.
+            Anda harus login terlebih dahulu atau tidak memiliki izin akses
+            untuk membuka halaman ini.
           </p>
         </div>
 

@@ -29,11 +29,18 @@ export function UploaderUploadHistoryView() {
       const createdAt = new Date(doc.created_at);
       const statusStr = String(doc.status).toLowerCase();
 
-      const isVerified = statusStr.includes("terverifikasi") && !statusStr.includes("tidak");
-      const isRejected = statusStr.includes("tidak") || statusStr.includes("rejected") || statusStr.includes("ditolak");
+      const isVerified =
+        statusStr.includes("terverifikasi") && !statusStr.includes("tidak");
+      const isRejected =
+        statusStr.includes("tidak") ||
+        statusStr.includes("rejected") ||
+        statusStr.includes("ditolak");
       const isPending = !isVerified && !isRejected;
 
-      if (selectedStatus === "all" || (selectedStatus === "menunggu_verifikasi" && isPending)) {
+      if (
+        selectedStatus === "all" ||
+        (selectedStatus === "menunggu_verifikasi" && isPending)
+      ) {
         events.push({
           id: `upload-${doc.id}`,
           documentId: doc.id,
@@ -55,8 +62,13 @@ export function UploaderUploadHistoryView() {
         });
       }
 
-      if ((selectedStatus === "all" || selectedStatus === "terverifikasi") && isVerified) {
-        const verifiedAt = doc.verified_at ? new Date(doc.verified_at) : createdAt;
+      if (
+        (selectedStatus === "all" || selectedStatus === "terverifikasi") &&
+        isVerified
+      ) {
+        const verifiedAt = doc.verified_at
+          ? new Date(doc.verified_at)
+          : createdAt;
 
         events.push({
           id: `verify-${doc.id}`,
@@ -80,8 +92,14 @@ export function UploaderUploadHistoryView() {
         });
       }
 
-      if ((selectedStatus === "all" || selectedStatus === "tidak_terverifikasi") && isRejected) {
-        const verifiedAt = doc.verified_at ? new Date(doc.verified_at) : createdAt;
+      if (
+        (selectedStatus === "all" ||
+          selectedStatus === "tidak_terverifikasi") &&
+        isRejected
+      ) {
+        const verifiedAt = doc.verified_at
+          ? new Date(doc.verified_at)
+          : createdAt;
 
         events.push({
           id: `reject-${doc.id}`,
@@ -100,7 +118,9 @@ export function UploaderUploadHistoryView() {
           }),
           fileName: doc.file_name || `Dokumen #${doc.id}`,
           documentType: doc.document_type || "Dokumen",
-          description: doc.verification_note || "Format file atau metadata tidak sesuai standar",
+          description:
+            doc.verification_note ||
+            "Format file atau metadata tidak sesuai standar",
         });
       }
     });
@@ -112,12 +132,16 @@ export function UploaderUploadHistoryView() {
         const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
         filteredEvents = events.filter((e) => e.timestamp >= sevenDaysAgo);
       } else if (selectedPeriod === "30d") {
-        const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        const thirtyDaysAgo = new Date(
+          now.getTime() - 30 * 24 * 60 * 60 * 1000,
+        );
         filteredEvents = events.filter((e) => e.timestamp >= thirtyDaysAgo);
       }
     }
 
-    filteredEvents.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+    filteredEvents.sort(
+      (a, b) => b.timestamp.getTime() - a.timestamp.getTime(),
+    );
 
     const groups: { dateStr: string; items: TimelineEvent[] }[] = [];
     filteredEvents.forEach((event) => {
@@ -170,9 +194,12 @@ export function UploaderUploadHistoryView() {
       ) : (
         <Card className="border border-border/60 bg-card p-12 text-center text-muted-foreground space-y-2">
           <Clock className="w-10 h-10 stroke-[1.5] text-muted-foreground/50 mx-auto" />
-          <p className="text-sm font-medium">Belum ada riwayat aktivitas upload</p>
+          <p className="text-sm font-medium">
+            Belum ada riwayat aktivitas upload
+          </p>
           <p className="text-xs text-muted-foreground/70">
-            Aktivitas upload dan status verifikasi dokumen Anda akan muncul secara kronologis di sini.
+            Aktivitas upload dan status verifikasi dokumen Anda akan muncul
+            secara kronologis di sini.
           </p>
         </Card>
       )}

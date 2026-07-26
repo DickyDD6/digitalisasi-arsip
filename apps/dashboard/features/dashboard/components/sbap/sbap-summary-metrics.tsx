@@ -11,12 +11,19 @@ interface SBAPSummaryMetricsProps {
   isLoading: boolean;
 }
 
-export function SBAPSummaryMetrics({ stats, fallbackVerifiedCount, isLoading }: SBAPSummaryMetricsProps) {
+export function SBAPSummaryMetrics({
+  stats,
+  fallbackVerifiedCount,
+  isLoading,
+}: SBAPSummaryMetricsProps) {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map((i) => (
-          <Card key={i} className="border border-border/60 bg-card shadow-sm p-5 space-y-3">
+          <Card
+            key={i}
+            className="border border-border/60 bg-card shadow-sm p-5 space-y-3"
+          >
             <Skeleton className="h-4 w-28" />
             <Skeleton className="h-8 w-20" />
             <Skeleton className="h-3 w-32" />
@@ -31,12 +38,17 @@ export function SBAPSummaryMetrics({ stats, fallbackVerifiedCount, isLoading }: 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {/* 1. Total Arsip Tersedia */}
-      <Link href="/available-archives" className="group block focus:outline-none">
+      <Link
+        href="/available-archives"
+        className="group block focus:outline-none"
+      >
         <Card className="border border-border/60 bg-card shadow-sm group-hover:border-blue-500/40 transition-all duration-200 group-hover:shadow-md">
           <CardContent className="p-5">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-xs font-medium text-muted-foreground">Total Arsip Tersedia</p>
+                <p className="text-xs font-medium text-muted-foreground">
+                  Total Arsip Tersedia
+                </p>
                 <p className="text-2xl font-bold tracking-tight text-foreground mt-1">
                   {verifiedCount}
                 </p>
@@ -59,7 +71,9 @@ export function SBAPSummaryMetrics({ stats, fallbackVerifiedCount, isLoading }: 
           <CardContent className="p-5">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-xs font-medium text-muted-foreground">Total Dokumen</p>
+                <p className="text-xs font-medium text-muted-foreground">
+                  Total Dokumen
+                </p>
                 <p className="text-2xl font-bold tracking-tight text-foreground mt-1">
                   {stats?.total_documents ?? verifiedCount}
                 </p>
@@ -82,7 +96,9 @@ export function SBAPSummaryMetrics({ stats, fallbackVerifiedCount, isLoading }: 
           <CardContent className="p-5">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-xs font-medium text-muted-foreground">Menunggu Verifikasi</p>
+                <p className="text-xs font-medium text-muted-foreground">
+                  Menunggu Verifikasi
+                </p>
                 <p className="text-2xl font-bold tracking-tight text-foreground mt-1">
                   {stats?.pending_documents ?? 0}
                 </p>
@@ -105,7 +121,9 @@ export function SBAPSummaryMetrics({ stats, fallbackVerifiedCount, isLoading }: 
           <CardContent className="p-5">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-xs font-medium text-muted-foreground">Dokumen Ditolak</p>
+                <p className="text-xs font-medium text-muted-foreground">
+                  Dokumen Ditolak
+                </p>
                 <p className="text-2xl font-bold tracking-tight text-foreground mt-1">
                   {stats?.rejected_documents ?? 0}
                 </p>

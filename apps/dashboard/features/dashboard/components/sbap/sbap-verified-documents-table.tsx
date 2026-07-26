@@ -86,15 +86,26 @@ export function SBAPVerifiedDocumentsTable({
             <Table>
               <TableHeader className="bg-muted/50">
                 <TableRow>
-                  <TableHead className="font-semibold text-xs text-foreground">Nama Dokumen</TableHead>
-                  <TableHead className="font-semibold text-xs text-foreground">Status Verifikasi</TableHead>
-                  <TableHead className="font-semibold text-xs text-foreground">Tanggal Diverifikasi</TableHead>
-                  <TableHead className="font-semibold text-xs text-foreground text-right">Aksi</TableHead>
+                  <TableHead className="font-semibold text-xs text-foreground">
+                    Nama Dokumen
+                  </TableHead>
+                  <TableHead className="font-semibold text-xs text-foreground">
+                    Status Verifikasi
+                  </TableHead>
+                  <TableHead className="font-semibold text-xs text-foreground">
+                    Tanggal Diverifikasi
+                  </TableHead>
+                  <TableHead className="font-semibold text-xs text-foreground text-right">
+                    Aksi
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {verifiedDocs.map((doc) => (
-                  <TableRow key={doc.id} className="hover:bg-muted/30 transition-colors">
+                  <TableRow
+                    key={doc.id}
+                    className="hover:bg-muted/30 transition-colors"
+                  >
                     <TableCell className="font-medium text-xs text-foreground">
                       {doc.title || doc.file_name || `Dokumen #${doc.id}`}
                     </TableCell>

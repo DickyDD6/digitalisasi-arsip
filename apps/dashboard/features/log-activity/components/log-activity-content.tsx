@@ -3,11 +3,24 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { dashboardQueries } from "@/features/dashboard/queries/dashboard.queries";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@repo/ui/card";
 import { Button } from "@repo/ui/button";
 import { Badge } from "@repo/ui/badge";
 import { Skeleton } from "@repo/ui/skeleton";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@repo/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@repo/ui/table";
 import {
   Activity,
   FileCheck,
@@ -21,7 +34,9 @@ import {
 } from "lucide-react";
 
 export const LogActivityContent = () => {
-  const [filterAction, setFilterAction] = useState<string | undefined>(undefined);
+  const [filterAction, setFilterAction] = useState<string | undefined>(
+    undefined,
+  );
 
   const auditLogQuery = useQuery(dashboardQueries.auditLogStats());
   const docStatsQuery = useQuery(dashboardQueries.documentStats());
@@ -35,9 +50,12 @@ export const LogActivityContent = () => {
 
   const filteredActivities = filterAction
     ? recentActivities.filter((item) => {
-      const actionStr = typeof item.action === "string" ? item.action : item.action?.name || "";
-      return actionStr.toLowerCase().includes(filterAction.toLowerCase());
-    })
+        const actionStr =
+          typeof item.action === "string"
+            ? item.action
+            : item.action?.name || "";
+        return actionStr.toLowerCase().includes(filterAction.toLowerCase());
+      })
     : recentActivities;
 
   return (
@@ -54,7 +72,11 @@ export const LogActivityContent = () => {
               variant={filterAction === undefined ? "default" : "outline"}
               size="sm"
               onClick={() => setFilterAction(undefined)}
-              className={filterAction === undefined ? "h-8 text-xs bg-[#F54A00] text-white" : "h-8 text-xs"}
+              className={
+                filterAction === undefined
+                  ? "h-8 text-xs bg-[#F54A00] text-white"
+                  : "h-8 text-xs"
+              }
             >
               Semua Aksi
             </Button>
@@ -62,23 +84,43 @@ export const LogActivityContent = () => {
               variant={filterAction === "verify" ? "default" : "outline"}
               size="sm"
               onClick={() => setFilterAction("verify")}
-              className={filterAction === "verify" ? "h-8 text-xs bg-[#F54A00] text-white" : "h-8 text-xs"}
+              className={
+                filterAction === "verify"
+                  ? "h-8 text-xs bg-[#F54A00] text-white"
+                  : "h-8 text-xs"
+              }
             >
               Verifikasi
             </Button>
             <Button
-              variant={filterAction === "upload" || filterAction === "create" ? "default" : "outline"}
+              variant={
+                filterAction === "upload" || filterAction === "create"
+                  ? "default"
+                  : "outline"
+              }
               size="sm"
               onClick={() => setFilterAction("upload")}
-              className={filterAction === "upload" ? "h-8 text-xs bg-[#F54A00] text-white" : "h-8 text-xs"}
+              className={
+                filterAction === "upload"
+                  ? "h-8 text-xs bg-[#F54A00] text-white"
+                  : "h-8 text-xs"
+              }
             >
               Upload / Tambah
             </Button>
             <Button
-              variant={filterAction === "reject" || filterAction === "delete" ? "default" : "outline"}
+              variant={
+                filterAction === "reject" || filterAction === "delete"
+                  ? "default"
+                  : "outline"
+              }
               size="sm"
               onClick={() => setFilterAction("reject")}
-              className={filterAction === "reject" ? "h-8 text-xs bg-[#F54A00] text-white" : "h-8 text-xs"}
+              className={
+                filterAction === "reject"
+                  ? "h-8 text-xs bg-[#F54A00] text-white"
+                  : "h-8 text-xs"
+              }
             >
               Ditolak / Hapus
             </Button>
@@ -109,7 +151,9 @@ export const LogActivityContent = () => {
           ) : (
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground font-medium">Total Aktivitas Hari Ini</p>
+                <p className="text-xs text-muted-foreground font-medium">
+                  Total Aktivitas Hari Ini
+                </p>
                 <p className="text-2xl font-bold tracking-tight text-foreground mt-1">
                   {auditData?.today_total ?? recentActivities.length}
                 </p>
@@ -130,7 +174,9 @@ export const LogActivityContent = () => {
           ) : (
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground font-medium">Total Dokumen Arsip</p>
+                <p className="text-xs text-muted-foreground font-medium">
+                  Total Dokumen Arsip
+                </p>
                 <p className="text-2xl font-bold tracking-tight text-foreground mt-1">
                   {docStats?.total_documents ?? 0}
                 </p>
@@ -151,7 +197,9 @@ export const LogActivityContent = () => {
           ) : (
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground font-medium">Terverifikasi QC</p>
+                <p className="text-xs text-muted-foreground font-medium">
+                  Terverifikasi QC
+                </p>
                 <p className="text-2xl font-bold tracking-tight text-foreground mt-1">
                   {docStats?.verified_documents ?? 0}
                 </p>
@@ -172,7 +220,9 @@ export const LogActivityContent = () => {
           ) : (
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground font-medium">Ditolak / Invalid</p>
+                <p className="text-xs text-muted-foreground font-medium">
+                  Ditolak / Invalid
+                </p>
                 <p className="text-2xl font-bold tracking-tight text-rose-600 mt-1">
                   {docStats?.rejected_documents ?? 0}
                 </p>
@@ -210,10 +260,18 @@ export const LogActivityContent = () => {
               {isLoading ? (
                 [1, 2, 3, 4, 5].map((i) => (
                   <TableRow key={i}>
-                    <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-                    <TableCell><Skeleton className="h-6 w-24 rounded-full" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-64" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-20 ml-auto" /></TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-32" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-6 w-24 rounded-full" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-64" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-20 ml-auto" />
+                    </TableCell>
                   </TableRow>
                 ))
               ) : filteredActivities.length > 0 ? (
@@ -230,19 +288,24 @@ export const LogActivityContent = () => {
                     actionStr.includes("delete") ||
                     actionStr.includes("destroy");
                   const isSuccess =
-                    actionStr.includes("verify") || actionStr.includes("create") || actionStr.includes("store");
+                    actionStr.includes("verify") ||
+                    actionStr.includes("create") ||
+                    actionStr.includes("store");
 
                   let timeStr = "-";
                   if (log.date?.time) {
                     timeStr = `${log.date.time} WIB`;
                   } else if (log.created_at) {
                     try {
-                      timeStr = new Date(log.created_at).toLocaleString("id-ID", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        day: "numeric",
-                        month: "short",
-                      });
+                      timeStr = new Date(log.created_at).toLocaleString(
+                        "id-ID",
+                        {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          day: "numeric",
+                          month: "short",
+                        },
+                      );
                     } catch {
                       timeStr = "-";
                     }
@@ -258,7 +321,9 @@ export const LogActivityContent = () => {
                               {log.user?.name || "Sistem"}
                             </p>
                             {log.user?.email && (
-                              <p className="text-[10px] text-muted-foreground">{log.user.email}</p>
+                              <p className="text-[10px] text-muted-foreground">
+                                {log.user.email}
+                              </p>
                             )}
                           </div>
                         </div>
@@ -295,7 +360,10 @@ export const LogActivityContent = () => {
                 })
               ) : (
                 <TableRow>
-                  <TableCell colSpan={4} className="h-32 text-center text-xs text-muted-foreground">
+                  <TableCell
+                    colSpan={4}
+                    className="h-32 text-center text-xs text-muted-foreground"
+                  >
                     Tidak ditemukan log aktivitas yang sesuai.
                   </TableCell>
                 </TableRow>

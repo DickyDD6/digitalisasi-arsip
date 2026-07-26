@@ -5,20 +5,20 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
 import { http } from "@/shared/lib/http";
+import { Card, CardDescription, CardHeader, CardTitle } from "@repo/ui/card";
 import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@repo/ui/card";
-import { DocumentTypeSelector, DocumentTypeOption } from "./document-type-selector";
+  DocumentTypeSelector,
+  DocumentTypeOption,
+} from "./document-type-selector";
 import { FileDropzone } from "./file-dropzone";
 import { MetadataForm, MetadataFormState } from "./metadata-form";
 
 export function UploadDocumentView() {
   const router = useRouter();
 
-  const [documentType, setDocumentType] = useState<DocumentTypeOption | null>(null);
+  const [documentType, setDocumentType] = useState<DocumentTypeOption | null>(
+    null,
+  );
 
   const [file, setFile] = useState<File | null>(null);
 
@@ -101,7 +101,8 @@ export function UploadDocumentView() {
             Upload Dokumen
           </CardTitle>
           <CardDescription className="text-sm text-muted-foreground mt-1">
-            Unggah dokumen arsip akademik (Nilai, Transkrip Formal/Sementara, Ijazah, Berita Acara Sidang) dan lengkapi metadata yang diperlukan
+            Unggah dokumen arsip akademik (Nilai, Transkrip Formal/Sementara,
+            Ijazah, Berita Acara Sidang) dan lengkapi metadata yang diperlukan
           </CardDescription>
         </CardHeader>
       </Card>
@@ -112,10 +113,7 @@ export function UploadDocumentView() {
             selectedType={documentType}
             onSelect={handleTypeSelect}
           />
-          <FileDropzone
-            selectedFile={file}
-            onFileSelect={setFile}
-          />
+          <FileDropzone selectedFile={file} onFileSelect={setFile} />
         </div>
 
         <div className="flex flex-col w-full">

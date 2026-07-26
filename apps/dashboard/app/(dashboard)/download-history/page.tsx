@@ -3,14 +3,38 @@
 import React, { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { dashboardQueries } from "@/features/dashboard/queries/dashboard.queries";
-import { PageDescription, PageHeader, PageTitle } from "@/shared/components/page-header";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui/card";
+import {
+  PageDescription,
+  PageHeader,
+  PageTitle,
+} from "@/shared/components/page-header";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@repo/ui/card";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
 import { Badge } from "@repo/ui/badge";
 import { Skeleton } from "@repo/ui/skeleton";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@repo/ui/table";
-import { Search, Download, History, CheckCircle2, RotateCcw, Calendar } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@repo/ui/table";
+import {
+  Search,
+  Download,
+  History,
+  CheckCircle2,
+  RotateCcw,
+  Calendar,
+} from "lucide-react";
 import { toast } from "sonner";
 import type { DocumentItem } from "@/features/dashboard/types/dashboard.types";
 
@@ -20,7 +44,9 @@ export default function DownloadHistoryPage() {
   const [endDate, setEndDate] = useState("");
 
   // Directly fetch verified documents from API
-  const docsQuery = useQuery(dashboardQueries.documents({ status: "verified", per_page: 50 }));
+  const docsQuery = useQuery(
+    dashboardQueries.documents({ status: "verified", per_page: 50 }),
+  );
   const isLoading = docsQuery.isLoading;
 
   const rawDocs: DocumentItem[] = docsQuery.data?.data || [];
@@ -29,8 +55,12 @@ export default function DownloadHistoryPage() {
     return rawDocs.filter((item) => {
       if (searchTerm.trim()) {
         const term = searchTerm.trim().toLowerCase();
-        const matchesFile = (item.title || item.file_name || "").toLowerCase().includes(term);
-        const matchesNpm = (item.npm || item.student_number || "").toLowerCase().includes(term);
+        const matchesFile = (item.title || item.file_name || "")
+          .toLowerCase()
+          .includes(term);
+        const matchesNpm = (item.npm || item.student_number || "")
+          .toLowerCase()
+          .includes(term);
         const matchesProdi = (item.prodi || "").toLowerCase().includes(term);
         if (!matchesFile && !matchesNpm && !matchesProdi) return false;
       }
@@ -55,7 +85,8 @@ export default function DownloadHistoryPage() {
       <PageHeader>
         <PageTitle>Riwayat Unduhan Dokumen</PageTitle>
         <PageDescription>
-          Catatan log aktivitas pengunduhan arsip digital terverifikasi yang dilakukan oleh Pegawai SBAP
+          Catatan log aktivitas pengunduhan arsip digital terverifikasi yang
+          dilakukan oleh Pegawai SBAP
         </PageDescription>
       </PageHeader>
 
@@ -142,17 +173,32 @@ export default function DownloadHistoryPage() {
               <Table>
                 <TableHeader className="bg-muted/50">
                   <TableRow>
-                    <TableHead className="font-semibold text-xs text-foreground">Nama File Dokumen</TableHead>
-                    <TableHead className="font-semibold text-xs text-foreground">NPM Mahasiswa</TableHead>
-                    <TableHead className="font-semibold text-xs text-foreground">Program Studi</TableHead>
-                    <TableHead className="font-semibold text-xs text-foreground">Waktu Unduh</TableHead>
-                    <TableHead className="font-semibold text-xs text-foreground">Status</TableHead>
-                    <TableHead className="font-semibold text-xs text-foreground text-right">Aksi</TableHead>
+                    <TableHead className="font-semibold text-xs text-foreground">
+                      Nama File Dokumen
+                    </TableHead>
+                    <TableHead className="font-semibold text-xs text-foreground">
+                      NPM Mahasiswa
+                    </TableHead>
+                    <TableHead className="font-semibold text-xs text-foreground">
+                      Program Studi
+                    </TableHead>
+                    <TableHead className="font-semibold text-xs text-foreground">
+                      Waktu Unduh
+                    </TableHead>
+                    <TableHead className="font-semibold text-xs text-foreground">
+                      Status
+                    </TableHead>
+                    <TableHead className="font-semibold text-xs text-foreground text-right">
+                      Aksi
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredLogs.map((item) => (
-                    <TableRow key={item.id} className="hover:bg-muted/30 transition-colors">
+                    <TableRow
+                      key={item.id}
+                      className="hover:bg-muted/30 transition-colors"
+                    >
                       <TableCell className="font-medium text-xs text-foreground">
                         {item.title || item.file_name}
                       </TableCell>

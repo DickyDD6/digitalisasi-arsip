@@ -1,7 +1,14 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, XCircle, FileText, User, Calendar, Eye } from "lucide-react";
+import {
+  CheckCircle2,
+  XCircle,
+  FileText,
+  User,
+  Calendar,
+  Eye,
+} from "lucide-react";
 import { Button } from "@repo/ui/button";
 import { Badge } from "@repo/ui/badge";
 import type { DocumentItem } from "../../types/dashboard.types";

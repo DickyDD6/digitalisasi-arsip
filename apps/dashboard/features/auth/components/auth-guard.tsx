@@ -10,11 +10,7 @@ import { Flasher } from "@/shared/components/flasher";
 export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
 
-  const {
-    data: user,
-    isLoading,
-    isError,
-  } = useQuery(authQueries.userMe());
+  const { data: user, isLoading, isError } = useQuery(authQueries.userMe());
 
   React.useEffect(() => {
     if (!isLoading && (isError || user === null)) {

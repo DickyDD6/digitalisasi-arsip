@@ -5,7 +5,8 @@ import { Skeleton } from "@repo/ui/skeleton";
 
 export const metadata: Metadata = {
   title: "Dokumen Terverifikasi - Quality Control",
-  description: "Daftar seluruh arsip dokumen yang telah memenuhi standar Quality Control dan terverifikasi.",
+  description:
+    "Daftar seluruh arsip dokumen yang telah memenuhi standar Quality Control dan terverifikasi.",
 };
 
 export default function VerifiedDocumentsPage() {

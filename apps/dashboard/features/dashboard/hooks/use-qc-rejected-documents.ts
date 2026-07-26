@@ -21,14 +21,14 @@ export function useQCRejectedDocuments({
       search: search || undefined,
       per_page: 100,
       page: 1,
-    })
+    }),
   );
 
   const rawDocs: DocumentItem[] = query.data?.data || [];
 
   // Filter rejected documents using getNormalizedStatus(doc) to capture all API status variants
   const allRejectedDocs = rawDocs.filter(
-    (doc) => getNormalizedStatus(doc) === "rejected"
+    (doc) => getNormalizedStatus(doc) === "rejected",
   );
 
   // Apply category filter using normalized getDocCategory helper
@@ -41,7 +41,11 @@ export function useQCRejectedDocuments({
   // Calculate breakdown counts for rejected statistics
   const revisionNeededCount = allRejectedDocs.filter((d) => {
     const note = (d.verification_note || "").toLowerCase();
-    return note.includes("revisi") || note.includes("buram") || note.includes("kurang");
+    return (
+      note.includes("revisi") ||
+      note.includes("buram") ||
+      note.includes("kurang")
+    );
   }).length;
 
   const permanentRejectedCount = allRejectedDocs.length - revisionNeededCount;

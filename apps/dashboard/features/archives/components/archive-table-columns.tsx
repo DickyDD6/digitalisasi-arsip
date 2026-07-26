@@ -16,8 +16,7 @@ export const archiveTableColumns: ColumnDef<ArchiveDocument>[] = [
     header: ({ table }) => (
       <Checkbox
         checked={
-          table.getIsAllPageRowsSelected() ||
-          table.getIsSomePageRowsSelected()
+          table.getIsAllPageRowsSelected() || table.getIsSomePageRowsSelected()
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -63,8 +62,9 @@ export const archiveTableColumns: ColumnDef<ArchiveDocument>[] = [
     header: "Jenis Dokumen",
     cell: ({ row }) => (
       <Badge variant="secondary">
-        {ARCHIVE_DOCUMENT_TYPE[row.original.document_type as ArchiveDocumentTypeKey] ||
-          row.original.document_type}
+        {ARCHIVE_DOCUMENT_TYPE[
+          row.original.document_type as ArchiveDocumentTypeKey
+        ] || row.original.document_type}
       </Badge>
     ),
     enableHiding: false,
@@ -88,12 +88,13 @@ export const archiveTableColumns: ColumnDef<ArchiveDocument>[] = [
         statusLower.includes("terverifikasi") && !statusLower.includes("tidak")
           ? "default"
           : statusLower.includes("tidak") || statusLower.includes("reject")
-          ? "destructive"
-          : "outline";
+            ? "destructive"
+            : "outline";
 
       return (
         <Badge variant={badgeVariant}>
-          {ARCHIVE_DOCUMENT_STATUS[status as ArchiveDocumentStatusKey] || status}
+          {ARCHIVE_DOCUMENT_STATUS[status as ArchiveDocumentStatusKey] ||
+            status}
         </Badge>
       );
     },

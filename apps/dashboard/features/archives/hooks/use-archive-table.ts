@@ -19,11 +19,11 @@ export function useArchiveTable() {
       per_page: pagination.pageSize,
       search: globalFilter,
       ...Object.fromEntries(columnFilters.map((f) => [f.id, f.value])),
-    })
+    }),
   );
 
   const filterOptionsQuery = useQuery(
-    archiveQueries.filterOptions(listQuery.data?.meta?.total ?? 1000)
+    archiveQueries.filterOptions(listQuery.data?.meta?.total ?? 1000),
   );
 
   return {

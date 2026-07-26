@@ -14,7 +14,11 @@ import type { PeriodType } from "../../types/dashboard.types";
 
 interface PeriodFilterProps {
   selectedPeriod: PeriodType;
-  onSelectPeriod: (period: PeriodType, startDate?: string, endDate?: string) => void;
+  onSelectPeriod: (
+    period: PeriodType,
+    startDate?: string,
+    endDate?: string,
+  ) => void;
   customStartDate?: string;
   customEndDate?: string;
 }
@@ -56,7 +60,9 @@ export function PeriodFilter({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-muted-foreground">
             <Calendar className="w-4 h-4 text-[#F54A00]" />
-            <span className="text-sm font-medium text-foreground">Filter Periode Data:</span>
+            <span className="text-sm font-medium text-foreground">
+              Filter Periode Data:
+            </span>
             {selectedPeriod === "custom" && startDateInput && endDateInput && (
               <span className="text-xs px-2 py-0.5 rounded-full bg-orange-100 dark:bg-orange-950/40 text-[#F54A00] font-mono border border-orange-200 dark:border-orange-800">
                 {startDateInput} s/d {endDateInput}
@@ -96,7 +102,9 @@ export function PeriodFilter({
 
           <form onSubmit={handleApplyCustomDate} className="space-y-4 py-2">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground">Tanggal Mulai</label>
+              <label className="text-xs font-semibold text-foreground">
+                Tanggal Mulai
+              </label>
               <Input
                 type="date"
                 value={startDateInput}
@@ -107,7 +115,9 @@ export function PeriodFilter({
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground">Tanggal Selesai</label>
+              <label className="text-xs font-semibold text-foreground">
+                Tanggal Selesai
+              </label>
               <Input
                 type="date"
                 value={endDateInput}

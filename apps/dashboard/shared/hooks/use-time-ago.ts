@@ -6,7 +6,8 @@
  */
 export function useTimeAgo() {
   const timeAgo = (dateString: string | Date): string => {
-    const date = typeof dateString === "string" ? new Date(dateString) : dateString;
+    const date =
+      typeof dateString === "string" ? new Date(dateString) : dateString;
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffSeconds = Math.floor(diffMs / 1000);

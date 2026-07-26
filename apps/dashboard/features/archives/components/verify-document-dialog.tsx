@@ -45,7 +45,9 @@ export const VerifyDocumentDialog: React.FC<VerifyDocumentDialogProps> = ({
       queryClient.invalidateQueries({ queryKey: ["documents"] });
       onOpenChange(false);
     } catch (err: unknown) {
-      const errorMsg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || "Terjadi kesalahan.";
+      const errorMsg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message || "Terjadi kesalahan.";
       toast.error("Gagal memverifikasi dokumen", {
         description: errorMsg,
       });
@@ -63,7 +65,9 @@ export const VerifyDocumentDialog: React.FC<VerifyDocumentDialogProps> = ({
               <CheckCircle2 className="size-6" />
             </div>
             <div className="text-left">
-              <DialogTitle className="text-base">Verifikasi Dokumen</DialogTitle>
+              <DialogTitle className="text-base">
+                Verifikasi Dokumen
+              </DialogTitle>
               <DialogDescription className="text-xs">
                 {documentTitle}
               </DialogDescription>
@@ -86,7 +90,12 @@ export const VerifyDocumentDialog: React.FC<VerifyDocumentDialogProps> = ({
         </div>
 
         <DialogFooter className="gap-2 pt-2">
-          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)} disabled={loading}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onOpenChange(false)}
+            disabled={loading}
+          >
             Batal
           </Button>
           <Button

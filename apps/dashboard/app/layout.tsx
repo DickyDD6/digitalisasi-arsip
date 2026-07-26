@@ -13,7 +13,7 @@ import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import { cn } from "@repo/ui/lib/utils";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -36,7 +36,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" suppressHydrationWarning className={cn("font-sans", inter.variable)}>
+    <html
+      lang="id"
+      suppressHydrationWarning
+      className={cn("font-sans", inter.variable)}
+    >
       <body className={`${poppins.className}`}>
         <NextTopLoader color="var(--primary)" showSpinner={false} />
         <ConsoleSecurity />

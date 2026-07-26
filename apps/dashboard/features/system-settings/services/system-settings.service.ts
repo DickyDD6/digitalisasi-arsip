@@ -37,7 +37,9 @@ export const systemSettingsService = {
    */
   async getSettings(): Promise<SystemSettingsConfig> {
     try {
-      const res = await http.get<ApiResponse<SystemSettingsConfig>>("/api/system-settings");
+      const res = await http.get<ApiResponse<SystemSettingsConfig>>(
+        "/api/system-settings",
+      );
       if (res.data?.data) {
         return res.data.data;
       }
@@ -57,9 +59,14 @@ export const systemSettingsService = {
     return defaultSettings;
   },
 
-  async updateSettings(settings: Partial<SystemSettingsConfig>): Promise<SystemSettingsConfig> {
+  async updateSettings(
+    settings: Partial<SystemSettingsConfig>,
+  ): Promise<SystemSettingsConfig> {
     try {
-      const res = await http.post<ApiResponse<SystemSettingsConfig>>("/api/system-settings", settings);
+      const res = await http.post<ApiResponse<SystemSettingsConfig>>(
+        "/api/system-settings",
+        settings,
+      );
       if (res.data?.data) {
         return res.data.data;
       }

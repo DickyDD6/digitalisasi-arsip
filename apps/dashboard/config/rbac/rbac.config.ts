@@ -32,7 +32,7 @@ export const ROLE_PERMISSIONS: Record<string, UserRole[]> = {
 
 export function hasPermission(
   role: UserRole | undefined,
-  path: string
+  path: string,
 ): boolean {
   if (!role) return false;
   const allowed = ROLE_PERMISSIONS[path];
@@ -42,7 +42,7 @@ export function hasPermission(
 
 export function canAccessMenu(
   role: UserRole | undefined,
-  allowedRoles: UserRole[]
+  allowedRoles: UserRole[],
 ): boolean {
   if (!role) return false;
   return allowedRoles.includes(role);

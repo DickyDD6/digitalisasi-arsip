@@ -74,7 +74,8 @@ export function FileDropzone({
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                 </div>
                 <p className="text-[11px] text-muted-foreground">
-                  {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • PDF Document
+                  {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • PDF
+                  Document
                 </p>
               </div>
             </div>

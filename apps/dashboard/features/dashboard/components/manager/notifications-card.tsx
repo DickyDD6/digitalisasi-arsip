@@ -1,6 +1,13 @@
 import React from "react";
 import Link from "next/link";
-import { AlertCircle, CheckCircle2, Info, AlertTriangle, ExternalLink, ChevronRight } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  Info,
+  AlertTriangle,
+  ExternalLink,
+  ChevronRight,
+} from "lucide-react";
 import {
   Card,
   CardContent,
@@ -17,7 +24,10 @@ interface NotificationsCardProps {
   notifications: NotificationItem[];
 }
 
-export function NotificationsCard({ isLoading, notifications }: NotificationsCardProps) {
+export function NotificationsCard({
+  isLoading,
+  notifications,
+}: NotificationsCardProps) {
   const getIcon = (iconName: NotificationItem["iconName"]) => {
     switch (iconName) {
       case "alert-circle":
@@ -61,33 +71,48 @@ export function NotificationsCard({ isLoading, notifications }: NotificationsCar
               Update Terbaru Sistem
             </CardDescription>
           </div>
-          <Button variant="ghost" size="sm" className="text-xs text-[#F54A00] hover:text-[#d64100] hover:bg-orange-500/10 gap-1">
-            <Link href="/notifications">
-              Lihat Semua
-              <ExternalLink className="w-3 h-3" />
-            </Link>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-xs text-primary hover:text-primary/70 hover:bg-primary/10 gap-1"
+            render={<Link href="/notifications" />}
+          >
+            Lihat Semua
+            <ExternalLink className="w-3 h-3" />
           </Button>
         </div>
       </CardHeader>
 
-      <CardContent className="p-5 pt-0 space-y-3 flex-1">
+      <CardContent className="p-5 pt-0 space-y-3 flex-col flex flex-1">
         {hasData ? (
-          notifications.map((item) => {
+          notifications.slice(0, 5).map((item) => {
             const IconComp = getIcon(item.iconName);
             return (
-              <Link href={item.href ?? "/notifications"} key={item.id} aria-label={item.title}>
+              <Link
+                href={item.href ?? "/notifications"}
+                key={item.id}
+                aria-label={item.title}
+              >
                 <div
                   className={`p-3.5 rounded-xl border ${item.bgColor} flex items-center justify-between gap-3 cursor-pointer hover:opacity-90 transition-opacity group`}
                 >
                   <div className="flex items-start gap-3 flex-1">
-                    <IconComp className={`w-4 h-4 ${item.iconColor} shrink-0 mt-0.5`} />
+                    <IconComp
+                      className={`w-4 h-4 ${item.iconColor} shrink-0 mt-0.5`}
+                    />
                     <div className="space-y-0.5">
-                      <p className={`text-xs font-semibold ${item.textColor}`}>{item.title}</p>
-                      <p className="text-xs text-muted-foreground leading-relaxed">{item.message}</p>
+                      <p className={`text-xs font-semibold ${item.textColor}`}>
+                        {item.title}
+                      </p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        {item.message}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-                    <span className="text-[11px] text-muted-foreground whitespace-nowrap">{item.time}</span>
+                    <span className="text-[11px] text-muted-foreground whitespace-nowrap">
+                      {item.time}
+                    </span>
                     <ChevronRight className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
                 </div>

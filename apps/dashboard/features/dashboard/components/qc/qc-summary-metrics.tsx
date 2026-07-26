@@ -2,7 +2,15 @@
 
 import React from "react";
 import Link from "next/link";
-import { Clock, CheckCircle2, FileCheck, XCircle, TrendingUp, AlertTriangle, ChevronRight } from "lucide-react";
+import {
+  Clock,
+  CheckCircle2,
+  FileCheck,
+  XCircle,
+  TrendingUp,
+  AlertTriangle,
+  ChevronRight,
+} from "lucide-react";
 import { Card, CardContent } from "@repo/ui/card";
 import { Skeleton } from "@repo/ui/skeleton";
 import type { DocumentStatisticsResponse } from "../../types/dashboard.types";
@@ -22,7 +30,10 @@ export function QCSummaryMetrics({
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map((i) => (
-          <Card key={i} className="border border-border/60 bg-card shadow-sm p-5 space-y-3">
+          <Card
+            key={i}
+            className="border border-border/60 bg-card shadow-sm p-5 space-y-3"
+          >
             <Skeleton className="h-4 w-28" />
             <Skeleton className="h-8 w-20" />
             <Skeleton className="h-3 w-32" />
@@ -35,20 +46,28 @@ export function QCSummaryMetrics({
   const pendingCount = stats?.pending_documents ?? fallbackPendingCount;
   const verifiedCount = stats?.verified_documents ?? 0;
   const rejectedCount = stats?.rejected_documents ?? 0;
-  const totalCount = stats?.total_documents ?? (pendingCount + verifiedCount + rejectedCount);
+  const totalCount =
+    stats?.total_documents ?? pendingCount + verifiedCount + rejectedCount;
 
-  const successRate = totalCount > 0 ? ((verifiedCount / totalCount) * 100).toFixed(1) : "0";
-  const rejectionRate = totalCount > 0 ? ((rejectedCount / totalCount) * 100).toFixed(1) : "0";
+  const successRate =
+    totalCount > 0 ? ((verifiedCount / totalCount) * 100).toFixed(1) : "0";
+  const rejectionRate =
+    totalCount > 0 ? ((rejectedCount / totalCount) * 100).toFixed(1) : "0";
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {/* 1. Perlu Verifikasi */}
-      <Link href="/verification" aria-label="Lihat antrean dokumen perlu verifikasi">
+      <Link
+        href="/verification"
+        aria-label="Lihat antrean dokumen perlu verifikasi"
+      >
         <Card className="border border-border/60 bg-card shadow-sm hover:shadow-md transition-all cursor-pointer group">
           <CardContent className="p-5">
             <div className="flex items-start justify-between gap-3">
               <div className="space-y-1">
-                <p className="text-xs font-normal text-muted-foreground">Perlu Verifikasi</p>
+                <p className="text-xs font-normal text-muted-foreground">
+                  Perlu Verifikasi
+                </p>
                 <p className="text-3xl font-bold tracking-tight text-foreground">
                   {pendingCount}
                 </p>
@@ -69,12 +88,17 @@ export function QCSummaryMetrics({
       </Link>
 
       {/* 2. Terverifikasi */}
-      <Link href="/verified-documents" aria-label="Lihat dokumen sudah diverifikasi">
+      <Link
+        href="/verified-documents"
+        aria-label="Lihat dokumen sudah diverifikasi"
+      >
         <Card className="border border-border/60 bg-card shadow-sm hover:shadow-md transition-all cursor-pointer group">
           <CardContent className="p-5">
             <div className="flex items-start justify-between gap-3">
               <div className="space-y-1">
-                <p className="text-xs font-normal text-muted-foreground">Dokumen Terverifikasi</p>
+                <p className="text-xs font-normal text-muted-foreground">
+                  Dokumen Terverifikasi
+                </p>
                 <p className="text-3xl font-bold tracking-tight text-foreground">
                   {verifiedCount}
                 </p>
@@ -100,7 +124,9 @@ export function QCSummaryMetrics({
           <CardContent className="p-5">
             <div className="flex items-start justify-between gap-3">
               <div className="space-y-1">
-                <p className="text-xs font-normal text-muted-foreground">Tingkat Kelayakan</p>
+                <p className="text-xs font-normal text-muted-foreground">
+                  Tingkat Kelayakan
+                </p>
                 <p className="text-3xl font-bold tracking-tight text-foreground">
                   {verifiedCount}
                 </p>
@@ -126,7 +152,9 @@ export function QCSummaryMetrics({
           <CardContent className="p-5">
             <div className="flex items-start justify-between gap-3">
               <div className="space-y-1">
-                <p className="text-xs font-normal text-muted-foreground">Dokumen Ditolak</p>
+                <p className="text-xs font-normal text-muted-foreground">
+                  Dokumen Ditolak
+                </p>
                 <p className="text-3xl font-bold tracking-tight text-foreground">
                   {rejectedCount}
                 </p>

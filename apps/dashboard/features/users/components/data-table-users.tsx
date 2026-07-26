@@ -153,7 +153,9 @@ export const DataTableUsers = () => {
                           value={roleFilter || "all"}
                           onValueChange={(value) =>
                             setRoleFilter(
-                              (value as string) === "all" ? undefined : (value as UserRole),
+                              (value as string) === "all"
+                                ? undefined
+                                : (value as UserRole),
                             )
                           }
                         >

@@ -54,7 +54,9 @@ export const RejectDocumentDialog: React.FC<RejectDocumentDialogProps> = ({
       queryClient.invalidateQueries({ queryKey: ["documents"] });
       onOpenChange(false);
     } catch (err: unknown) {
-      const errorMsg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || "Terjadi kesalahan.";
+      const errorMsg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message || "Terjadi kesalahan.";
       toast.error("Gagal menolak dokumen", {
         description: errorMsg,
       });
@@ -85,15 +87,26 @@ export const RejectDocumentDialog: React.FC<RejectDocumentDialogProps> = ({
             <Label htmlFor="reason" className="text-xs font-semibold">
               Alasan Penolakan <span className="text-red-500">*</span>
             </Label>
-            <Select value={reason} onValueChange={(val) => setReason(val || "")}>
+            <Select
+              value={reason}
+              onValueChange={(val) => setReason(val || "")}
+            >
               <SelectTrigger className="h-9">
                 <SelectValue placeholder="Pilih Alasan Penolakan" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="unclear_scan">File Scan Tidak Jelas / Buram</SelectItem>
-                <SelectItem value="mismatch_data">NIM / Nama Mahasiswa Tidak Cocok</SelectItem>
-                <SelectItem value="corrupt_file">File Rusak / Tidak Bisa Dibuka</SelectItem>
-                <SelectItem value="wrong_type">Kategori Dokumen Salah</SelectItem>
+                <SelectItem value="unclear_scan">
+                  File Scan Tidak Jelas / Buram
+                </SelectItem>
+                <SelectItem value="mismatch_data">
+                  NIM / Nama Mahasiswa Tidak Cocok
+                </SelectItem>
+                <SelectItem value="corrupt_file">
+                  File Rusak / Tidak Bisa Dibuka
+                </SelectItem>
+                <SelectItem value="wrong_type">
+                  Kategori Dokumen Salah
+                </SelectItem>
                 <SelectItem value="other">Lainnya</SelectItem>
               </SelectContent>
             </Select>
@@ -115,7 +128,12 @@ export const RejectDocumentDialog: React.FC<RejectDocumentDialogProps> = ({
         </div>
 
         <DialogFooter className="gap-2 pt-2">
-          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)} disabled={loading}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onOpenChange(false)}
+            disabled={loading}
+          >
             Batal
           </Button>
           <Button

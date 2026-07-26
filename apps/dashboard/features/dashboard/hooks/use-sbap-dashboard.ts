@@ -8,7 +8,11 @@ export function useSBAPDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const verifiedDocsQuery = useQuery(
-    dashboardQueries.documents({ status: "verified", per_page: 15, search: searchTerm })
+    dashboardQueries.documents({
+      status: "verified",
+      per_page: 15,
+      search: searchTerm,
+    }),
   );
   const docStatsQuery = useQuery(dashboardQueries.documentStats());
 

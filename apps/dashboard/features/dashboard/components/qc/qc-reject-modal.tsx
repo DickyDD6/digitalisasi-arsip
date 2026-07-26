@@ -58,7 +58,9 @@ export function QCRejectModal({
 
           {/* Question Text */}
           <div className="space-y-1 text-sm text-foreground">
-            <p className="text-muted-foreground">Berikan alasan penolakan untuk dokumen</p>
+            <p className="text-muted-foreground">
+              Berikan alasan penolakan untuk dokumen
+            </p>
             <p className="font-bold text-base text-foreground break-all px-2">
               {doc?.title || doc?.file_name || "Dokumen"}
             </p>

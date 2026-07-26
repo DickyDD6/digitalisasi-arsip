@@ -56,7 +56,11 @@ export function UploaderDocumentListView() {
             onView={handleView}
             onDownload={handleDownload}
           />
-          <DocumentListPagination meta={meta} page={page} onPageChange={setPage} />
+          <DocumentListPagination
+            meta={meta}
+            page={page}
+            onPageChange={setPage}
+          />
         </CardContent>
       </Card>
 

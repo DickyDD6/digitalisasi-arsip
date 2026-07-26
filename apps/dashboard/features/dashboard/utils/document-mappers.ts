@@ -15,8 +15,10 @@ export function getDocCategory(doc: DocumentItem): string {
 
   const lower = rawType.toLowerCase();
   if (lower.includes("grade") || lower.includes("nilai")) return "Nilai";
-  if (lower.includes("transcript") || lower.includes("transkrip")) return "Transkrip";
-  if (lower.includes("certificate") || lower.includes("ijazah")) return "Ijazah";
+  if (lower.includes("transcript") || lower.includes("transkrip"))
+    return "Transkrip";
+  if (lower.includes("certificate") || lower.includes("ijazah"))
+    return "Ijazah";
   if (lower.includes("sidang")) return "Berita Acara Sidang";
 
   return rawType;
@@ -27,7 +29,9 @@ export function getDocCategory(doc: DocumentItem): string {
  * IMPORTANT: Checks pending/waiting statuses FIRST to prevent "menunggu_verifikasi"
  * from matching sub-strings of "verified".
  */
-export function getNormalizedStatus(doc: DocumentItem): "pending" | "verified" | "rejected" {
+export function getNormalizedStatus(
+  doc: DocumentItem,
+): "pending" | "verified" | "rejected" {
   const s = (doc.status || "").toLowerCase().trim();
 
   // Check pending / waiting statuses explicitly FIRST

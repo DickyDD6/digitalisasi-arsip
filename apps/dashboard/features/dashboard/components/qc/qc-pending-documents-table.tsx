@@ -23,14 +23,23 @@ interface QCPendingDocumentsTableProps {
   pendingDocs: DocumentItem[];
   isLoading: boolean;
   onRefresh: () => void;
-  onVerify: (args: { id: number; status: "verified" | "rejected"; note?: string }) => void;
+  onVerify: (args: {
+    id: number;
+    status: "verified" | "rejected";
+    note?: string;
+  }) => void;
   isVerifying: boolean;
 }
 
 // Helper to determine if a document is Urgent strictly based on API status, title, or file name
 function checkIsUrgent(doc: DocumentItem): boolean {
   const d = doc as unknown as Record<string, unknown>;
-  if (d.is_urgent === true || doc.status === "urgent" || doc.status === "menunggu_verifikasi_urgent") return true;
+  if (
+    d.is_urgent === true ||
+    doc.status === "urgent" ||
+    doc.status === "menunggu_verifikasi_urgent"
+  )
+    return true;
   const fileName = doc.file_name?.toLowerCase() || "";
   const title = doc.title?.toLowerCase() || "";
   return (
@@ -49,8 +58,12 @@ export function QCPendingDocumentsTable({
   isVerifying,
 }: QCPendingDocumentsTableProps) {
   // Modal states
-  const [verifyModalDoc, setVerifyModalDoc] = useState<DocumentItem | null>(null);
-  const [rejectModalDoc, setRejectModalDoc] = useState<DocumentItem | null>(null);
+  const [verifyModalDoc, setVerifyModalDoc] = useState<DocumentItem | null>(
+    null,
+  );
+  const [rejectModalDoc, setRejectModalDoc] = useState<DocumentItem | null>(
+    null,
+  );
   const [viewModalDocId, setViewModalDocId] = useState<number | null>(null);
 
   // Sort documents so Urgent items appear grouped at the very top
@@ -94,7 +107,8 @@ export function QCPendingDocumentsTable({
                 )}
               </CardTitle>
               <CardDescription className="text-xs text-muted-foreground mt-1">
-                Prioritaskan dokumen dengan label &quot;Urgent&quot; (diurutkan paling atas)
+                Prioritaskan dokumen dengan label &quot;Urgent&quot; (diurutkan
+                paling atas)
               </CardDescription>
             </div>
 
@@ -126,7 +140,10 @@ export function QCPendingDocumentsTable({
           {isLoading ? (
             <div className="p-6 space-y-4">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="flex items-center justify-between gap-4">
+                <div
+                  key={i}
+                  className="flex items-center justify-between gap-4"
+                >
                   <div className="flex items-center gap-3">
                     <Skeleton className="w-10 h-10 rounded-xl" />
                     <div className="space-y-2">
@@ -156,7 +173,9 @@ export function QCPendingDocumentsTable({
           ) : (
             <div className="py-12 px-6 text-center">
               <Clock className="w-10 h-10 text-muted-foreground mx-auto mb-2 opacity-50" />
-              <p className="text-sm font-semibold text-foreground">Tidak ada dokumen pending</p>
+              <p className="text-sm font-semibold text-foreground">
+                Tidak ada dokumen pending
+              </p>
               <p className="text-xs text-muted-foreground mt-1">
                 Seluruh dokumen telah selesai diverifikasi oleh tim QC.
               </p>

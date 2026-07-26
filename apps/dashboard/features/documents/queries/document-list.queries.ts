@@ -1,5 +1,8 @@
 import { queryOptions } from "@tanstack/react-query";
-import { documentListService, DocumentListParams } from "../services/document-list.service";
+import {
+  documentListService,
+  DocumentListParams,
+} from "../services/document-list.service";
 import { dashboardQueries } from "@/features/dashboard/queries/dashboard.queries";
 
 export const documentListQueries = {

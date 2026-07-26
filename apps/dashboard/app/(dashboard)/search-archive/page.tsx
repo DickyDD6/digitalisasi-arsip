@@ -3,14 +3,31 @@
 import React, { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { dashboardQueries } from "@/features/dashboard/queries/dashboard.queries";
-import { PageDescription, PageHeader, PageTitle } from "@/shared/components/page-header";
+import {
+  PageDescription,
+  PageHeader,
+  PageTitle,
+} from "@/shared/components/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui/card";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
 import { Badge } from "@repo/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@repo/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@repo/ui/select";
 import { Skeleton } from "@repo/ui/skeleton";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@repo/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@repo/ui/table";
 import { Checkbox } from "@repo/ui/checkbox";
 import { ViewArchiveModal } from "@/features/archives/components/ui/view-archive-modal";
 import { Search, Download, RotateCcw, FileCheck, Sparkles } from "lucide-react";
@@ -49,7 +66,9 @@ export default function SearchArchivePage() {
 
   const [selectedDocIds, setSelectedDocIds] = useState<number[]>([]);
 
-  const docsQuery = useQuery(dashboardQueries.documents({ status: "verified", per_page: 50 }));
+  const docsQuery = useQuery(
+    dashboardQueries.documents({ status: "verified", per_page: 50 }),
+  );
   const isLoading = docsQuery.isLoading;
 
   const rawDocs: DocumentItem[] = docsQuery.data?.data || [];
@@ -71,8 +90,11 @@ export default function SearchArchivePage() {
       }
 
       if (selectedDocType !== "all") {
-        const categoryStr = doc.category || doc.document_type || doc.file_name || "";
-        if (!categoryStr.toLowerCase().includes(selectedDocType.toLowerCase())) {
+        const categoryStr =
+          doc.category || doc.document_type || doc.file_name || "";
+        if (
+          !categoryStr.toLowerCase().includes(selectedDocType.toLowerCase())
+        ) {
           return false;
         }
       }
@@ -100,7 +122,7 @@ export default function SearchArchivePage() {
 
   const toggleSelectDoc = (id: number) => {
     setSelectedDocIds((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
     );
   };
 
@@ -111,7 +133,9 @@ export default function SearchArchivePage() {
 
   const handleBulkDownload = () => {
     if (selectedDocIds.length === 0) return;
-    toast.success(`Mengunduh ${selectedDocIds.length} arsip terverifikasi (ZIP Batch)...`);
+    toast.success(
+      `Mengunduh ${selectedDocIds.length} arsip terverifikasi (ZIP Batch)...`,
+    );
   };
 
   return (
@@ -119,7 +143,8 @@ export default function SearchArchivePage() {
       <PageHeader>
         <PageTitle>Pencarian Arsip Digital</PageTitle>
         <PageDescription>
-          Pencarian cepat dan akurat dokumen terverifikasi berdasarkan NPM, Nama, Prodi, Jenis Dokumen, &amp; Tahun Ajaran
+          Pencarian cepat dan akurat dokumen terverifikasi berdasarkan NPM,
+          Nama, Prodi, Jenis Dokumen, &amp; Tahun Ajaran
         </PageDescription>
       </PageHeader>
 
@@ -147,7 +172,9 @@ export default function SearchArchivePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Input NPM */}
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-foreground">NPM / NIM Mahasiswa</label>
+              <label className="text-xs font-medium text-foreground">
+                NPM / NIM Mahasiswa
+              </label>
               <Input
                 placeholder="Contoh: 203040001"
                 value={npmSearch}
@@ -158,7 +185,9 @@ export default function SearchArchivePage() {
 
             {/* Input Nama Mahasiswa */}
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-foreground">Nama Mahasiswa / Judul</label>
+              <label className="text-xs font-medium text-foreground">
+                Nama Mahasiswa / Judul
+              </label>
               <Input
                 placeholder="Contoh: Ahmad Subagja"
                 value={nameSearch}
@@ -169,13 +198,20 @@ export default function SearchArchivePage() {
 
             {/* Select Program Studi */}
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-foreground">Program Studi</label>
-              <Select value={selectedProdi} onValueChange={(val) => val && setSelectedProdi(val)}>
+              <label className="text-xs font-medium text-foreground">
+                Program Studi
+              </label>
+              <Select
+                value={selectedProdi}
+                onValueChange={(val) => val && setSelectedProdi(val)}
+              >
                 <SelectTrigger className="h-9 text-xs">
                   <SelectValue placeholder="Pilih Program Studi" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all" className="text-xs">Semua Program Studi</SelectItem>
+                  <SelectItem value="all" className="text-xs">
+                    Semua Program Studi
+                  </SelectItem>
                   {PRODI_OPTIONS.map((prodi) => (
                     <SelectItem key={prodi} value={prodi} className="text-xs">
                       {prodi}
@@ -187,15 +223,26 @@ export default function SearchArchivePage() {
 
             {/* Select Jenis Dokumen */}
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-foreground">Jenis Dokumen</label>
-              <Select value={selectedDocType} onValueChange={(val) => val && setSelectedDocType(val)}>
+              <label className="text-xs font-medium text-foreground">
+                Jenis Dokumen
+              </label>
+              <Select
+                value={selectedDocType}
+                onValueChange={(val) => val && setSelectedDocType(val)}
+              >
                 <SelectTrigger className="h-9 text-xs">
                   <SelectValue placeholder="Pilih Jenis Dokumen" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all" className="text-xs">Semua Jenis Dokumen</SelectItem>
+                  <SelectItem value="all" className="text-xs">
+                    Semua Jenis Dokumen
+                  </SelectItem>
                   {DOC_TYPES.map((type) => (
-                    <SelectItem key={type.value} value={type.value} className="text-xs">
+                    <SelectItem
+                      key={type.value}
+                      value={type.value}
+                      className="text-xs"
+                    >
                       {type.label}
                     </SelectItem>
                   ))}
@@ -205,13 +252,20 @@ export default function SearchArchivePage() {
 
             {/* Select Semester / Tahun Ajaran */}
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-foreground">Tahun Ajaran / Semester</label>
-              <Select value={selectedSemester} onValueChange={(val) => val && setSelectedSemester(val)}>
+              <label className="text-xs font-medium text-foreground">
+                Tahun Ajaran / Semester
+              </label>
+              <Select
+                value={selectedSemester}
+                onValueChange={(val) => val && setSelectedSemester(val)}
+              >
                 <SelectTrigger className="h-9 text-xs">
                   <SelectValue placeholder="Pilih Semester" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all" className="text-xs">Semua Semester</SelectItem>
+                  <SelectItem value="all" className="text-xs">
+                    Semua Semester
+                  </SelectItem>
                   {SEMESTER_OPTIONS.map((sem) => (
                     <SelectItem key={sem} value={sem} className="text-xs">
                       {sem}
@@ -278,20 +332,34 @@ export default function SearchArchivePage() {
                         onCheckedChange={toggleSelectAll}
                       />
                     </TableHead>
-                    <TableHead className="font-semibold text-xs text-foreground">Nama Dokumen</TableHead>
-                    <TableHead className="font-semibold text-xs text-foreground">Jenis</TableHead>
-                    <TableHead className="font-semibold text-xs text-foreground">Program Studi</TableHead>
-                    <TableHead className="font-semibold text-xs text-foreground">Status</TableHead>
-                    <TableHead className="font-semibold text-xs text-foreground text-right">Aksi</TableHead>
+                    <TableHead className="font-semibold text-xs text-foreground">
+                      Nama Dokumen
+                    </TableHead>
+                    <TableHead className="font-semibold text-xs text-foreground">
+                      Jenis
+                    </TableHead>
+                    <TableHead className="font-semibold text-xs text-foreground">
+                      Program Studi
+                    </TableHead>
+                    <TableHead className="font-semibold text-xs text-foreground">
+                      Status
+                    </TableHead>
+                    <TableHead className="font-semibold text-xs text-foreground text-right">
+                      Aksi
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredDocs.map((doc) => {
                     const isChecked = selectedDocIds.includes(doc.id);
-                    const categoryName = doc.category || doc.document_type || "Dokumen";
+                    const categoryName =
+                      doc.category || doc.document_type || "Dokumen";
 
                     return (
-                      <TableRow key={doc.id} className="hover:bg-muted/30 transition-colors">
+                      <TableRow
+                        key={doc.id}
+                        className="hover:bg-muted/30 transition-colors"
+                      >
                         <TableCell className="text-center">
                           <Checkbox
                             checked={isChecked}
@@ -305,7 +373,8 @@ export default function SearchArchivePage() {
                           {categoryName}
                         </TableCell>
                         <TableCell className="text-xs text-muted-foreground">
-                          {doc.prodi || (selectedProdi !== "all" ? selectedProdi : "-")}
+                          {doc.prodi ||
+                            (selectedProdi !== "all" ? selectedProdi : "-")}
                         </TableCell>
                         <TableCell>
                           <Badge
@@ -338,7 +407,10 @@ export default function SearchArchivePage() {
             </div>
           ) : (
             <div className="h-48 flex flex-col items-center justify-center text-muted-foreground text-xs rounded-xl border border-dashed p-6">
-              <span>Tidak ditemukan arsip terverifikasi yang sesuai dengan kriteria pencarian Anda.</span>
+              <span>
+                Tidak ditemukan arsip terverifikasi yang sesuai dengan kriteria
+                pencarian Anda.
+              </span>
             </div>
           )}
         </CardContent>

@@ -21,7 +21,10 @@ export function UploadHistorySummaryMetrics({
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map((i) => (
-          <Card key={i} className="border border-border/60 bg-card shadow-sm p-5 space-y-2">
+          <Card
+            key={i}
+            className="border border-border/60 bg-card shadow-sm p-5 space-y-2"
+          >
             <Skeleton className="h-4 w-24" />
             <Skeleton className="h-8 w-16" />
           </Card>
@@ -38,7 +41,9 @@ export function UploadHistorySummaryMetrics({
           <Upload className="w-5 h-5" />
         </div>
         <div>
-          <p className="text-xs text-muted-foreground font-normal">Total Upload</p>
+          <p className="text-xs text-muted-foreground font-normal">
+            Total Upload
+          </p>
           <p className="text-2xl font-bold tracking-tight text-foreground mt-0.5">
             {stats?.total_documents ?? 0}
           </p>
@@ -51,7 +56,9 @@ export function UploadHistorySummaryMetrics({
           <CheckCircle2 className="w-5 h-5" />
         </div>
         <div>
-          <p className="text-xs text-muted-foreground font-normal">Terverifikasi</p>
+          <p className="text-xs text-muted-foreground font-normal">
+            Terverifikasi
+          </p>
           <p className="text-2xl font-bold tracking-tight text-[#00A63E] mt-0.5">
             {stats?.verified_documents ?? 0}
           </p>

@@ -4,7 +4,16 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { Bell, CheckCircle2, AlertCircle, Info, AlertTriangle, Check, ExternalLink, ChevronRight } from "lucide-react";
+import {
+  Bell,
+  CheckCircle2,
+  AlertCircle,
+  Info,
+  AlertTriangle,
+  Check,
+  ExternalLink,
+  ChevronRight,
+} from "lucide-react";
 import { authQueries } from "@/features/auth/queries/auth.queries";
 import { dashboardQueries } from "@/features/dashboard/queries/dashboard.queries";
 import { Button } from "@repo/ui/button";
@@ -45,7 +54,10 @@ export function NotificationsDropdown() {
       localStorage.setItem(READ_NOTIFS_KEY, JSON.stringify(ids));
     } catch (error) {
       if (process.env.NODE_ENV !== "production") {
-        console.warn("Failed to save read notifications to localStorage:", error);
+        console.warn(
+          "Failed to save read notifications to localStorage:",
+          error,
+        );
       }
     }
   };
@@ -87,7 +99,8 @@ export function NotificationsDropdown() {
         {
           id: 102,
           title: "Pengingat Template",
-          message: "Gunakan template transkrip standar versi 2026 untuk upload baru.",
+          message:
+            "Gunakan template transkrip standar versi 2026 untuk upload baru.",
           time: "1 Jam lalu",
           type: "info" as const,
           href: "/upload-document",
@@ -100,7 +113,8 @@ export function NotificationsDropdown() {
         {
           id: 201,
           title: "Arsip Baru Siap Cetak",
-          message: "Transkrip nilai mahasiswa baru diverifikasi dan siap diunduh.",
+          message:
+            "Transkrip nilai mahasiswa baru diverifikasi dan siap diunduh.",
           time: "10 Menit lalu",
           type: "success" as const,
           href: "/document-list",
@@ -118,28 +132,36 @@ export function NotificationsDropdown() {
 
       return {
         id: log.id || idx,
-        title: log.user?.name ? `Aktivitas ${log.user.name}` : "Aktivitas Sistem",
+        title: log.user?.name
+          ? `Aktivitas ${log.user.name}`
+          : "Aktivitas Sistem",
         message: log.description || "Aktivitas sistem baru tercatat.",
         time: log.date?.time ? `${log.date.time} WIB` : "Baru saja",
-        type: actionStr.includes("reject") || actionStr.includes("delete")
-          ? ("destructive" as const)
-          : actionStr.includes("verify")
-            ? ("success" as const)
-            : ("info" as const),
-        href: actionStr.includes("reject") || actionStr.includes("delete")
-          ? "/rejected-documents"
-          : actionStr.includes("verify")
-            ? "/verified-documents"
-            : "/log-activity",
+        type:
+          actionStr.includes("reject") || actionStr.includes("delete")
+            ? ("destructive" as const)
+            : actionStr.includes("verify")
+              ? ("success" as const)
+              : ("info" as const),
+        href:
+          actionStr.includes("reject") || actionStr.includes("delete")
+            ? "/rejected-documents"
+            : actionStr.includes("verify")
+              ? "/verified-documents"
+              : "/log-activity",
       };
     });
   }, [role, auditLogs, pendingDocs]);
 
-  const unreadCount = notifications.filter((n) => !readIds.includes(n.id)).length;
+  const unreadCount = notifications.filter(
+    (n) => !readIds.includes(n.id),
+  ).length;
 
   const markAllAsRead = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const allIds = Array.from(new Set([...readIds, ...notifications.map((n) => n.id)]));
+    const allIds = Array.from(
+      new Set([...readIds, ...notifications.map((n) => n.id)]),
+    );
     saveReadIds(allIds);
   };
 
@@ -158,7 +180,11 @@ export function NotificationsDropdown() {
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
-          <Button variant="ghost" size="icon" className="relative h-9 w-9 rounded-lg" />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="relative h-9 w-9 rounded-lg"
+          />
         }
       >
         <Bell className="w-5 h-5 text-muted-foreground" />
@@ -169,13 +195,19 @@ export function NotificationsDropdown() {
         )}
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="w-80 sm:w-96 p-0 shadow-lg border border-border/60">
+      <DropdownMenuContent
+        align="end"
+        className="w-80 sm:w-96 p-0 shadow-lg border border-border/60"
+      >
         <DropdownMenuGroup>
           <DropdownMenuLabel className="p-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="font-semibold text-sm">Notifikasi</span>
               {unreadCount > 0 && (
-                <Badge variant="secondary" className="bg-orange-500/10 text-orange-600 text-[10px]">
+                <Badge
+                  variant="secondary"
+                  className="bg-orange-500/10 text-orange-600 text-[10px]"
+                >
                   {unreadCount} baru
                 </Badge>
               )}
@@ -219,8 +251,12 @@ export function NotificationsDropdown() {
 
                   <div className="flex-1 space-y-1">
                     <div className="flex items-center justify-between">
-                      <p className="text-xs font-semibold text-foreground">{item.title}</p>
-                      <span className="text-[10px] text-muted-foreground">{item.time}</span>
+                      <p className="text-xs font-semibold text-foreground">
+                        {item.title}
+                      </p>
+                      <span className="text-[10px] text-muted-foreground">
+                        {item.time}
+                      </span>
                     </div>
                     <p className="text-xs text-muted-foreground leading-relaxed">
                       {item.message}

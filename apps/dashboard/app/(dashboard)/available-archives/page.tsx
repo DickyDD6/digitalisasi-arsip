@@ -3,14 +3,31 @@
 import React, { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { dashboardQueries } from "@/features/dashboard/queries/dashboard.queries";
-import { PageDescription, PageHeader, PageTitle } from "@/shared/components/page-header";
+import {
+  PageDescription,
+  PageHeader,
+  PageTitle,
+} from "@/shared/components/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui/card";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
 import { Badge } from "@repo/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@repo/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@repo/ui/select";
 import { Skeleton } from "@repo/ui/skeleton";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@repo/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@repo/ui/table";
 import { Checkbox } from "@repo/ui/checkbox";
 import { ViewArchiveModal } from "@/features/archives/components/ui/view-archive-modal";
 import { Search, Download, FileCheck, RefreshCw } from "lucide-react";
@@ -40,7 +57,9 @@ export default function AvailableArchivesPage() {
   const [selectedDocIds, setSelectedDocIds] = useState<number[]>([]);
 
   // Directly fetch verified documents from API
-  const docsQuery = useQuery(dashboardQueries.documents({ status: "verified", per_page: 50 }));
+  const docsQuery = useQuery(
+    dashboardQueries.documents({ status: "verified", per_page: 50 }),
+  );
   const isLoading = docsQuery.isLoading;
 
   const rawDocs: DocumentItem[] = docsQuery.data?.data || [];
@@ -55,8 +74,11 @@ export default function AvailableArchivesPage() {
       }
 
       if (selectedDocType !== "all") {
-        const categoryStr = doc.category || doc.document_type || doc.file_name || "";
-        if (!categoryStr.toLowerCase().includes(selectedDocType.toLowerCase())) {
+        const categoryStr =
+          doc.category || doc.document_type || doc.file_name || "";
+        if (
+          !categoryStr.toLowerCase().includes(selectedDocType.toLowerCase())
+        ) {
           return false;
         }
       }
@@ -75,7 +97,7 @@ export default function AvailableArchivesPage() {
 
   const toggleSelectDoc = (id: number) => {
     setSelectedDocIds((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
     );
   };
 
@@ -86,7 +108,9 @@ export default function AvailableArchivesPage() {
 
   const handleBulkDownload = () => {
     if (selectedDocIds.length === 0) return;
-    toast.success(`Mengunduh ${selectedDocIds.length} arsip terverifikasi (ZIP Batch)...`);
+    toast.success(
+      `Mengunduh ${selectedDocIds.length} arsip terverifikasi (ZIP Batch)...`,
+    );
   };
 
   return (
@@ -94,7 +118,8 @@ export default function AvailableArchivesPage() {
       <PageHeader>
         <PageTitle>Katalog Arsip Tersedia (Terverifikasi)</PageTitle>
         <PageDescription>
-          Seluruh dokumen resmi terverifikasi yang siap diunduh dan dicetak oleh Pegawai SBAP
+          Seluruh dokumen resmi terverifikasi yang siap diunduh dan dicetak oleh
+          Pegawai SBAP
         </PageDescription>
       </PageHeader>
 
@@ -113,12 +138,17 @@ export default function AvailableArchivesPage() {
                 />
               </div>
 
-              <Select value={selectedProdi} onValueChange={(val) => val && setSelectedProdi(val)}>
+              <Select
+                value={selectedProdi}
+                onValueChange={(val) => val && setSelectedProdi(val)}
+              >
                 <SelectTrigger className="h-9 text-xs w-full sm:w-48">
                   <SelectValue placeholder="Pilih Program Studi" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all" className="text-xs">Semua Program Studi</SelectItem>
+                  <SelectItem value="all" className="text-xs">
+                    Semua Program Studi
+                  </SelectItem>
                   {PRODI_OPTIONS.map((prodi) => (
                     <SelectItem key={prodi} value={prodi} className="text-xs">
                       {prodi}
@@ -127,14 +157,23 @@ export default function AvailableArchivesPage() {
                 </SelectContent>
               </Select>
 
-              <Select value={selectedDocType} onValueChange={(val) => val && setSelectedDocType(val)}>
+              <Select
+                value={selectedDocType}
+                onValueChange={(val) => val && setSelectedDocType(val)}
+              >
                 <SelectTrigger className="h-9 text-xs w-full sm:w-44">
                   <SelectValue placeholder="Jenis Dokumen" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all" className="text-xs">Semua Jenis</SelectItem>
+                  <SelectItem value="all" className="text-xs">
+                    Semua Jenis
+                  </SelectItem>
                   {DOC_TYPES.map((type) => (
-                    <SelectItem key={type.value} value={type.value} className="text-xs">
+                    <SelectItem
+                      key={type.value}
+                      value={type.value}
+                      className="text-xs"
+                    >
                       {type.label}
                     </SelectItem>
                   ))}
@@ -186,20 +225,34 @@ export default function AvailableArchivesPage() {
                         onCheckedChange={toggleSelectAll}
                       />
                     </TableHead>
-                    <TableHead className="font-semibold text-xs text-foreground">Nama Dokumen</TableHead>
-                    <TableHead className="font-semibold text-xs text-foreground">Jenis Dokumen</TableHead>
-                    <TableHead className="font-semibold text-xs text-foreground">Program Studi</TableHead>
-                    <TableHead className="font-semibold text-xs text-foreground">Status</TableHead>
-                    <TableHead className="font-semibold text-xs text-foreground text-right">Aksi</TableHead>
+                    <TableHead className="font-semibold text-xs text-foreground">
+                      Nama Dokumen
+                    </TableHead>
+                    <TableHead className="font-semibold text-xs text-foreground">
+                      Jenis Dokumen
+                    </TableHead>
+                    <TableHead className="font-semibold text-xs text-foreground">
+                      Program Studi
+                    </TableHead>
+                    <TableHead className="font-semibold text-xs text-foreground">
+                      Status
+                    </TableHead>
+                    <TableHead className="font-semibold text-xs text-foreground text-right">
+                      Aksi
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredDocs.map((doc) => {
                     const isChecked = selectedDocIds.includes(doc.id);
-                    const categoryName = doc.category || doc.document_type || "Dokumen";
+                    const categoryName =
+                      doc.category || doc.document_type || "Dokumen";
 
                     return (
-                      <TableRow key={doc.id} className="hover:bg-muted/30 transition-colors">
+                      <TableRow
+                        key={doc.id}
+                        className="hover:bg-muted/30 transition-colors"
+                      >
                         <TableCell className="text-center">
                           <Checkbox
                             checked={isChecked}
@@ -213,7 +266,8 @@ export default function AvailableArchivesPage() {
                           {categoryName}
                         </TableCell>
                         <TableCell className="text-xs text-muted-foreground">
-                          {doc.prodi || (selectedProdi !== "all" ? selectedProdi : "-")}
+                          {doc.prodi ||
+                            (selectedProdi !== "all" ? selectedProdi : "-")}
                         </TableCell>
                         <TableCell>
                           <Badge
@@ -246,7 +300,9 @@ export default function AvailableArchivesPage() {
             </div>
           ) : (
             <div className="h-44 flex flex-col items-center justify-center text-muted-foreground text-xs rounded-xl border border-dashed p-6">
-              <span>Belum ada dokumen terverifikasi yang tersedia saat ini.</span>
+              <span>
+                Belum ada dokumen terverifikasi yang tersedia saat ini.
+              </span>
             </div>
           )}
         </CardContent>

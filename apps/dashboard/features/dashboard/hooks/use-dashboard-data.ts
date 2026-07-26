@@ -9,8 +9,10 @@ import type {
 
 export function useDashboardData(startDate?: string, endDate?: string) {
   // Date-filtered query for period-based statistics
-  const reportsStatsQuery = useQuery(dashboardQueries.stats(startDate, endDate));
-  
+  const reportsStatsQuery = useQuery(
+    dashboardQueries.stats(startDate, endDate),
+  );
+
   // Unfiltered global queries for pending queue & system-wide totals
   const docStatsQuery = useQuery(dashboardQueries.documentStats());
   const auditLogStatsQuery = useQuery(dashboardQueries.auditLogStats());
@@ -29,10 +31,18 @@ export function useDashboardData(startDate?: string, endDate?: string) {
 
   // Primary Metrics
   const primaryMetrics = {
-    totalDocuments: filteredDocApi?.total_documents ?? globalDocApi?.total_documents ?? 0,
-    verifiedDocuments: filteredDocApi?.verified_documents ?? globalDocApi?.verified_documents ?? 0,
-    pendingDocuments: globalDocApi?.pending_documents ?? filteredDocApi?.pending_documents ?? 0,
-    rejectedDocuments: filteredDocApi?.rejected_documents ?? globalDocApi?.rejected_documents ?? 0,
+    totalDocuments:
+      filteredDocApi?.total_documents ?? globalDocApi?.total_documents ?? 0,
+    verifiedDocuments:
+      filteredDocApi?.verified_documents ??
+      globalDocApi?.verified_documents ??
+      0,
+    pendingDocuments:
+      globalDocApi?.pending_documents ?? filteredDocApi?.pending_documents ?? 0,
+    rejectedDocuments:
+      filteredDocApi?.rejected_documents ??
+      globalDocApi?.rejected_documents ??
+      0,
   };
 
   const secondaryMetrics = {
@@ -63,7 +73,9 @@ export function useDashboardData(startDate?: string, endDate?: string) {
           actionStr.includes("delete") ||
           actionStr.includes("destroy");
         const isSuccess =
-          actionStr.includes("verify") || actionStr.includes("create") || actionStr.includes("store");
+          actionStr.includes("verify") ||
+          actionStr.includes("create") ||
+          actionStr.includes("store");
 
         let timeStr: string;
         if (log.date?.time) {
@@ -84,11 +96,17 @@ export function useDashboardData(startDate?: string, endDate?: string) {
 
         return {
           id: log.id || idx,
-          title: log.user?.name ? `Aktivitas ${log.user.name}` : "Aktivitas Sistem",
+          title: log.user?.name
+            ? `Aktivitas ${log.user.name}`
+            : "Aktivitas Sistem",
           message: log.description || "Aktivitas sistem tercatat",
           time: timeStr,
           type: isDestructive ? "destructive" : isSuccess ? "success" : "info",
-          iconName: isDestructive ? "alert-triangle" : isSuccess ? "check-circle" : "info",
+          iconName: isDestructive
+            ? "alert-triangle"
+            : isSuccess
+              ? "check-circle"
+              : "info",
           bgColor: isDestructive
             ? "bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800"
             : isSuccess
@@ -121,7 +139,8 @@ export function useDashboardData(startDate?: string, endDate?: string) {
         time: "Hari Ini",
         type: "warning",
         iconName: "alert-circle",
-        bgColor: "bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800",
+        bgColor:
+          "bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800",
         textColor: "text-amber-900 dark:text-amber-300",
         iconColor: "text-amber-600 dark:text-amber-400",
         href: "/verification",
@@ -133,7 +152,8 @@ export function useDashboardData(startDate?: string, endDate?: string) {
         time: "Hari Ini",
         type: "success",
         iconName: "check-circle",
-        bgColor: "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800",
+        bgColor:
+          "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800",
         textColor: "text-emerald-900 dark:text-emerald-300",
         iconColor: "text-emerald-600 dark:text-emerald-400",
         href: "/verified-documents",
@@ -141,11 +161,13 @@ export function useDashboardData(startDate?: string, endDate?: string) {
       {
         id: 103,
         title: "Pemberitahuan Sistem Digital Arsip",
-        message: "Sistem pengarsipan digital terhubung dengan Sanctum API & database terpusat.",
+        message:
+          "Sistem pengarsipan digital terhubung dengan Sanctum API & database terpusat.",
         time: "Terbaru",
         type: "info",
         iconName: "info",
-        bgColor: "bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800",
+        bgColor:
+          "bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800",
         textColor: "text-blue-900 dark:text-blue-300",
         iconColor: "text-blue-600 dark:text-blue-400",
         href: "/log-activity",
@@ -155,7 +177,8 @@ export function useDashboardData(startDate?: string, endDate?: string) {
 
   // 1. Yearly Stats Breakdown
   const yearlyStats: YearlyStat[] = (() => {
-    const rawYearly = (globalDocApi as unknown as Record<string, unknown>)?.yearly_stats as YearlyStat[] | undefined;
+    const rawYearly = (globalDocApi as unknown as Record<string, unknown>)
+      ?.yearly_stats as YearlyStat[] | undefined;
     if (Array.isArray(rawYearly) && rawYearly.length > 0) {
       return rawYearly;
     }
@@ -242,7 +265,7 @@ export function useDashboardData(startDate?: string, endDate?: string) {
     if (byType && typeof byType === "object") {
       const total = Object.values(byType as Record<string, number>).reduce(
         (sum, val) => sum + (typeof val === "number" ? val : 0),
-        0
+        0,
       );
 
       return Object.entries(byType as Record<string, number>)
@@ -286,17 +309,37 @@ export function useDashboardData(startDate?: string, endDate?: string) {
 
   // 3. QC Staff Performance Breakdown (Support Full 24 Staff Members with Online Realtime Tracking)
   const qcStaffData: QCStaffStat[] = (() => {
-    const rawQC = (globalDocApi as unknown as Record<string, unknown>)?.qc_staff_stats as QCStaffStat[] | undefined;
+    const rawQC = (globalDocApi as unknown as Record<string, unknown>)
+      ?.qc_staff_stats as QCStaffStat[] | undefined;
     if (Array.isArray(rawQC) && rawQC.length > 0) {
       return rawQC;
     }
 
     const staffNames = [
-      "Budi Santoso", "Siti Rahma", "Ahmad Hidayat", "Dewi Lestari", "Rian Pratama",
-      "Eka Wijaya", "Fajri Ramadhan", "Gita Gutawa", "Hendra Kurniawan", "Indah Permata",
-      "Joko Widodo", "Kiki Amalia", "Lukman Hakim", "Maya Septha", "Nanda Putri",
-      "Oki Setiana", "Putri Marino", "Qori Sandioriva", "Rizky Febian", "Sandiaga Uno",
-      "Tania Putri", "Umar Faruq", "Vina Panduwinata", "Wawan Setiawan"
+      "Budi Santoso",
+      "Siti Rahma",
+      "Ahmad Hidayat",
+      "Dewi Lestari",
+      "Rian Pratama",
+      "Eka Wijaya",
+      "Fajri Ramadhan",
+      "Gita Gutawa",
+      "Hendra Kurniawan",
+      "Indah Permata",
+      "Joko Widodo",
+      "Kiki Amalia",
+      "Lukman Hakim",
+      "Maya Septha",
+      "Nanda Putri",
+      "Oki Setiana",
+      "Putri Marino",
+      "Qori Sandioriva",
+      "Rizky Febian",
+      "Sandiaga Uno",
+      "Tania Putri",
+      "Umar Faruq",
+      "Vina Panduwinata",
+      "Wawan Setiawan",
     ];
 
     const totalStaff = userApi?.total_users || 24;

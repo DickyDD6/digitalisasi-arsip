@@ -25,7 +25,11 @@ interface YearlyStatsChartProps {
   periodLabel?: string;
 }
 
-export function YearlyStatsChart({ isLoading, data, periodLabel }: YearlyStatsChartProps) {
+export function YearlyStatsChart({
+  isLoading,
+  data,
+  periodLabel,
+}: YearlyStatsChartProps) {
   if (isLoading) {
     return (
       <Card className="lg:col-span-2 border border-border/60 bg-card shadow-sm p-5 space-y-4">
@@ -53,7 +57,8 @@ export function YearlyStatsChart({ isLoading, data, periodLabel }: YearlyStatsCh
           {chartTitle}
         </CardTitle>
         <CardDescription className="text-xs text-muted-foreground">
-          Distribusi dokumen (Nilai, Transkrip, Ijazah, &amp; Berita Acara Sidang) per tahun
+          Distribusi dokumen (Nilai, Transkrip, Ijazah, &amp; Berita Acara
+          Sidang) per tahun
         </CardDescription>
       </CardHeader>
 
@@ -62,10 +67,26 @@ export function YearlyStatsChart({ isLoading, data, periodLabel }: YearlyStatsCh
         {hasData ? (
           <div className="h-72 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                <XAxis dataKey="year" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
-                <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
+              <BarChart
+                data={data}
+                margin={{ top: 10, right: 10, left: -15, bottom: 0 }}
+              >
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  vertical={false}
+                  stroke="#E5E7EB"
+                />
+                <XAxis
+                  dataKey="year"
+                  tick={{ fontSize: 11 }}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  tick={{ fontSize: 11 }}
+                  tickLine={false}
+                  axisLine={false}
+                />
                 <RechartsTooltip
                   contentStyle={{
                     backgroundColor: "rgba(255, 255, 255, 0.95)",
@@ -81,16 +102,42 @@ export function YearlyStatsChart({ isLoading, data, periodLabel }: YearlyStatsCh
                   iconType="circle"
                   wrapperStyle={{ paddingTop: "12px", fontSize: "12px" }}
                 />
-                <Bar dataKey="nilai" name="Nilai" fill="var(--chart-1)" radius={[0, 0, 0, 0]} stackId="a" />
-                <Bar dataKey="transkrip" name="Transkrip" fill="var(--chart-2)" radius={[0, 0, 0, 0]} stackId="a" />
-                <Bar dataKey="ijazah" name="Ijazah" fill="var(--chart-3)" radius={[0, 0, 0, 0]} stackId="a" />
-                <Bar dataKey="bas" name="Berita Acara Sidang" fill="var(--chart-4)" radius={[4, 4, 0, 0]} stackId="a" />
+                <Bar
+                  dataKey="nilai"
+                  name="Nilai"
+                  fill="var(--chart-1)"
+                  radius={[0, 0, 0, 0]}
+                  stackId="a"
+                />
+                <Bar
+                  dataKey="transkrip"
+                  name="Transkrip"
+                  fill="var(--chart-2)"
+                  radius={[0, 0, 0, 0]}
+                  stackId="a"
+                />
+                <Bar
+                  dataKey="ijazah"
+                  name="Ijazah"
+                  fill="var(--chart-3)"
+                  radius={[0, 0, 0, 0]}
+                  stackId="a"
+                />
+                <Bar
+                  dataKey="bas"
+                  name="Berita Acara Sidang"
+                  fill="var(--chart-4)"
+                  radius={[4, 4, 0, 0]}
+                  stackId="a"
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
         ) : (
           <div className="h-64 flex flex-col items-center justify-center text-muted-foreground text-xs rounded-xl border border-dashed p-6">
-            <span>Belum ada data statistik tahunan tersedia untuk periode ini.</span>
+            <span>
+              Belum ada data statistik tahunan tersedia untuk periode ini.
+            </span>
           </div>
         )}
       </CardContent>

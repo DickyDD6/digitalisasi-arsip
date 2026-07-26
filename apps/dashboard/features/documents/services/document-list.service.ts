@@ -8,8 +8,13 @@ export interface DocumentListParams {
 }
 
 export const documentListService = {
-  getDocuments: async (params: DocumentListParams = {}): Promise<ApiResponse<ArchiveDocument[]>> => {
-    const { data } = await http.get<ApiResponse<ArchiveDocument[]>>("/api/documents", { params });
+  getDocuments: async (
+    params: DocumentListParams = {},
+  ): Promise<ApiResponse<ArchiveDocument[]>> => {
+    const { data } = await http.get<ApiResponse<ArchiveDocument[]>>(
+      "/api/documents",
+      { params },
+    );
     return data;
   },
 

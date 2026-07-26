@@ -1,6 +1,13 @@
 import React from "react";
 import Link from "next/link";
-import { Upload, Clock, TrendingUp, TrendingDown, FileX, ChevronRight } from "lucide-react";
+import {
+  Upload,
+  Clock,
+  TrendingUp,
+  TrendingDown,
+  FileX,
+  ChevronRight,
+} from "lucide-react";
 import { Card } from "@repo/ui/card";
 import { Skeleton } from "@repo/ui/skeleton";
 import type { DocumentStats } from "../../types/dashboard.types";
@@ -10,12 +17,18 @@ interface UploaderSummaryMetricsProps {
   stats?: DocumentStats;
 }
 
-export function UploaderSummaryMetrics({ isLoading, stats }: UploaderSummaryMetricsProps) {
+export function UploaderSummaryMetrics({
+  isLoading,
+  stats,
+}: UploaderSummaryMetricsProps) {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map((i) => (
-          <Card key={i} className="border border-border/60 bg-card shadow-sm p-5 space-y-3">
+          <Card
+            key={i}
+            className="border border-border/60 bg-card shadow-sm p-5 space-y-3"
+          >
             <Skeleton className="h-4 w-28" />
             <Skeleton className="h-8 w-20" />
             <Skeleton className="h-3 w-32" />
@@ -35,7 +48,9 @@ export function UploaderSummaryMetrics({ isLoading, stats }: UploaderSummaryMetr
               <Upload className="w-6 h-6" />
             </div>
             <div className="space-y-0.5">
-              <p className="text-xs text-muted-foreground font-normal">Total Upload</p>
+              <p className="text-xs text-muted-foreground font-normal">
+                Total Upload
+              </p>
               <p className="text-2xl font-bold tracking-tight text-foreground">
                 {stats?.total_documents ?? 0}
               </p>
@@ -52,14 +67,19 @@ export function UploaderSummaryMetrics({ isLoading, stats }: UploaderSummaryMetr
       </Link>
 
       {/* Card 2: Menunggu Verifikasi */}
-      <Link href="/upload-history" aria-label="Lihat dokumen menunggu verifikasi">
+      <Link
+        href="/upload-history"
+        aria-label="Lihat dokumen menunggu verifikasi"
+      >
         <Card className="border border-border/60 bg-card shadow-sm p-5 hover:shadow-md transition-all cursor-pointer group">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-[#FEF9C2] text-[#D08700] dark:bg-amber-950 dark:text-amber-300 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <Clock className="w-6 h-6" />
             </div>
             <div className="space-y-0.5">
-              <p className="text-xs text-muted-foreground font-normal">Menunggu Verifikasi</p>
+              <p className="text-xs text-muted-foreground font-normal">
+                Menunggu Verifikasi
+              </p>
               <p className="text-2xl font-bold tracking-tight text-foreground">
                 {stats?.pending_documents ?? 0}
               </p>
@@ -83,7 +103,9 @@ export function UploaderSummaryMetrics({ isLoading, stats }: UploaderSummaryMetr
               <Upload className="w-6 h-6" />
             </div>
             <div className="space-y-0.5">
-              <p className="text-xs text-muted-foreground font-normal">Terverifikasi</p>
+              <p className="text-xs text-muted-foreground font-normal">
+                Terverifikasi
+              </p>
               <p className="text-2xl font-bold tracking-tight text-foreground">
                 {stats?.verified_documents ?? 0}
               </p>
@@ -100,14 +122,19 @@ export function UploaderSummaryMetrics({ isLoading, stats }: UploaderSummaryMetr
       </Link>
 
       {/* Card 4: Ditolak / Invalid */}
-      <Link href="/upload-history" aria-label="Lihat dokumen ditolak atau invalid">
+      <Link
+        href="/upload-history"
+        aria-label="Lihat dokumen ditolak atau invalid"
+      >
         <Card className="border border-border/60 bg-card shadow-sm p-5 hover:shadow-md transition-all cursor-pointer group">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-[#FFE2E2] text-[#E7000B] dark:bg-rose-950 dark:text-rose-300 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <FileX className="w-6 h-6" />
             </div>
             <div className="space-y-0.5">
-              <p className="text-xs text-muted-foreground font-normal">Ditolak / Invalid</p>
+              <p className="text-xs text-muted-foreground font-normal">
+                Ditolak / Invalid
+              </p>
               <p className="text-2xl font-bold tracking-tight text-foreground">
                 {stats?.rejected_documents ?? 0}
               </p>
