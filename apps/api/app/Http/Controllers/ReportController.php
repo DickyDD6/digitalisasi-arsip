@@ -140,4 +140,21 @@ class ReportController extends Controller
             ],
         ], 200);
     }
+
+    /**
+     * Get QC verifier performance report with pagination.
+     */
+    public function qcPerformance(Request $request): JsonResponse
+    {
+        $this->authorize('viewAny', AuditLog::class);
+
+        $start = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : now()->startOfYear();
+        $end = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : now();
+        $perPage = (int) $request->input('per_page', 10);
+        $page = (int) $request->input('page', 1);
+
+        $report = $this->reportService->getQcPerformanceReport($start, $end, $perPage, $page);
+
+        return response()->json($report);
+    }
 }

@@ -21,6 +21,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // Register custom middleware aliases
         $middleware->alias([
             'throttle.login.attempts' => \App\Http\Middleware\ThrottleLoginAttempts::class,
+            'user.last_seen' => \App\Http\Middleware\UpdateUserLastSeen::class,
+        ]);
+        $middleware->api(append: [
+            \App\Http\Middleware\UpdateUserLastSeen::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

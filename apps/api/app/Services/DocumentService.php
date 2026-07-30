@@ -226,6 +226,9 @@ class DocumentService
             // Log verification activity
             $this->logVerification($document, $status, $verifierId);
 
+            // Dispatch event for notification creation
+            event(new \App\Events\DocumentStatusChanged($document, $status, $note));
+
             DB::commit();
 
             return $document->fresh(['uploader', 'verifier']);
@@ -397,11 +400,24 @@ class DocumentService
         $pending = Document::where('status', DocumentStatus::PENDING)->count();
         $rejected = Document::where('status', DocumentStatus::REJECTED)->count();
 
+        $byTypeCounts = Document::select('document_type', DB::raw('count(*) as count'))
+            ->groupBy('document_type')
+            ->pluck('count', 'document_type')
+            ->toArray();
+
+        $byDocumentType = [
+            'nilai' => (int) ($byTypeCounts['nilai'] ?? 0),
+            'transkrip' => (int) ($byTypeCounts['transkrip'] ?? 0),
+            'ijazah' => (int) ($byTypeCounts['ijazah'] ?? 0),
+            'berita_acara_sidang' => (int) ($byTypeCounts['berita_acara_sidang'] ?? 0),
+        ];
+
         return [
             'total_documents' => $total,
             'verified_documents' => $verified,
             'pending_documents' => $pending,
             'rejected_documents' => $rejected,
+            'by_document_type' => $byDocumentType,
         ];
     }
 }
