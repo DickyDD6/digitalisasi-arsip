@@ -4,25 +4,25 @@
 
 | UC           | Fitur                              | Tests | Status      |
 | ------------ | ---------------------------------- | ----- | ----------- |
-| UC-01        | User Management                    | 6/6   | ✅ UPDATED  |
+| UC-01        | User Management                    | 16/16 | ✅ UPDATED  |
 | UC-02        | View Documents                     | 2/2   | ✅ PASSED   |
 | UC-03        | Audit Log                          | 5/5   | ✅ PASSED   |
 | UC-04        | Document Upload                    | 7/7   | ✅ PASSED   |
 | UC-05        | View Status                        | 1/1   | ✅ PASSED   |
 | UC-06        | Document Update                    | 3/3   | ✅ PASSED   |
-| UC-07        | Document Delete                    | 3/3   | ✅ PASSED   |
-| UC-08        | Document Verification              | 4/4   | ✅ PASSED   |
+| UC-07        | Document Delete, Trash & Restore   | 9/9   | ✅ ENHANCED |
+| UC-08        | Document Verification              | 16/16 | ✅ PASSED   |
 | UC-09        | Search Documents                   | 4/4   | ✅ PASSED   |
-| UC-10        | Document Download                  | 3/3   | ✅ PASSED   |
-| UC-11        | Dashboard & Export                 | 2/2   | ✅ PASSED   |
+| UC-10        | Document Download & Bulk ZIP       | 7/7   | ✅ PASSED   |
+| UC-11        | Dashboard & Export                 | 5/5   | ✅ PASSED   |
 | UC-12        | Unique Validation                  | 3/3   | ✅ PASSED   |
 | UC-13        | **System Notifications**           | 5/5   | ✅ NEW v4.0!|
-| UC-14        | **System Settings**                | 2/2   | ✅ NEW v4.0!|
+| UC-14        | **System Settings**                | 3/3   | ✅ NEW v4.0!|
 | UC-15        | **Master Data (Prodi & Tipe)**     | 3/3   | ✅ NEW v4.0!|
 | UC-16        | **QC Performance & Activity**      | 2/2   | ✅ NEW v4.0!|
 | **Security** | Rate Limit, Account Lockout, Audit | 8/8   | ✅ ENHANCED |
 
-**Total Tests:** 109 Passed (388 Assertions) | **Security Level:** Production-Ready 🔒
+**Total Tests:** 126 Passed (438 Assertions) | **Security Level:** Production-Ready 🔒
 **API Version:** v4.0 - Master Backend Revision API
 **Authentication:** Sanctum Token-Based (Bearer Token) / SPA Session Auth
 
@@ -1164,6 +1164,62 @@ Authorization: Bearer {{auth_token}}
 
 **Expected:** 403 Forbidden (Uploader hanya bisa hapus dokumen miliknya)
 **Status:** `403 Forbidden`
+
+---
+
+### ✅ 7.4 Daftar Dokumen Terhapus (Trash - Login: Manager)
+
+```
+GET http://localhost:8000/api/documents/trashed
+
+Headers:
+Authorization: Bearer {{auth_token_manager}}
+```
+
+**Expected:** Daftar dokumen yang berada di tempat sampah (*soft-deleted*).
+**Status:** `200 OK`
+
+---
+
+### ✅ 7.5 Pulihkan Dokumen dari Tempat Sampah (Restore - Login: Manager)
+
+```
+POST http://localhost:8000/api/documents/{id_soft_deleted}/restore
+
+Headers:
+Authorization: Bearer {{auth_token_manager}}
+```
+
+**Expected:**
+```json
+{
+    "message": "Dokumen berhasil dipulihkan.",
+    "data": {
+        "id": 12,
+        "file_name": "Nilai_Web.pdf"
+    }
+}
+```
+**Status:** `200 OK`
+
+---
+
+### ✅ 7.6 Hapus Dokumen Permanen & File Fisik (Force Delete - Login: Manager)
+
+```
+DELETE http://localhost:8000/api/documents/{id_soft_deleted}/force-delete
+
+Headers:
+Authorization: Bearer {{auth_token_manager}}
+```
+
+**Expected:**
+```json
+{
+    "message": "Dokumen berhasil dihapus permanen."
+}
+```
+**Status:** `200 OK`
 
 ---
 

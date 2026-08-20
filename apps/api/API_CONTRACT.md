@@ -592,6 +592,57 @@ X-XSRF-TOKEN: <nilai-dari-cookie-XSRF-TOKEN>
 * **Request Body:** `{ "ids": [1, 2, 3] }`
 * **Response:** Stream `application/zip`.
 
+#### `GET /api/documents/trashed`
+* **Deskripsi:** Mengambil daftar dokumen yang berada di tempat sampah (*soft-deleted*).
+* **Akses:** Manager only
+* **Query Params:** `document_type`, `search`, `per_page`, `page`.
+* **Response 200 OK:**
+```json
+{
+  "message": "Daftar dokumen terhapus berhasil diambil.",
+  "data": [
+    {
+      "id": 15,
+      "file_name": "Nilai_Struktur_Data.pdf",
+      "document_type": "nilai",
+      "prodi": "Teknik Informatika",
+      "deleted_at": "2026-08-21T02:00:00.000000Z"
+    }
+  ],
+  "meta": {
+    "current_page": 1,
+    "last_page": 1,
+    "per_page": 15,
+    "total": 1
+  }
+}
+```
+
+#### `POST /api/documents/{id}/restore`
+* **Deskripsi:** Memulihkan dokumen yang telah di-soft-delete kembali ke status aktif.
+* **Akses:** Manager only
+* **Response 200 OK:**
+```json
+{
+  "message": "Dokumen berhasil dipulihkan.",
+  "data": {
+    "id": 15,
+    "file_name": "Nilai_Struktur_Data.pdf",
+    "status": "Tidak Terverifikasi"
+  }
+}
+```
+
+#### `DELETE /api/documents/{id}/force-delete`
+* **Deskripsi:** Menghapus data dokumen dari database dan menghapus file fisik PDF dari storage secara permanen.
+* **Akses:** Manager only
+* **Response 200 OK:**
+```json
+{
+  "message": "Dokumen berhasil dihapus permanen."
+}
+```
+
 ---
 
 ### 4.7 Log Aktivitas / Audit Log (UC-03)
