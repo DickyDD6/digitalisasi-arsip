@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BulkActionRequest;
 use App\Http\Requests\UpdateDocumentRequest;
 use App\Http\Requests\UploadDocumentRequest;
 use App\Http\Requests\VerifyDocumentRequest;
@@ -306,10 +307,9 @@ class DocumentController extends Controller
             new OA\Response(response: 422, description: 'Validation Error', content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')),
         ]
     )]
-    public function downloadMultiple(Request $request)
+    public function downloadMultiple(BulkActionRequest $request)
     {
         $request->validate([
-            'ids' => 'required|array',
             'ids.*' => 'exists:documents,id',
         ]);
 
@@ -483,10 +483,9 @@ class DocumentController extends Controller
             new OA\Response(response: 422, description: 'Validation Error', content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')),
         ]
     )]
-    public function destroyMultiple(Request $request): JsonResponse
+    public function destroyMultiple(BulkActionRequest $request): JsonResponse
     {
         $request->validate([
-            'ids' => 'required|array',
             'ids.*' => 'exists:documents,id',
         ]);
 

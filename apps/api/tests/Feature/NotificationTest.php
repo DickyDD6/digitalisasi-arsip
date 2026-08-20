@@ -25,7 +25,7 @@ class NotificationTest extends TestCase
             ->getJson('/api/notifications');
 
         $response->assertStatus(200)
-            ->assertJsonPath('status', 'success')
+            ->assertJsonPath('message', 'Daftar notifikasi berhasil diambil.')
             ->assertJsonCount(1, 'data');
     }
 
@@ -43,7 +43,7 @@ class NotificationTest extends TestCase
             ->getJson('/api/notifications/unread-count');
 
         $response->assertStatus(200)
-            ->assertJsonPath('status', 'success')
+            ->assertJsonPath('message', 'Jumlah notifikasi belum dibaca berhasil diambil.')
             ->assertJsonPath('unread_count', 1);
     }
 
@@ -61,7 +61,7 @@ class NotificationTest extends TestCase
             ->patchJson("/api/notifications/{$notification->id}/read");
 
         $response->assertStatus(200)
-            ->assertJsonPath('status', 'success');
+            ->assertJsonPath('message', 'Notifikasi berhasil ditandai sebagai sudah dibaca.');
 
         $this->assertNotNull($notification->fresh()->read_at);
     }

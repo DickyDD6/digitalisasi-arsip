@@ -43,7 +43,7 @@ class NotificationController extends Controller
         $notifications = $query->paginate($perPage);
 
         return response()->json([
-            'status' => 'success',
+            'message' => 'Daftar notifikasi berhasil diambil.',
             'data' => NotificationResource::collection($notifications->items()),
             'meta' => [
                 'current_page' => $notifications->currentPage(),
@@ -76,7 +76,7 @@ class NotificationController extends Controller
             ->count();
 
         return response()->json([
-            'status' => 'success',
+            'message' => 'Jumlah notifikasi belum dibaca berhasil diambil.',
             'unread_count' => $count,
         ]);
     }
@@ -110,7 +110,6 @@ class NotificationController extends Controller
         }
 
         return response()->json([
-            'status' => 'success',
             'message' => 'Notifikasi berhasil ditandai sebagai sudah dibaca.',
             'data' => new NotificationResource($notification),
         ]);
@@ -137,7 +136,6 @@ class NotificationController extends Controller
             ->update(['read_at' => now()]);
 
         return response()->json([
-            'status' => 'success',
             'message' => 'Semua notifikasi berhasil ditandai sebagai sudah dibaca.',
         ]);
     }
@@ -169,7 +167,6 @@ class NotificationController extends Controller
         $notification->delete();
 
         return response()->json([
-            'status' => 'success',
             'message' => 'Notifikasi berhasil dihapus.',
         ]);
     }

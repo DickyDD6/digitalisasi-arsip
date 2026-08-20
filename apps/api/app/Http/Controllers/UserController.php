@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BulkActionRequest;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
@@ -282,10 +283,9 @@ class UserController extends Controller
             new OA\Response(response: 422, description: 'Validation Error', content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')),
         ]
     )]
-    public function destroyMultiple(Request $request): JsonResponse
+    public function destroyMultiple(BulkActionRequest $request): JsonResponse
     {
         $request->validate([
-            'ids' => 'required|array',
             'ids.*' => 'exists:users,id',
         ]);
 

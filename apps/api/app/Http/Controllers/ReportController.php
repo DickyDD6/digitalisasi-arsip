@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AuditLog;
 use App\Models\Document;
 use App\Enums\DocumentStatus;
+use App\Http\Requests\GenerateReportRequest;
 use App\Services\ReportService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -55,23 +56,12 @@ class ReportController extends Controller
             ),
         ]
     )]
-    public function generate(Request $request)
+    public function generate(GenerateReportRequest $request)
     {
         $this->authorize('viewAny', AuditLog::class);
 
-        // Validate request
-        $request->validate([
-            'period_start' => 'required|date',
-            'period_end' => 'required|date|after_or_equal:period_start',
-            'format' => 'required|in:pdf,xlsx,csv',
-            'type' => 'required|in:monthly,annual,custom',
-            'style' => 'nullable|in:detailed,summary,executive',
-            'content' => 'nullable|array',
-            'content.*' => 'in:upload_stats,qc_metrics,doc_status,user_activity,trend_analysis'
-        ]);
-
         try {
-            $params = $request->all();
+            $params = $request->validated();
 
             // Generate the report
             return $this->reportService->generate($params);
