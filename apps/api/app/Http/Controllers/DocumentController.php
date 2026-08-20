@@ -75,6 +75,31 @@ class DocumentController extends Controller
             $query->where('prodi', 'like', "%{$request->input('prodi')}%");
         }
 
+        // Filter by nim / npm
+        if ($request->has('nim') || $request->has('npm')) {
+            $nim = $request->input('nim') ?? $request->input('npm');
+            $query->where('npm', 'like', "%{$nim}%");
+        }
+
+        // Filter by mata_kuliah
+        if ($request->has('mata_kuliah')) {
+            $query->where('mata_kuliah', 'like', "%{$request->input('mata_kuliah')}%");
+        }
+
+        // Filter by tahun_akademik / tahun_ajaran
+        if ($request->has('tahun_akademik') || $request->has('tahun_ajaran')) {
+            $tahun = $request->input('tahun_akademik') ?? $request->input('tahun_ajaran');
+            $query->where('tahun_ajaran', 'like', "%{$tahun}%");
+        }
+
+        // Filter by date range
+        if ($request->has('date_from')) {
+            $query->whereDate('created_at', '>=', $request->input('date_from'));
+        }
+        if ($request->has('date_to')) {
+            $query->whereDate('created_at', '<=', $request->input('date_to'));
+        }
+
         // Search by all fields
         if ($request->has('search')) {
             $search = $request->input('search');
