@@ -207,8 +207,6 @@ class AuditLogController extends Controller
             $query->where('user_id', $request->input('user_id'));
         }
 
-        $logs = $query->orderBy('created_at', 'desc')->get();
-
         $headers = [
             "Content-type" => "text/csv",
             "Content-Disposition" => "attachment; filename=audit_logs_" . date('Y-m-d_H-i') . ".csv",
@@ -217,7 +215,7 @@ class AuditLogController extends Controller
             "Expires" => "0"
         ];
 
-        $callback = function () use ($logs) {
+        $callback = function () use ($query) {
             $file = fopen('php://output', 'w');
 
             // Add BOM for Excel compatibility
@@ -225,21 +223,26 @@ class AuditLogController extends Controller
 
             fputcsv($file, ['No', 'User', 'Role', 'Aksi', 'ID Dokumen', 'Nama Dokumen', 'Waktu', 'Tanggal', 'Deskripsi']);
 
-            foreach ($logs as $index => $log) {
-                $actionEnum = AuditAction::tryFrom($log->action);
+            $index = 0;
+            $query->orderBy('created_at', 'desc')->chunk(500, function ($logs) use ($file, &$index) {
+                foreach ($logs as $log) {
+                    $index++;
+                    $actionEnum = AuditAction::tryFrom($log->action);
 
-                fputcsv($file, [
-                    $index + 1,
-                    $log->user?->name ?? 'System',
-                    $log->user?->role?->value ?? 'System', // Use value for Enum
-                    $actionEnum?->label() ?? $log->action,
-                    $log->model_type === ModelType::DOCUMENT->value ? 'DOC-' . $log->model_id : '-',
-                    $log->metadata['file_name'] ?? '-',
-                    $log->created_at->format('H.i'),
-                    $log->created_at->format('d/m/Y'),
-                    $log->description
-                ]);
-            }
+                    fputcsv($file, [
+                        $index,
+                        $log->user?->name ?? 'System',
+                        $log->user?->role?->value ?? 'System',
+                        $actionEnum?->label() ?? $log->action,
+                        $log->model_type === ModelType::DOCUMENT->value ? 'DOC-' . $log->model_id : '-',
+                        $log->metadata['file_name'] ?? '-',
+                        $log->created_at->format('H.i'),
+                        $log->created_at->format('d/m/Y'),
+                        $log->description
+                    ]);
+                }
+            });
+
             fclose($file);
         };
 

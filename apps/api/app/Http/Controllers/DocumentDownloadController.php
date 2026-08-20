@@ -37,7 +37,7 @@ class DocumentDownloadController extends Controller
     {
         $this->authorize('download', $document);
 
-        if (!Storage::disk('public')->exists($document->file_path)) {
+        if (!Storage::exists($document->file_path)) {
             abort(404, 'File tidak ditemukan.');
         }
 
@@ -54,7 +54,7 @@ class DocumentDownloadController extends Controller
             modelId: $document->id
         );
 
-        return Storage::disk('public')->download(
+        return Storage::download(
             $document->file_path,
             $document->file_name,
             ['Content-Type' => 'application/pdf']
@@ -105,7 +105,7 @@ class DocumentDownloadController extends Controller
         }
 
         foreach ($documents as $document) {
-            $filePath = Storage::disk('public')->path($document->file_path);
+            $filePath = Storage::path($document->file_path);
 
             if (file_exists($filePath)) {
                 $fileName = $document->file_name;
@@ -159,7 +159,7 @@ class DocumentDownloadController extends Controller
     {
         $this->authorize('view', $document);
 
-        if (!Storage::disk('public')->exists($document->file_path)) {
+        if (!Storage::exists($document->file_path)) {
             abort(404, 'File tidak ditemukan.');
         }
 
@@ -176,7 +176,7 @@ class DocumentDownloadController extends Controller
             modelId: $document->id
         );
 
-        return Storage::disk('public')->response(
+        return Storage::response(
             $document->file_path,
             $document->file_name,
             [
