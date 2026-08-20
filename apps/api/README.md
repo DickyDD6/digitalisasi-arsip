@@ -56,12 +56,12 @@ Server running at: `http://localhost:8000`
 
 ## 📚 Documentation
 
-| Document                                                         | Description                            |
-| ---------------------------------------------------------------- | -------------------------------------- |
-| [Panduan_Testing_API_Postman.md](Panduan_Testing_API_Postman.md) | Comprehensive API testing guide        |
-| [docs/sanctum-integration.md](docs/sanctum-integration.md)       | Frontend integration with Bearer Token |
-| [docs/security-testing-guide.md](docs/security-testing-guide.md) | Security features testing guide        |
-| [swagger.yaml](swagger.yaml)                                     | OpenAPI 3.0 specification (v3.0.0)     |
+| Document | Description |
+| --- | --- |
+| [API_CONTRACT.md](API_CONTRACT.md) | Official API Contract Specification (v4.0.0) |
+| [Panduan_Testing_API_Postman.md](Panduan_Testing_API_Postman.md) | Comprehensive API testing guide |
+| [Swagger UI (`/api/documentation`)](http://localhost:8000/api/documentation) | Interactive OpenAPI 3.0 Documentation |
+| [docs/security-testing-guide.md](docs/security-testing-guide.md) | Security features testing guide |
 
 ---
 
