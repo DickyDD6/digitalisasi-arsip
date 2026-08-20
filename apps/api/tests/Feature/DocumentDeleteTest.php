@@ -57,8 +57,8 @@ class DocumentDeleteTest extends TestCase
             'id' => $document->id,
         ]);
 
-        // Verify file deleted from storage
-        Storage::assertMissing($document->file_path);
+        // Verify file is preserved in storage during soft delete
+        Storage::assertExists($document->file_path);
     }
 
     public function test_uploader_can_delete_own_rejected_document()
@@ -80,7 +80,8 @@ class DocumentDeleteTest extends TestCase
             'id' => $document->id,
         ]);
 
-        Storage::assertMissing($document->file_path);
+        // Verify file is preserved in storage during soft delete
+        Storage::assertExists($document->file_path);
     }
 
     public function test_uploader_cannot_delete_others_rejected_document()
@@ -186,7 +187,7 @@ class DocumentDeleteTest extends TestCase
         $this->assertEquals('test.pdf', $auditLog->metadata['file_name']);
     }
 
-    public function test_delete_removes_physical_file()
+    public function test_soft_delete_preserves_physical_file_and_force_delete_removes_it()
     {
         $this->actingAs($this->manager);
 
@@ -200,7 +201,11 @@ class DocumentDeleteTest extends TestCase
 
         $this->deleteJson("/api/documents/{$document->id}");
 
-        // File should be deleted
+        // File should still be preserved after soft delete
+        Storage::assertExists($document->file_path);
+
+        // Force delete via service removes physical file
+        app(\App\Services\DocumentService::class)->forceDeleteDocument($document);
         Storage::assertMissing($document->file_path);
     }
 

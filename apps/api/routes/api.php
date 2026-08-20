@@ -3,9 +3,12 @@
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\DocumentDownloadController;
 use App\Http\Controllers\DocumentTypeController;
+use App\Http\Controllers\DocumentVerificationController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProdiController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SystemSettingController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -52,20 +55,20 @@ Route::middleware('auth:sanctum')->group(function () {
     // Document Verification (UC-08) - QC & Manager only
     // IMPORTANT: These must be BEFORE apiResource to prevent route collision
     Route::get('/documents/statistics', [DocumentController::class, 'statistics']);
-    Route::get('/documents/pending', [DocumentController::class, 'pending']);
-    Route::patch('/documents/{document}/verify', [DocumentController::class, 'verify']);
+    Route::get('/documents/pending', [DocumentVerificationController::class, 'pending']);
+    Route::patch('/documents/{document}/verify', [DocumentVerificationController::class, 'verify']);
 
     // Document Download (UC-10) - Manager & SBAP only
-    Route::get('/documents/{document}/download', [DocumentController::class, 'download']);
-    Route::post('/documents/download-multiple', [DocumentController::class, 'downloadMultiple']);
+    Route::get('/documents/{document}/download', [DocumentDownloadController::class, 'download']);
+    Route::post('/documents/download-multiple', [DocumentDownloadController::class, 'downloadMultiple']);
     Route::post('/documents/delete-multiple', [DocumentController::class, 'destroyMultiple']);
-    Route::get('/documents/{document}/view', [DocumentController::class, 'view']);
+    Route::get('/documents/{document}/view', [DocumentDownloadController::class, 'view']);
 
     // Document Management (UC-04, UC-06, UC-07) - CRUD operations
     Route::apiResource('documents', DocumentController::class);
 
     // Report & Statistics (UC-09) - Manager
-    Route::post('/reports/generate', [App\Http\Controllers\ReportController::class, 'generate']);
-    Route::get('/reports/dashboard', [App\Http\Controllers\ReportController::class, 'dashboardStats']);
-    Route::get('/reports/qc-performance', [App\Http\Controllers\ReportController::class, 'qcPerformance']);
+    Route::post('/reports/generate', [ReportController::class, 'generate']);
+    Route::get('/reports/dashboard', [ReportController::class, 'dashboardStats']);
+    Route::get('/reports/qc-performance', [ReportController::class, 'qcPerformance']);
 });

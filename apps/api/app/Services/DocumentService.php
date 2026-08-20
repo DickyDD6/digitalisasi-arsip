@@ -148,7 +148,7 @@ class DocumentService
     }
 
     /**
-     * Delete a document and its file.
+     * Soft delete a document (preserves physical file for potential restore).
      *
      * @param Document $document
      * @return bool
@@ -160,22 +160,62 @@ class DocumentService
         try {
             $documentId = $document->id;
             $fileName = $document->file_name;
-            $filePath = $document->file_path;
 
-            // Delete document record
+            // Soft delete document record (physical file is preserved)
             $deleted = $document->delete();
 
             if ($deleted) {
-                // Delete physical file
-                Storage::delete($filePath);
-
                 // Log deletion
                 AuditLog::log(
                     action: AuditAction::DELETE_DOCUMENT->value,
-                    description: "Dokumen '{$fileName}' dihapus.",
+                    description: "Dokumen '{$fileName}' dihapus (soft delete).",
                     metadata: [
                         'document_id' => $documentId,
                         'file_name' => $fileName,
+                    ]
+                );
+            }
+
+            DB::commit();
+
+            return $deleted;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Permanently delete a document and its physical file.
+     * Use this for cleanup of soft-deleted documents.
+     *
+     * @param Document $document
+     * @return bool
+     */
+    public function forceDeleteDocument(Document $document): bool
+    {
+        DB::beginTransaction();
+
+        try {
+            $documentId = $document->id;
+            $fileName = $document->file_name;
+            $filePath = $document->file_path;
+
+            // Permanently delete document record
+            $deleted = $document->forceDelete();
+
+            if ($deleted) {
+                // Delete physical file from storage
+                Storage::delete($filePath);
+
+                // Log permanent deletion
+                AuditLog::log(
+                    action: AuditAction::DELETE_DOCUMENT->value,
+                    description: "Dokumen '{$fileName}' dihapus permanen beserta file fisik.",
+                    metadata: [
+                        'document_id' => $documentId,
+                        'file_name' => $fileName,
+                        'file_path' => $filePath,
                     ]
                 );
             }
@@ -420,4 +460,85 @@ class DocumentService
             'by_document_type' => $byDocumentType,
         ];
     }
+
+    /**
+     * Get paginated documents with filtering, search, and sorting.
+     *
+     * @param array $filters
+     * @param int $perPage
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function listDocuments(array $filters = [], int $perPage = 15)
+    {
+        $query = Document::with(['uploader', 'verifier']);
+
+        // Filter by document type
+        if (!empty($filters['document_type'])) {
+            $query->where('document_type', $filters['document_type']);
+        }
+
+        // Filter by status
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        // Filter by prodi
+        if (!empty($filters['prodi'])) {
+            $query->where('prodi', 'like', "%{$filters['prodi']}%");
+        }
+
+        // Filter by nim / npm
+        if (!empty($filters['nim']) || !empty($filters['npm'])) {
+            $nim = $filters['nim'] ?? $filters['npm'];
+            $query->where('npm', 'like', "%{$nim}%");
+        }
+
+        // Filter by mata_kuliah
+        if (!empty($filters['mata_kuliah'])) {
+            $query->where('mata_kuliah', 'like', "%{$filters['mata_kuliah']}%");
+        }
+
+        // Filter by tahun_akademik / tahun_ajaran
+        if (!empty($filters['tahun_akademik']) || !empty($filters['tahun_ajaran'])) {
+            $tahun = $filters['tahun_akademik'] ?? $filters['tahun_ajaran'];
+            $query->where('tahun_ajaran', 'like', "%{$tahun}%");
+        }
+
+        // Filter by date range
+        if (!empty($filters['date_from'])) {
+            $query->whereDate('created_at', '>=', $filters['date_from']);
+        }
+        if (!empty($filters['date_to'])) {
+            $query->whereDate('created_at', '<=', $filters['date_to']);
+        }
+
+        // Search by all fields
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('file_name', 'like', "%{$search}%")
+                    ->orWhere('tahun_ajaran', 'like', "%{$search}%")
+                    ->orWhere('mata_kuliah', 'like', "%{$search}%")
+                    ->orWhere('npm', 'like', "%{$search}%")
+                    ->orWhere('document_type', 'like', "%{$search}%")
+                    ->orWhere('status', 'like', "%{$search}%");
+            });
+        }
+
+        // Sorting
+        $allowedSorts = ['created_at', 'updated_at', 'tahun_lulus', 'status', 'document_type', 'prodi', 'file_name'];
+        $sortBy = $filters['sort_by'] ?? 'created_at';
+        $sortDirection = $filters['sort_direction'] ?? 'desc';
+
+        if (!in_array($sortBy, $allowedSorts)) {
+            $sortBy = 'created_at';
+        }
+
+        if (!in_array(strtolower($sortDirection), ['asc', 'desc'])) {
+            $sortDirection = 'desc';
+        }
+
+        return $query->orderBy($sortBy, $sortDirection)->paginate($perPage);
+    }
 }
+

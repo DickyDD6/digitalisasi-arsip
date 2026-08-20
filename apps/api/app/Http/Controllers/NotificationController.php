@@ -3,13 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\NotificationResource;
-use App\Models\Notification;
+use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 
 class NotificationController extends Controller
 {
+    protected NotificationService $notificationService;
+
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
+
     /**
      * Display a listing of notifications for the authenticated user.
      */
@@ -32,15 +39,13 @@ class NotificationController extends Controller
     public function index(Request $request): JsonResponse
     {
         $user = $request->user();
-        $query = Notification::where('user_id', $user->id)
-            ->orderBy('created_at', 'desc');
-
-        if ($request->boolean('unread_only')) {
-            $query->whereNull('read_at');
-        }
-
         $perPage = (int) $request->input('per_page', 15);
-        $notifications = $query->paginate($perPage);
+
+        $notifications = $this->notificationService->getUserNotifications(
+            $user->id,
+            $request->boolean('unread_only'),
+            $perPage
+        );
 
         return response()->json([
             'message' => 'Daftar notifikasi berhasil diambil.',
@@ -50,7 +55,7 @@ class NotificationController extends Controller
                 'last_page' => $notifications->lastPage(),
                 'per_page' => $notifications->perPage(),
                 'total' => $notifications->total(),
-                'unread_count' => Notification::where('user_id', $user->id)->whereNull('read_at')->count(),
+                'unread_count' => $this->notificationService->getUnreadCount($user->id),
             ],
         ]);
     }
@@ -71,9 +76,7 @@ class NotificationController extends Controller
     )]
     public function unreadCount(Request $request): JsonResponse
     {
-        $count = Notification::where('user_id', $request->user()->id)
-            ->whereNull('read_at')
-            ->count();
+        $count = $this->notificationService->getUnreadCount($request->user()->id);
 
         return response()->json([
             'message' => 'Jumlah notifikasi belum dibaca berhasil diambil.',
@@ -101,13 +104,7 @@ class NotificationController extends Controller
     )]
     public function markAsRead(Request $request, string $id): JsonResponse
     {
-        $notification = Notification::where('user_id', $request->user()->id)
-            ->where('id', $id)
-            ->firstOrFail();
-
-        if (!$notification->read_at) {
-            $notification->update(['read_at' => now()]);
-        }
+        $notification = $this->notificationService->markAsRead($request->user()->id, $id);
 
         return response()->json([
             'message' => 'Notifikasi berhasil ditandai sebagai sudah dibaca.',
@@ -131,9 +128,7 @@ class NotificationController extends Controller
     )]
     public function markAllAsRead(Request $request): JsonResponse
     {
-        Notification::where('user_id', $request->user()->id)
-            ->whereNull('read_at')
-            ->update(['read_at' => now()]);
+        $this->notificationService->markAllAsRead($request->user()->id);
 
         return response()->json([
             'message' => 'Semua notifikasi berhasil ditandai sebagai sudah dibaca.',
@@ -160,11 +155,7 @@ class NotificationController extends Controller
     )]
     public function destroy(Request $request, string $id): JsonResponse
     {
-        $notification = Notification::where('user_id', $request->user()->id)
-            ->where('id', $id)
-            ->firstOrFail();
-
-        $notification->delete();
+        $this->notificationService->deleteNotification($request->user()->id, $id);
 
         return response()->json([
             'message' => 'Notifikasi berhasil dihapus.',
