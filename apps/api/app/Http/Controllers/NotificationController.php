@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\NotificationResource;
 use App\Models\Notification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -43,7 +44,7 @@ class NotificationController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data' => $notifications->items(),
+            'data' => NotificationResource::collection($notifications->items()),
             'meta' => [
                 'current_page' => $notifications->currentPage(),
                 'last_page' => $notifications->lastPage(),
@@ -111,7 +112,7 @@ class NotificationController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Notifikasi berhasil ditandai sebagai sudah dibaca.',
-            'data' => $notification,
+            'data' => new NotificationResource($notification),
         ]);
     }
 

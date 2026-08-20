@@ -52,8 +52,8 @@ class DocumentDeleteTest extends TestCase
                 'message' => 'Dokumen berhasil dihapus.',
             ]);
 
-        // Verify document deleted from database
-        $this->assertDatabaseMissing('documents', [
+        // Verify document soft deleted from database
+        $this->assertSoftDeleted('documents', [
             'id' => $document->id,
         ]);
 
@@ -76,7 +76,7 @@ class DocumentDeleteTest extends TestCase
 
         $response->assertStatus(200);
 
-        $this->assertDatabaseMissing('documents', [
+        $this->assertSoftDeleted('documents', [
             'id' => $document->id,
         ]);
 

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserRole;
+use App\Http\Requests\StoreProdiRequest;
+use App\Http\Resources\ProdiResource;
 use App\Models\Prodi;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -32,7 +34,7 @@ class ProdiController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data' => $prodis,
+            'data' => ProdiResource::collection($prodis),
         ]);
     }
 
@@ -57,20 +59,9 @@ class ProdiController extends Controller
             new OA\Response(response: 422, description: 'Validation Error', content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')),
         ]
     )]
-    public function store(Request $request): JsonResponse
+    public function store(StoreProdiRequest $request): JsonResponse
     {
-        if (!$request->user()->hasRole(UserRole::MANAGER)) {
-            return response()->json([
-                'message' => 'This action is unauthorized.',
-            ], 403);
-        }
-
-        $validated = $request->validate([
-            'code' => 'required|string|max:20|unique:prodis,code',
-            'name' => 'required|string|max:100',
-            'degree' => 'required|string|max:20',
-            'is_active' => 'nullable|boolean',
-        ]);
+        $validated = $request->validated();
 
         $prodi = Prodi::create([
             'code' => strtoupper($validated['code']),
@@ -82,7 +73,7 @@ class ProdiController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Program Studi berhasil ditambahkan.',
-            'data' => $prodi,
+            'data' => new ProdiResource($prodi),
         ], 201);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DocumentTypeResource;
 use App\Models\DocumentType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -29,7 +30,7 @@ class DocumentTypeController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data' => $types,
+            'data' => DocumentTypeResource::collection($types),
         ]);
     }
 }
