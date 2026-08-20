@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class DocumentService
@@ -160,6 +161,11 @@ class DocumentService
         try {
             $documentId = $document->id;
             $fileName = $document->file_name;
+
+            // Release duplicate_key so new document with same metadata can be uploaded
+            $document->update([
+                'duplicate_key' => $document->duplicate_key . '_del_' . now()->timestamp . '_' . Str::random(6),
+            ]);
 
             // Soft delete document record (physical file is preserved)
             $deleted = $document->delete();
@@ -578,6 +584,27 @@ class DocumentService
     {
         $document = Document::onlyTrashed()->findOrFail($id);
 
+        // Regenerate original duplicate key
+        $docType = $document->document_type instanceof \BackedEnum ? $document->document_type->value : $document->document_type;
+        $prodi = $document->prodi instanceof \BackedEnum ? $document->prodi->value : $document->prodi;
+
+        $originalKey = Document::generateDuplicateKey([
+            'document_type' => $docType,
+            'prodi' => $prodi,
+            'tahun_ajaran' => $document->tahun_ajaran,
+            'mata_kuliah' => $document->mata_kuliah,
+            'kelas' => $document->kelas,
+            'tahun_lulus' => $document->tahun_lulus,
+            'npm' => $document->npm,
+        ]);
+
+        // Check if an active document with the same duplicate key already exists
+        $existing = Document::where('duplicate_key', $originalKey)->first();
+        if ($existing) {
+            throw new ConflictHttpException('Tidak dapat memulihkan dokumen karena sudah ada dokumen aktif dengan data yang sama.');
+        }
+
+        $document->update(['duplicate_key' => $originalKey]);
         $document->restore();
 
         AuditLog::log(

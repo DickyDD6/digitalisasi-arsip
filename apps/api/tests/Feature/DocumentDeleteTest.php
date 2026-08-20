@@ -84,6 +84,38 @@ class DocumentDeleteTest extends TestCase
         Storage::assertExists($document->file_path);
     }
 
+    public function test_uploader_can_reupload_document_after_deleting_rejected_document()
+    {
+        $this->actingAs($this->uploader);
+
+        $data = [
+            'document_type' => 'nilai',
+            'prodi' => 'Teknik Informatika',
+            'tahun_ajaran' => '2025/2026',
+            'mata_kuliah' => 'Struktur Data',
+            'kelas' => 'A',
+        ];
+
+        // 1. Create a rejected document with these details
+        $doc = Document::factory()->rejected()->create(array_merge($data, [
+            'uploaded_by' => $this->uploader->id,
+            'duplicate_key' => Document::generateDuplicateKey($data),
+        ]));
+
+        // 2. Delete the rejected document
+        $deleteResponse = $this->deleteJson("/api/documents/{$doc->id}");
+        $deleteResponse->assertStatus(200);
+
+        // 3. Re-upload a new file with the exact same metadata
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('nilai_fixed.pdf', '%PDF-1.4');
+        $uploadResponse = $this->postJson('/api/documents', array_merge($data, [
+            'file' => $file,
+        ]));
+
+        $uploadResponse->assertStatus(201)
+            ->assertJsonPath('data.mata_kuliah', 'Struktur Data');
+    }
+
     public function test_uploader_cannot_delete_others_rejected_document()
     {
         $this->actingAs($this->uploader);
