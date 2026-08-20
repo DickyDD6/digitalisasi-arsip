@@ -316,4 +316,105 @@ class DocumentController extends Controller
             'data' => $stats,
         ], 200);
     }
+
+    /**
+     * Display a listing of soft-deleted documents (Manager only).
+     */
+    #[OA\Get(
+        path: '/api/documents/trashed',
+        operationId: 'listTrashedDocuments',
+        summary: 'List Trashed Documents',
+        description: 'Mengambil daftar dokumen yang ada di tempat sampah (Manager only)',
+        security: [['cookieAuth' => []]],
+        tags: ['Documents'],
+        responses: [
+            new OA\Response(response: 200, description: 'Daftar dokumen terhapus berhasil diambil', content: new OA\JsonContent(ref: '#/components/schemas/DocumentListResponse')),
+            new OA\Response(response: 401, description: 'Unauthenticated', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')])),
+            new OA\Response(response: 403, description: 'Forbidden', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'This action is unauthorized.')])),
+        ]
+    )]
+    public function trashed(Request $request): JsonResponse
+    {
+        $this->authorize('viewTrashed', Document::class);
+
+        $perPage = (int) $request->input('per_page', 15);
+        $documents = $this->documentService->getTrashedDocuments($request->all(), $perPage);
+
+        return response()->json([
+            'message' => 'Daftar dokumen terhapus berhasil diambil.',
+            'data' => DocumentResource::collection($documents),
+            'meta' => [
+                'current_page' => $documents->currentPage(),
+                'last_page' => $documents->lastPage(),
+                'per_page' => $documents->perPage(),
+                'total' => $documents->total(),
+            ],
+        ], 200);
+    }
+
+    /**
+     * Restore a soft-deleted document (Manager only).
+     */
+    #[OA\Post(
+        path: '/api/documents/{id}/restore',
+        operationId: 'restoreDocument',
+        summary: 'Restore Trashed Document',
+        description: 'Memulihkan dokumen yang terhapus kembali ke status semula (Manager only)',
+        security: [['cookieAuth' => []]],
+        tags: ['Documents'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, description: 'Document ID', schema: new OA\Schema(type: 'integer', example: 1)),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Dokumen berhasil dipulihkan', content: new OA\JsonContent(ref: '#/components/schemas/DocumentResponse')),
+            new OA\Response(response: 401, description: 'Unauthenticated', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')])),
+            new OA\Response(response: 403, description: 'Forbidden', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'This action is unauthorized.')])),
+            new OA\Response(response: 404, description: 'Not Found', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Dokumen tidak ditemukan.')])),
+        ]
+    )]
+    public function restore(int $id): JsonResponse
+    {
+        $document = Document::onlyTrashed()->findOrFail($id);
+        $this->authorize('restore', $document);
+
+        $restored = $this->documentService->restoreDocument($id, auth()->id());
+
+        return response()->json([
+            'message' => 'Dokumen berhasil dipulihkan.',
+            'data' => new DocumentResource($restored),
+        ], 200);
+    }
+
+    /**
+     * Permanently delete a document and its file (Manager only).
+     */
+    #[OA\Delete(
+        path: '/api/documents/{id}/force-delete',
+        operationId: 'forceDeleteDocument',
+        summary: 'Force Delete Document',
+        description: 'Menghapus dokumen dan file fisiknya secara permanen (Manager only)',
+        security: [['cookieAuth' => []]],
+        tags: ['Documents'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, description: 'Document ID', schema: new OA\Schema(type: 'integer', example: 1)),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Dokumen berhasil dihapus permanen', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Dokumen berhasil dihapus permanen.')])),
+            new OA\Response(response: 401, description: 'Unauthenticated', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')])),
+            new OA\Response(response: 403, description: 'Forbidden', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'This action is unauthorized.')])),
+            new OA\Response(response: 404, description: 'Not Found', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Dokumen tidak ditemukan.')])),
+        ]
+    )]
+    public function forceDestroy(int $id): JsonResponse
+    {
+        $document = Document::withTrashed()->findOrFail($id);
+        $this->authorize('forceDelete', $document);
+
+        $this->documentService->forceDeleteDocument($document);
+
+        return response()->json([
+            'message' => 'Dokumen berhasil dihapus permanen.',
+        ], 200);
+    }
 }
+

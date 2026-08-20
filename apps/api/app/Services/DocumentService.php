@@ -540,5 +540,61 @@ class DocumentService
 
         return $query->orderBy($sortBy, $sortDirection)->paginate($perPage);
     }
+
+    /**
+     * Get paginated soft-deleted (trashed) documents.
+     *
+     * @param array $filters
+     * @param int $perPage
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function getTrashedDocuments(array $filters = [], int $perPage = 15)
+    {
+        $query = Document::onlyTrashed()->with(['uploader', 'verifier']);
+
+        if (!empty($filters['document_type'])) {
+            $query->where('document_type', $filters['document_type']);
+        }
+
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('file_name', 'like', "%{$search}%")
+                    ->orWhere('npm', 'like', "%{$search}%");
+            });
+        }
+
+        return $query->orderBy('deleted_at', 'desc')->paginate($perPage);
+    }
+
+    /**
+     * Restore a soft-deleted document.
+     *
+     * @param int $id
+     * @param int $userId
+     * @return Document
+     */
+    public function restoreDocument(int $id, int $userId): Document
+    {
+        $document = Document::onlyTrashed()->findOrFail($id);
+
+        $document->restore();
+
+        AuditLog::log(
+            action: AuditAction::UPDATE_DOCUMENT->value,
+            description: "Dokumen '{$document->file_name}' berhasil dipulihkan dari tempat sampah.",
+            metadata: [
+                'document_id' => $document->id,
+                'file_name' => $document->file_name,
+                'restored_by' => $userId,
+            ],
+            modelType: ModelType::DOCUMENT->value,
+            modelId: $document->id,
+            userId: $userId
+        );
+
+        return $document->fresh(['uploader', 'verifier']);
+    }
 }
+
 

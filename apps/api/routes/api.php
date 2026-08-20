@@ -55,6 +55,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Document Verification (UC-08) - QC & Manager only
     // IMPORTANT: These must be BEFORE apiResource to prevent route collision
     Route::get('/documents/statistics', [DocumentController::class, 'statistics']);
+    Route::get('/documents/trashed', [DocumentController::class, 'trashed']);
     Route::get('/documents/pending', [DocumentVerificationController::class, 'pending']);
     Route::patch('/documents/{document}/verify', [DocumentVerificationController::class, 'verify']);
 
@@ -63,6 +64,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/documents/download-multiple', [DocumentDownloadController::class, 'downloadMultiple']);
     Route::post('/documents/delete-multiple', [DocumentController::class, 'destroyMultiple']);
     Route::get('/documents/{document}/view', [DocumentDownloadController::class, 'view']);
+
+    // Document Restore & Force Delete (Manager only)
+    Route::post('/documents/{id}/restore', [DocumentController::class, 'restore']);
+    Route::delete('/documents/{id}/force-delete', [DocumentController::class, 'forceDestroy']);
 
     // Document Management (UC-04, UC-06, UC-07) - CRUD operations
     Route::apiResource('documents', DocumentController::class);

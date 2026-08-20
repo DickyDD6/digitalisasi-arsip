@@ -166,7 +166,9 @@ class AuthController extends Controller
         app(LoginAttemptService::class)->clearAttempts($request->email);
 
         // Regenerate session to prevent session fixation attacks
-        $request->session()->regenerate();
+        if ($request->hasSession()) {
+            $request->session()->regenerate();
+        }
 
         $user = Auth::user();
 
@@ -237,9 +239,11 @@ class AuthController extends Controller
         // Logout: clear auth state
         Auth::guard('web')->logout();
 
-        // Invalidate session and regenerate CSRF token
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        // Invalidate session and regenerate CSRF token if session exists
+        if ($request->hasSession()) {
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
 
         return response()->json([
             'message' => 'Logout berhasil.',
