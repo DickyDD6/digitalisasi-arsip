@@ -29,6 +29,7 @@ class DocumentTypeController extends Controller
         $types = DocumentType::orderBy('id', 'asc')->get();
 
         return response()->json([
+            'message' => 'Daftar jenis dokumen berhasil diambil.',
             'status' => 'success',
             'data' => DocumentTypeResource::collection($types),
         ]);

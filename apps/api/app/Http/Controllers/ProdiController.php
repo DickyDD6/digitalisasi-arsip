@@ -33,6 +33,7 @@ class ProdiController extends Controller
             ->get();
 
         return response()->json([
+            'message' => 'Daftar program studi berhasil diambil.',
             'status' => 'success',
             'data' => ProdiResource::collection($prodis),
         ]);

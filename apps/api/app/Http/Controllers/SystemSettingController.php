@@ -46,6 +46,7 @@ class SystemSettingController extends Controller
         }
 
         return response()->json([
+            'message' => 'Pengaturan sistem berhasil diambil.',
             'status' => 'success',
             'data' => $keyValueMap,
             'details' => SystemSettingResource::collection($settings),

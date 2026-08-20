@@ -1092,6 +1092,393 @@
                 ]
             }
         },
+        "/api/documents/delete-multiple": {
+            "post": {
+                "tags": [
+                    "Documents"
+                ],
+                "summary": "Delete Multiple Documents",
+                "description": "Menghapus beberapa dokumen sekaligus.\n\nHanya dokumen dengan status `tidak_terverifikasi` yang dapat dihapus.\nManager dapat menghapus semua dokumen rejected. Uploader hanya dokumen miliknya.",
+                "operationId": "deleteMultipleDocuments",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeleteMultipleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Dokumen berhasil dihapus",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "3 dokumen berhasil dihapus."
+                                        },
+                                        "deleted_count": {
+                                            "type": "integer",
+                                            "example": 3
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "This action is unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/documents/statistics": {
+            "get": {
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get Document Statistics",
+                "description": "Mengambil statistik dokumen: total, verified, pending, rejected (Manager only)",
+                "operationId": "getDocumentStatistics",
+                "responses": {
+                    "200": {
+                        "description": "Statistik dokumen berhasil diambil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentStatisticsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "This action is unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/documents/trashed": {
+            "get": {
+                "tags": [
+                    "Documents"
+                ],
+                "summary": "List Trashed Documents",
+                "description": "Mengambil daftar dokumen yang ada di tempat sampah (Manager only)",
+                "operationId": "listTrashedDocuments",
+                "responses": {
+                    "200": {
+                        "description": "Daftar dokumen terhapus berhasil diambil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "This action is unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/documents/{id}/restore": {
+            "post": {
+                "tags": [
+                    "Documents"
+                ],
+                "summary": "Restore Trashed Document",
+                "description": "Memulihkan dokumen yang terhapus kembali ke status semula (Manager only)",
+                "operationId": "restoreDocument",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Document ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dokumen berhasil dipulihkan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "This action is unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dokumen tidak ditemukan."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/documents/{id}/force-delete": {
+            "delete": {
+                "tags": [
+                    "Documents"
+                ],
+                "summary": "Force Delete Document",
+                "description": "Menghapus dokumen dan file fisiknya secara permanen (Manager only)",
+                "operationId": "forceDeleteDocument",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Document ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dokumen berhasil dihapus permanen",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dokumen berhasil dihapus permanen."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "This action is unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dokumen tidak ditemukan."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
         "/api/documents/{id}/download": {
             "get": {
                 "tags": [
@@ -1348,41 +1735,21 @@
                 ]
             }
         },
-        "/api/documents/delete-multiple": {
-            "post": {
+        "/api/document-types": {
+            "get": {
                 "tags": [
-                    "Documents"
+                    "Master Data"
                 ],
-                "summary": "Delete Multiple Documents",
-                "description": "Menghapus beberapa dokumen sekaligus.\n\nHanya dokumen dengan status `tidak_terverifikasi` yang dapat dihapus.\nManager dapat menghapus semua dokumen rejected. Uploader hanya dokumen miliknya.",
-                "operationId": "deleteMultipleDocuments",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/DeleteMultipleRequest"
-                            }
-                        }
-                    }
-                },
+                "summary": "Daftar jenis dokumen (UC-15)",
+                "description": "Mengambil seluruh daftar tipe dokumen yang didukung sistem beserta informasi kebutuhan verifikasi.",
+                "operationId": "c62f44dd8d33f370f2bfacbe2d54e2d4",
                 "responses": {
                     "200": {
-                        "description": "Dokumen berhasil dihapus",
+                        "description": "Daftar jenis dokumen berhasil diambil",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "3 dokumen berhasil dihapus."
-                                        },
-                                        "deleted_count": {
-                                            "type": "integer",
-                                            "example": 3
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/DocumentTypeListResponse"
                                 }
                             }
                         }
@@ -1392,39 +1759,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthenticated."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "This action is unauthorized."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ValidationError"
+                                    "$ref": "#/components/schemas/ErrorResponse"
                                 }
                             }
                         }
@@ -1611,102 +1946,6 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ValidationError"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "cookieAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/documents/statistics": {
-            "get": {
-                "tags": [
-                    "Statistics"
-                ],
-                "summary": "Get Document Statistics",
-                "description": "Mengambil statistik dokumen: total, verified, pending, rejected (Manager only)",
-                "operationId": "getDocumentStatistics",
-                "responses": {
-                    "200": {
-                        "description": "Statistik dokumen berhasil diambil",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/DocumentStatisticsResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthenticated."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "This action is unauthorized."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "cookieAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/document-types": {
-            "get": {
-                "tags": [
-                    "Master Data"
-                ],
-                "summary": "Daftar jenis dokumen (UC-15)",
-                "description": "Mengambil seluruh daftar tipe dokumen yang didukung sistem beserta informasi kebutuhan verifikasi.",
-                "operationId": "c62f44dd8d33f370f2bfacbe2d54e2d4",
-                "responses": {
-                    "200": {
-                        "description": "Daftar jenis dokumen berhasil diambil",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/DocumentTypeListResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
                                 }
                             }
                         }
@@ -2367,13 +2606,13 @@
                     "System Settings"
                 ],
                 "summary": "Daftar pengaturan sistem (UC-14)",
-                "description": "Mengambil daftar pengaturan sistem dalam format key-value map dan list detail untuk kebutuhan konfigurasi aplikasi.",
+                "description": "Mengambil pengaturan sistem dalam bentuk key-value map dan detail array. Dapat difilter berdasarkan group.",
                 "operationId": "49147b6a500519da739f8dda5ea3b162",
                 "parameters": [
                     {
                         "name": "group",
                         "in": "query",
-                        "description": "Filter berdasarkan nama grup (misal: upload, app, general)",
+                        "description": "Filter berdasarkan nama group (contoh: upload, app)",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -3223,6 +3462,102 @@
     },
     "components": {
         "schemas": {
+            "BulkActionRequest": {
+                "required": [
+                    "ids"
+                ],
+                "properties": {
+                    "ids": {
+                        "description": "Array of resource IDs",
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "example": [
+                            1,
+                            2,
+                            3
+                        ]
+                    }
+                },
+                "type": "object"
+            },
+            "CheckEmailRequest": {
+                "required": [
+                    "email"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "new.user@example.com"
+                    }
+                },
+                "type": "object"
+            },
+            "GenerateReportRequest": {
+                "required": [
+                    "period_start",
+                    "period_end",
+                    "format",
+                    "type"
+                ],
+                "properties": {
+                    "period_start": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-01-01"
+                    },
+                    "period_end": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-08-21"
+                    },
+                    "format": {
+                        "type": "string",
+                        "example": "pdf",
+                        "enum": [
+                            "pdf",
+                            "xlsx",
+                            "csv"
+                        ]
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "monthly",
+                        "enum": [
+                            "monthly",
+                            "annual",
+                            "custom"
+                        ]
+                    },
+                    "style": {
+                        "type": "string",
+                        "example": "detailed",
+                        "nullable": true,
+                        "enum": [
+                            "detailed",
+                            "summary",
+                            "executive"
+                        ]
+                    },
+                    "content": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "upload_stats",
+                                "qc_metrics",
+                                "doc_status",
+                                "user_activity",
+                                "trend_analysis"
+                            ]
+                        },
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
             "ValidationError": {
                 "properties": {
                     "message": {

@@ -28,13 +28,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // Notifications API
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount']);
-    Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::match(['patch', 'post'], '/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
     Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
 
     // System Settings API
     Route::get('/system-settings', [SystemSettingController::class, 'index']);
-    Route::put('/system-settings', [SystemSettingController::class, 'update']);
+    Route::match(['put', 'post'], '/system-settings', [SystemSettingController::class, 'update']);
 
     // Master Data API
     Route::get('/prodis', [ProdiController::class, 'index']);
