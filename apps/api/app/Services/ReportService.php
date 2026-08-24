@@ -126,6 +126,25 @@ class ReportService
             $accuracyRate = $totalHandled > 0 ? round(($verifiedCount / $totalHandled) * 100, 1) : 100.0;
             $isOnline = $staff->last_seen_at && $staff->last_seen_at->diffInMinutes(now()) <= 5;
 
+            // Calculate actual average verification time from created_at to verified_at
+            $verifiedDocs = Document::where('verified_by', $staff->id)
+                ->whereNotNull('verified_at')
+                ->whereBetween('updated_at', [$start, $end])
+                ->get(['created_at', 'verified_at']);
+
+            if ($verifiedDocs->isNotEmpty()) {
+                $totalMinutes = $verifiedDocs->reduce(function ($carry, $doc) {
+                    return $carry + ($doc->created_at && $doc->verified_at ? $doc->created_at->diffInMinutes($doc->verified_at) : 0);
+                }, 0);
+
+                $avgHours = round(($totalMinutes / $verifiedDocs->count()) / 60.0, 1);
+                $avgTime = $avgHours >= 24
+                    ? round($avgHours / 24, 1) . ' Hari'
+                    : $avgHours . ' Jam';
+            } else {
+                $avgTime = '-';
+            }
+
             return [
                 'id' => $staff->id,
                 'staff' => $staff->name,
@@ -134,7 +153,7 @@ class ReportService
                 'terverifikasi' => $verifiedCount,
                 'ditolak' => $rejectedCount,
                 'false_rejections_count' => 0,
-                'avg_time' => '1.2 Hari',
+                'avg_time' => $avgTime,
                 'accuracy_rate' => $accuracyRate . '%',
                 'is_online' => (bool) $isOnline,
                 'last_seen_at' => $staff->last_seen_at ? $staff->last_seen_at->toIso8601String() : null,

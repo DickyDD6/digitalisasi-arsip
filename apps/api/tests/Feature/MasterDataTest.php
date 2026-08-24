@@ -48,6 +48,10 @@ class MasterDataTest extends TestCase
             ->assertJsonPath('data.code', 'TKS');
 
         $this->assertDatabaseHas('prodis', ['code' => 'TKS']);
+        $this->assertDatabaseHas('audit_logs', [
+            'user_id' => $manager->id,
+            'action' => 'create_prodi',
+        ]);
     }
 
     public function test_authenticated_user_can_list_document_types(): void

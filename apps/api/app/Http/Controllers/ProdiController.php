@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\AuditAction;
 use App\Enums\UserRole;
 use App\Http\Requests\StoreProdiRequest;
 use App\Http\Resources\ProdiResource;
+use App\Models\AuditLog;
 use App\Models\Prodi;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -70,6 +72,18 @@ class ProdiController extends Controller
             'degree' => strtoupper($validated['degree']),
             'is_active' => $validated['is_active'] ?? true,
         ]);
+
+        // Audit log for prodi creation
+        AuditLog::log(
+            action: AuditAction::CREATE_PRODI->value,
+            description: "Program Studi '{$prodi->name}' ({$prodi->code}) berhasil ditambahkan.",
+            metadata: [
+                'prodi_id' => $prodi->id,
+                'code' => $prodi->code,
+                'name' => $prodi->name,
+                'degree' => $prodi->degree,
+            ]
+        );
 
         return response()->json([
             'status' => 'success',

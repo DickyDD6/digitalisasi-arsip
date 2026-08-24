@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\AuditAction;
 use App\Enums\UserRole;
 use App\Http\Requests\UpdateSystemSettingRequest;
 use App\Http\Resources\SystemSettingResource;
+use App\Models\AuditLog;
 use App\Models\SystemSetting;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -80,15 +82,32 @@ class SystemSettingController extends Controller
         $validated = $request->validated();
 
         $updatedSettings = [];
+        $changedKeys = [];
         foreach ($validated['settings'] as $item) {
             $setting = SystemSetting::where('key', $item['key'])->first();
             if ($setting) {
+                $oldValue = $setting->value;
                 $setting->update([
                     'value' => $item['value'],
                     'updated_by' => $user->id,
                 ]);
                 $updatedSettings[] = $setting->fresh();
+                if ($oldValue !== $item['value']) {
+                    $changedKeys[] = $item['key'] . " ('{$oldValue}' → '{$item['value']}')";
+                }
             }
+        }
+
+        // Audit log for system settings changes
+        if (!empty($changedKeys)) {
+            AuditLog::log(
+                action: AuditAction::UPDATE_SETTINGS->value,
+                description: 'Pengaturan sistem diperbarui: ' . implode(', ', $changedKeys),
+                metadata: [
+                    'updated_keys' => array_column($validated['settings'], 'key'),
+                    'updated_by' => $user->id,
+                ]
+            );
         }
 
         return response()->json([

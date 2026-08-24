@@ -48,25 +48,8 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
 
-        $query = User::query();
-
-        // Search by name or email
-        if ($request->has('search')) {
-            $search = $request->input('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
-            });
-        }
-
-        // Filter by role
-        if ($request->has('role')) {
-            $query->where('role', $request->input('role'));
-        }
-
-        // Pagination
-        $perPage = $request->input('per_page', 15);
-        $users = $query->orderBy('created_at', 'desc')->paginate($perPage);
+        $perPage = min((int) $request->input('per_page', 15), 100);
+        $users = $this->userService->listUsers($request->all(), $perPage);
 
         return response()->json([
             'message' => 'Daftar pengguna berhasil diambil.',

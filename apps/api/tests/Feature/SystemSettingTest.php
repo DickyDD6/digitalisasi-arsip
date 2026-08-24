@@ -58,6 +58,11 @@ class SystemSettingTest extends TestCase
             'value' => '25',
             'updated_by' => $manager->id,
         ]);
+
+        $this->assertDatabaseHas('audit_logs', [
+            'user_id' => $manager->id,
+            'action' => 'update_settings',
+        ]);
     }
 
     public function test_non_manager_cannot_update_system_settings(): void

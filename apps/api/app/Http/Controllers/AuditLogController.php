@@ -75,12 +75,12 @@ class AuditLogController extends Controller
 
         // Search by description
         if ($request->has('search')) {
-            $search = $request->input('search');
+            $search = addcslashes($request->input('search'), '%_\\');
             $query->where('description', 'like', "%{$search}%");
         }
 
         // Pagination
-        $perPage = $request->input('per_page', 20);
+        $perPage = min((int) $request->input('per_page', 20), 100);
         $logs = $query->orderBy('created_at', 'desc')->paginate($perPage);
 
         return response()->json([

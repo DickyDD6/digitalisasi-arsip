@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
+/**
+ * @method static string escapeLike(string $value)
+ */
+
 class DocumentService
 {
     /**
@@ -434,6 +438,18 @@ class DocumentService
             userId: $userId
         );
     }
+
+    /**
+     * Escape special LIKE wildcard characters to prevent filter bypass.
+     *
+     * @param string $value
+     * @return string
+     */
+    protected function escapeLike(string $value): string
+    {
+        return addcslashes($value, '%_\\');
+    }
+
     /**
      * Get document statistics.
      * 
@@ -474,9 +490,14 @@ class DocumentService
      * @param int $perPage
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function listDocuments(array $filters = [], int $perPage = 15)
+    public function listDocuments(array $filters = [], int $perPage = 15, ?int $uploaderId = null)
     {
         $query = Document::with(['uploader', 'verifier']);
+
+        // Scope to uploader's own documents if uploader ID is provided
+        if ($uploaderId !== null) {
+            $query->where('uploaded_by', $uploaderId);
+        }
 
         // Filter by document type
         if (!empty($filters['document_type'])) {
@@ -490,23 +511,25 @@ class DocumentService
 
         // Filter by prodi
         if (!empty($filters['prodi'])) {
-            $query->where('prodi', 'like', "%{$filters['prodi']}%");
+            $prodi = $this->escapeLike($filters['prodi']);
+            $query->where('prodi', 'like', "%{$prodi}%");
         }
 
         // Filter by nim / npm
         if (!empty($filters['nim']) || !empty($filters['npm'])) {
-            $nim = $filters['nim'] ?? $filters['npm'];
+            $nim = $this->escapeLike($filters['nim'] ?? $filters['npm']);
             $query->where('npm', 'like', "%{$nim}%");
         }
 
         // Filter by mata_kuliah
         if (!empty($filters['mata_kuliah'])) {
-            $query->where('mata_kuliah', 'like', "%{$filters['mata_kuliah']}%");
+            $mataKuliah = $this->escapeLike($filters['mata_kuliah']);
+            $query->where('mata_kuliah', 'like', "%{$mataKuliah}%");
         }
 
         // Filter by tahun_akademik / tahun_ajaran
         if (!empty($filters['tahun_akademik']) || !empty($filters['tahun_ajaran'])) {
-            $tahun = $filters['tahun_akademik'] ?? $filters['tahun_ajaran'];
+            $tahun = $this->escapeLike($filters['tahun_akademik'] ?? $filters['tahun_ajaran']);
             $query->where('tahun_ajaran', 'like', "%{$tahun}%");
         }
 
@@ -520,7 +543,7 @@ class DocumentService
 
         // Search by all fields
         if (!empty($filters['search'])) {
-            $search = $filters['search'];
+            $search = $this->escapeLike($filters['search']);
             $query->where(function ($q) use ($search) {
                 $q->where('file_name', 'like', "%{$search}%")
                     ->orWhere('tahun_ajaran', 'like', "%{$search}%")
@@ -563,7 +586,7 @@ class DocumentService
         }
 
         if (!empty($filters['search'])) {
-            $search = $filters['search'];
+            $search = $this->escapeLike($filters['search']);
             $query->where(function ($q) use ($search) {
                 $q->where('file_name', 'like', "%{$search}%")
                     ->orWhere('npm', 'like', "%{$search}%");

@@ -48,7 +48,7 @@ class DocumentVerificationController extends Controller
             ->where('status', DocumentStatus::PENDING->value)
             ->orderBy('created_at', 'asc');
 
-        $perPage = $request->input('per_page', 15);
+        $perPage = min((int) $request->input('per_page', 15), 100);
         $documents = $query->paginate($perPage);
 
         return response()->json([

@@ -53,8 +53,13 @@ class DocumentController extends Controller
     {
         $this->authorize('viewAny', Document::class);
 
-        $perPage = (int) $request->input('per_page', 15);
-        $documents = $this->documentService->listDocuments($request->all(), $perPage);
+        $perPage = min((int) $request->input('per_page', 15), 100);
+
+        // Uploader only sees their own documents (API Contract requirement)
+        $user = auth()->user();
+        $uploaderId = $user->hasRole('uploader') ? $user->id : null;
+
+        $documents = $this->documentService->listDocuments($request->all(), $perPage, $uploaderId);
 
         return response()->json([
             'message' => 'Daftar dokumen berhasil diambil.',
@@ -337,7 +342,7 @@ class DocumentController extends Controller
     {
         $this->authorize('viewTrashed', Document::class);
 
-        $perPage = (int) $request->input('per_page', 15);
+        $perPage = min((int) $request->input('per_page', 15), 100);
         $documents = $this->documentService->getTrashedDocuments($request->all(), $perPage);
 
         return response()->json([
