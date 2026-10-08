@@ -680,7 +680,9 @@ X-XSRF-TOKEN: <nilai-dari-cookie-XSRF-TOKEN>
 
 #### `GET /api/documents/{id}/view`
 * **Deskripsi:** Menampilkan/streaming file PDF secara inline di browser (untuk preview/verifikasi modal).
-* **Akses:** Authenticated
+* **Akses:** Sama dengan aturan download:
+  - Dokumen `terverifikasi`: semua role.
+  - Dokumen belum terverifikasi: Manager (semua), Uploader (hanya miliknya sendiri), QC (hanya `menunggu verifikasi`), SBAP (tidak bisa).
 * **Response:** Stream `application/pdf` dengan header `Content-Disposition: inline`.
 
 #### `GET /api/documents/{id}/download`
