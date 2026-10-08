@@ -3089,7 +3089,7 @@
                     "Users"
                 ],
                 "summary": "Delete User",
-                "description": "Menghapus user (tidak bisa menghapus akun sendiri)",
+                "description": "Menghapus user (tidak bisa menghapus akun sendiri). User yang masih memiliki dokumen arsip tidak dapat dihapus (422).",
                 "operationId": "deleteUser",
                 "parameters": [
                     {
@@ -3317,7 +3317,7 @@
                     "Users"
                 ],
                 "summary": "Delete Multiple Users",
-                "description": "Menghapus beberapa user sekaligus (Manager only). Tidak bisa menghapus akun sendiri.",
+                "description": "Menghapus beberapa user sekaligus (Manager only). Tidak bisa menghapus akun sendiri. Atomik: jika salah satu user masih memiliki dokumen, seluruh penghapusan dibatalkan (422).",
                 "operationId": "deleteMultipleUsers",
                 "requestBody": {
                     "required": true,

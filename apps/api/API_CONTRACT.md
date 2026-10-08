@@ -483,13 +483,20 @@ X-XSRF-TOKEN: <nilai-dari-cookie-XSRF-TOKEN>
 * **Response 201 Created**
 
 #### `POST /api/users/delete-multiple`
-* **Deskripsi:** Menghapus beberapa pengguna sekaligus (proteksi: manager tidak bisa menghapus akun sendiri).
+* **Deskripsi:** Menghapus beberapa pengguna sekaligus (proteksi: manager tidak bisa menghapus akun sendiri). Atomik: jika salah satu user masih memiliki dokumen, seluruh penghapusan dibatalkan.
 * **Akses:** Manager only
 * **Request Body:** `{ "ids": [5, 6, 7] }`
 * **Response 200 OK:**
 ```json
 {
   "message": "3 pengguna berhasil dihapus."
+}
+```
+* **Response 422** (salah satu user masih memiliki dokumen — arsip institusi tidak boleh ikut terhapus):
+```json
+{
+  "message": "Pengguna masih memiliki 2 dokumen dan tidak dapat dihapus.",
+  "errors": { "user_id": ["Pengguna masih memiliki 2 dokumen dan tidak dapat dihapus."] }
 }
 ```
 
@@ -540,12 +547,19 @@ X-XSRF-TOKEN: <nilai-dari-cookie-XSRF-TOKEN>
 ```
 
 #### `DELETE /api/users/{id}`
-* **Deskripsi:** Menghapus satu akun pengguna (dengan proteksi: manager tidak dapat menghapus akun sendiri, akan mengembalikan 422).
+* **Deskripsi:** Menghapus satu akun pengguna (dengan proteksi: manager tidak dapat menghapus akun sendiri, akan mengembalikan 422). User yang masih memiliki dokumen arsip **tidak dapat dihapus** (422) — dokumen institusi tidak boleh terhapus bersama akun uploader-nya.
 * **Akses:** Manager only
 * **Response 200 OK:**
 ```json
 {
   "message": "Pengguna berhasil dihapus."
+}
+```
+* **Response 422** (user masih memiliki dokumen):
+```json
+{
+  "message": "Pengguna masih memiliki 2 dokumen dan tidak dapat dihapus.",
+  "errors": { "user_id": ["Pengguna masih memiliki 2 dokumen dan tidak dapat dihapus."] }
 }
 ```
 
