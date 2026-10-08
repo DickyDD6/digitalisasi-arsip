@@ -412,7 +412,7 @@ class DocumentController extends Controller
     )]
     public function forceDestroy(int $id): JsonResponse
     {
-        $document = Document::withTrashed()->findOrFail($id);
+        $document = Document::onlyTrashed()->findOrFail($id);
         $this->authorize('forceDelete', $document);
 
         $this->documentService->forceDeleteDocument($document);
@@ -420,6 +420,64 @@ class DocumentController extends Controller
         return response()->json([
             'message' => 'Dokumen berhasil dihapus permanen.',
         ], 200);
+    }
+
+    /**
+     * Revoke the verification of a verified document (Manager only).
+     */
+    #[OA\Post(
+        path: '/api/documents/{id}/revoke-verification',
+        operationId: 'revokeDocumentVerification',
+        summary: 'Revoke Document Verification (Manager only)',
+        description: "Membatalkan verifikasi dokumen yang sudah `terverifikasi` (Manager only).\n\nStatus dokumen dikembalikan ke `menunggu verifikasi` dan seluruh metadata verifikasi (verifier, waktu verifikasi, catatan) dibersihkan, sehingga uploader dapat merevisi dokumen dan QC/Manager dapat memverifikasi ulang.",
+        security: [['cookieAuth' => []]],
+        tags: ['Documents'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, description: 'Document ID', schema: new OA\Schema(type: 'integer', example: 1)),
+        ],
+        requestBody: new OA\RequestBody(
+            required: false,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'reason', type: 'string', maxLength: 500, example: 'Dokumen salah unggah, perlu diperbaiki oleh uploader.', description: 'Alasan pembatalan verifikasi (opsional)'),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Verifikasi dokumen berhasil dibatalkan', content: new OA\JsonContent(ref: '#/components/schemas/DocumentResponse')),
+            new OA\Response(response: 401, description: 'Unauthenticated', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')])),
+            new OA\Response(response: 403, description: 'Forbidden - hanya Manager', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'This action is unauthorized.')])),
+            new OA\Response(response: 404, description: 'Not Found', content: new OA\JsonContent(properties: [new OA\Property(property: 'message', type: 'string', example: 'Not Found.')])),
+            new OA\Response(response: 422, description: 'Dokumen tidak berstatus terverifikasi', content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')),
+        ]
+    )]
+    public function revokeVerification(Request $request, Document $document): JsonResponse
+    {
+        $this->authorize('revokeVerification', $document);
+
+        $validated = $request->validate([
+            'reason' => ['nullable', 'string', 'max:500'],
+        ], [
+            'reason.max' => 'Alasan pembatalan maksimal 500 karakter.',
+        ]);
+
+        try {
+            $revoked = $this->documentService->revokeVerification(
+                $document,
+                (int) auth()->id(),
+                $validated['reason'] ?? null
+            );
+
+            return response()->json([
+                'message' => 'Verifikasi dokumen berhasil dibatalkan. Status dikembalikan ke menunggu verifikasi.',
+                'data' => new DocumentResource($revoked),
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+                'errors' => $e->errors(),
+            ], 422);
+        }
     }
 }
 

@@ -84,6 +84,19 @@ class DocumentPolicy
     }
 
     /**
+     * Determine whether the user can revoke the verification of a document.
+     * 
+     * Note: This only checks if user has the ROLE to revoke.
+     * Business logic (document status) is checked in DocumentService
+     * to return proper 422 error instead of 403.
+     */
+    public function revokeVerification(User $user, Document $document): bool
+    {
+        // Only manager can revoke verification
+        return $user->hasRole('manager');
+    }
+
+    /**
      * Determine whether the user can view pending documents.
      */
     public function viewPending(User $user): bool

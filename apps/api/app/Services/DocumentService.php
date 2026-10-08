@@ -326,6 +326,87 @@ class DocumentService
     }
 
     /**
+     * Revoke the verification of a verified document (Manager only).
+     *
+     * Resets the document back to pending so the uploader can revise it
+     * and QC/Manager can re-verify.
+     *
+     * @param Document $document
+     * @param int $managerId
+     * @param string|null $reason
+     * @return Document
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function revokeVerification(
+        Document $document,
+        int $managerId,
+        ?string $reason = null
+    ): Document {
+        // Only verified documents can have their verification revoked
+        if ($document->status !== DocumentStatus::VERIFIED) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'document' => ['Hanya dokumen dengan status terverifikasi yang dapat dibatalkan verifikasinya.'],
+            ]);
+        }
+
+        $oldStatus = $document->status->value;
+
+        DB::beginTransaction();
+
+        try {
+            // Reset document back to pending and clear all verification metadata
+            $document->update([
+                'status' => DocumentStatus::PENDING->value,
+                'verified_by' => null,
+                'verified_at' => null,
+                'verification_note' => null,
+            ]);
+
+            // Log revocation activity
+            $this->logRevocation($document, $managerId, $oldStatus, $reason);
+
+            DB::commit();
+
+            return $document->fresh(['uploader', 'verifier']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Log document verification revocation activity.
+     *
+     * @param Document $document
+     * @param int $managerId
+     * @param string $oldStatus
+     * @param string|null $reason
+     * @return void
+     */
+    protected function logRevocation(Document $document, int $managerId, string $oldStatus, ?string $reason): void
+    {
+        $metadata = [
+            'document_id' => $document->id,
+            'document_type' => $document->document_type->value,
+            'old_status' => $oldStatus,
+            'new_status' => DocumentStatus::PENDING->value,
+        ];
+
+        if ($reason) {
+            $metadata['reason'] = $reason;
+        }
+
+        AuditLog::log(
+            action: AuditAction::REVOKE_VERIFICATION->value,
+            description: "Verifikasi dokumen '{$document->file_name}' dibatalkan.",
+            metadata: $metadata,
+            modelType: ModelType::DOCUMENT->value,
+            modelId: $document->id,
+            userId: $managerId
+        );
+    }
+
+    /**
      * Update document metadata.
      *
      * @param Document $document
