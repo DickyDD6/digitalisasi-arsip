@@ -1024,6 +1024,58 @@ Coba verifikasi dokumen yang sudah terverifikasi
 
 ---
 
+### ✅ 8.5 Batalkan Verifikasi / Revoke Verification (Login: Manager)
+
+Membatalkan verifikasi dokumen yang sudah **terverifikasi** (koreksi human error). Status kembali ke `menunggu verifikasi`, metadata verifikasi dibersihkan, dokumen & file tetap ada, dan uploader dapat merevisi lalu QC memverifikasi ulang.
+
+```
+POST http://localhost:8000/api/documents/{id_terverifikasi}/revoke-verification
+
+Headers:
+Content-Type: application/json
+Accept: application/json
+X-Requested-With: XMLHttpRequest
+X-XSRF-TOKEN: {{xsrf_token}}
+
+Body (raw JSON - pilih "JSON" di dropdown, BUKAN "Text"):
+{
+  "reason": "Dokumen yang diverifikasi tidak sesuai."
+}
+```
+
+> Body **opsional**. `reason` bertipe string, maksimal 500 karakter, dan dicatat di audit log bila diisi.
+
+**Expected Response:**
+
+```json
+{
+    "message": "Verifikasi dokumen berhasil dibatalkan. Status dikembalikan ke menunggu verifikasi.",
+    "data": {
+        "id": 1,
+        "status": "Menunggu Verifikasi",
+        "verification_note": null,
+        "verified_by_name": null,
+        "verified_at": null,
+        "uploaded_by_name": "Uploader User"
+    }
+}
+```
+
+**Status:** `200 OK`
+
+**Negative tests:**
+
+| Skenario | Login | Expected |
+| --- | --- | --- |
+| Revoke oleh Uploader / QC / SBAP | uploader / qc / sbap | `403 Forbidden` |
+| Revoke dokumen `menunggu verifikasi` | manager | `422 Unprocessable Entity` |
+| Revoke dokumen `tidak terverifikasi` | manager | `422 Unprocessable Entity` |
+| Revoke dokumen tidak ditemukan | manager | `404 Not Found` |
+
+> 📌 Setelah revoke, dokumen kembali muncul di `GET /api/documents/pending` dan dapat diverifikasi ulang (8.2/8.3).
+
+---
+
 ## 📝 UC-06: Document Update (Login: Uploader)
 
 ### ✅ 6.1 Update Dokumen Rejected
@@ -1221,6 +1273,8 @@ X-Requested-With: XMLHttpRequest
 ---
 
 ### ✅ 7.6 Hapus Dokumen Permanen & File Fisik (Force Delete - Login: Manager)
+
+> **⚠️ Catatan:** Force delete hanya berlaku untuk dokumen yang sudah di-*soft-delete* (id `id_soft_deleted`). Dokumen **aktif** (belum dihapus) **tidak dapat** di-force-delete dan akan mengembalikan `404 Not Found` — termasuk dokumen `terverifikasi`. Untuk koreksi dokumen terverifikasi, gunakan **Revoke Verification** (8.5).
 
 ```
 DELETE http://localhost:8000/api/documents/{id_soft_deleted}/force-delete

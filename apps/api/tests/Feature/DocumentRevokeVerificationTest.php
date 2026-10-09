@@ -149,6 +149,7 @@ class DocumentRevokeVerificationTest extends TestCase
         $response = $this->postJson("/api/documents/{$document->id}/revoke-verification");
 
         $response->assertStatus(422)
+            ->assertJsonPath('message', 'Hanya dokumen dengan status terverifikasi yang dapat dibatalkan verifikasinya.')
             ->assertJsonValidationErrors(['document']);
 
         $document->refresh();
@@ -167,10 +168,43 @@ class DocumentRevokeVerificationTest extends TestCase
         $response = $this->postJson("/api/documents/{$document->id}/revoke-verification");
 
         $response->assertStatus(422)
+            ->assertJsonPath('message', 'Hanya dokumen dengan status terverifikasi yang dapat dibatalkan verifikasinya.')
             ->assertJsonValidationErrors(['document']);
 
         $document->refresh();
         $this->assertEquals('tidak terverifikasi', $document->status->value);
+    }
+
+    /**
+     * Reason longer than 500 characters is rejected with a validation error
+     * on the reason field.
+     */
+    public function test_reason_over_500_characters_is_rejected(): void
+    {
+        $this->actingAs($this->manager);
+
+        $document = Document::factory()->verified()->create();
+
+        $response = $this->postJson("/api/documents/{$document->id}/revoke-verification", [
+            'reason' => str_repeat('a', 501),
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['reason']);
+
+        $document->refresh();
+        $this->assertEquals('terverifikasi', $document->status->value);
+    }
+
+    /**
+     * Revoking a non-existent document returns 404 (implicit model binding).
+     */
+    public function test_manager_cannot_revoke_nonexistent_document(): void
+    {
+        $this->actingAs($this->manager);
+
+        $this->postJson('/api/documents/999999/revoke-verification')
+            ->assertStatus(404);
     }
 
     /**

@@ -1392,7 +1392,7 @@
                     "Documents"
                 ],
                 "summary": "Force Delete Document",
-                "description": "Menghapus dokumen dan file fisiknya secara permanen (Manager only)",
+                "description": "Menghapus dokumen dan file fisiknya secara permanen (Manager only).\\n\\nHanya berlaku untuk dokumen yang sudah di-soft-delete (berada di tempat sampah). Dokumen aktif tidak dapat di-force-delete dan akan mengembalikan 404.",
                 "operationId": "forceDeleteDocument",
                 "parameters": [
                     {
@@ -1467,6 +1467,121 @@
                                         }
                                     },
                                     "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/documents/{id}/revoke-verification": {
+            "post": {
+                "tags": [
+                    "Documents"
+                ],
+                "summary": "Revoke Document Verification (Manager only)",
+                "description": "Membatalkan verifikasi dokumen yang sudah `terverifikasi` (Manager only).\n\nStatus dokumen dikembalikan ke `menunggu verifikasi` dan seluruh metadata verifikasi (verifier, waktu verifikasi, catatan) dibersihkan, sehingga uploader dapat merevisi dokumen dan QC/Manager dapat memverifikasi ulang.",
+                "operationId": "revokeDocumentVerification",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Document ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "reason": {
+                                        "description": "Alasan pembatalan verifikasi (opsional)",
+                                        "type": "string",
+                                        "example": "Dokumen salah unggah, perlu diperbaiki oleh uploader.",
+                                        "maxLength": 500
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Verifikasi dokumen berhasil dibatalkan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - hanya Manager",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "This action is unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Not Found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Dokumen tidak berstatus terverifikasi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
                                 }
                             }
                         }

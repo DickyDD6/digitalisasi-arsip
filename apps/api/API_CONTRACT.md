@@ -692,6 +692,57 @@ X-XSRF-TOKEN: <nilai-dari-cookie-XSRF-TOKEN>
 ```
 > `message` bernilai `"Dokumen berhasil diverifikasi."` bila `status` permintaan adalah `terverifikasi`, dan `"Dokumen ditolak."` bila `tidak terverifikasi`.
 
+#### `POST /api/documents/{id}/revoke-verification` (Batalkan Verifikasi)
+* **Deskripsi:** Membatalkan verifikasi dokumen yang sudah `terverifikasi` — untuk koreksi human error (QC salah verifikasi, uploader salah unggah, atau dokumen perlu diperbaiki setelah disetujui). Status dikembalikan ke `menunggu verifikasi` dan seluruh metadata verifikasi (`verified_by`, `verified_at`, `verification_note`) dibersihkan, sehingga uploader dapat merevisi dokumen dan QC/Manager dapat memverifikasi ulang. Dokumen tetap aktif dan file fisik tidak diubah.
+* **Akses:** Manager only (role lain → `403 Forbidden`)
+* **Request Body (opsional):**
+```json
+{
+  "reason": "Dokumen yang diverifikasi tidak sesuai."
+}
+```
+  * `reason`: *optional*, string, maksimal 500 karakter. Dicatat di audit log bila diisi.
+* **State transition:**
+```text
+terverifikasi
+      ↓  (revoke, Manager)
+menunggu verifikasi
+```
+  * `verified_by = null`, `verified_at = null`, `verification_note = null`
+* **Audit:** Action `revoke_verification` dicatat di audit log (user manager, `document_id`, `old_status: terverifikasi`, `new_status: menunggu verifikasi`, `reason` bila ada, waktu aksi).
+* **Response 200 OK:**
+```json
+{
+  "message": "Verifikasi dokumen berhasil dibatalkan. Status dikembalikan ke menunggu verifikasi.",
+  "data": {
+    "id": 12,
+    "status": "Menunggu Verifikasi",
+    "verified_by_name": null,
+    "verified_at": null,
+    "verification_note": null
+  }
+}
+```
+* **Response 403 Forbidden** (bukan Manager):
+```json
+{
+  "message": "This action is unauthorized."
+}
+```
+* **Response 404 Not Found:** Dokumen tidak ditemukan.
+* **Response 422 Unprocessable Entity** (dokumen tidak berstatus `terverifikasi` — mis. masih `menunggu verifikasi` atau sudah `tidak terverifikasi`):
+```json
+{
+  "message": "Hanya dokumen dengan status terverifikasi yang dapat dibatalkan verifikasinya.",
+  "errors": {
+    "document": [
+      "Hanya dokumen dengan status terverifikasi yang dapat dibatalkan verifikasinya."
+    ]
+  }
+}
+```
+* **Catatan:** Setelah revoke, workflow normal berlaku kembali — dokumen kembali masuk antrean `/api/documents/pending` dan dapat diverifikasi ulang via `PATCH /api/documents/{id}/verify`.
+
 #### `GET /api/documents/{id}/view`
 * **Deskripsi:** Menampilkan/streaming file PDF secara inline di browser (untuk preview/verifikasi modal).
 * **Akses:** Sama dengan aturan download:
@@ -754,10 +805,17 @@ X-XSRF-TOKEN: <nilai-dari-cookie-XSRF-TOKEN>
 #### `DELETE /api/documents/{id}/force-delete`
 * **Deskripsi:** Menghapus data dokumen dari database dan menghapus file fisik PDF dari storage secara permanen.
 * **Akses:** Manager only
+* **Target:** Hanya dokumen yang sudah di-*soft-delete* (berada di tempat sampah, lihat `GET /api/documents/trashed`). Dokumen **aktif** tidak dapat di-force-delete — termasuk dokumen `terverifikasi`; untuk koreksi dokumen terverifikasi gunakan `POST /api/documents/{id}/revoke-verification`.
 * **Response 200 OK:**
 ```json
 {
   "message": "Dokumen berhasil dihapus permanen."
+}
+```
+* **Response 404 Not Found:** Dokumen tidak ditemukan **atau** dokumen masih aktif (belum di-soft-delete):
+```json
+{
+  "message": "Not Found."
 }
 ```
 

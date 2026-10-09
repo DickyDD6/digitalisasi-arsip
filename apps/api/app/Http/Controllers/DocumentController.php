@@ -397,7 +397,7 @@ class DocumentController extends Controller
         path: '/api/documents/{id}/force-delete',
         operationId: 'forceDeleteDocument',
         summary: 'Force Delete Document',
-        description: 'Menghapus dokumen dan file fisiknya secara permanen (Manager only)',
+        description: 'Menghapus dokumen dan file fisiknya secara permanen (Manager only).\n\nHanya berlaku untuk dokumen yang sudah di-soft-delete (berada di tempat sampah). Dokumen aktif tidak dapat di-force-delete dan akan mengembalikan 404.',
         security: [['cookieAuth' => []]],
         tags: ['Documents'],
         parameters: [
