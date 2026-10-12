@@ -569,9 +569,11 @@ class DocumentService
      *
      * @param array $filters
      * @param int $perPage
+     * @param int|null $uploaderId
+     * @param string|null $forcedStatus Status yang dipaksakan (melewati filter status dari request; dipakai untuk SBAP)
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function listDocuments(array $filters = [], int $perPage = 15, ?int $uploaderId = null)
+    public function listDocuments(array $filters = [], int $perPage = 15, ?int $uploaderId = null, ?string $forcedStatus = null)
     {
         $query = Document::with(['uploader', 'verifier']);
 
@@ -580,13 +582,18 @@ class DocumentService
             $query->where('uploaded_by', $uploaderId);
         }
 
+        // Forced status (e.g. SBAP verified-only) REPLACES the request status filter below
+        if ($forcedStatus !== null) {
+            $query->where('status', $forcedStatus);
+        }
+
         // Filter by document type
         if (!empty($filters['document_type'])) {
             $query->where('document_type', $filters['document_type']);
         }
 
-        // Filter by status
-        if (!empty($filters['status'])) {
+        // Filter by status (skipped when forced status is present, e.g. SBAP verified-only)
+        if (!empty($filters['status']) && $forcedStatus === null) {
             $query->where('status', $filters['status']);
         }
 

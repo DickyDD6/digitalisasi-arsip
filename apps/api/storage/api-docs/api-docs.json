@@ -564,7 +564,7 @@
                     "Documents"
                 ],
                 "summary": "List Documents",
-                "description": "Mengambil daftar dokumen",
+                "description": "Mengambil daftar dokumen.\\n\\n**Catatan role:**\\n- **SBAP**: hanya melihat metadata dokumen berstatus `terverifikasi`; filter `status` dari request diabaikan (didominasi oleh aturan verified-only).",
                 "operationId": "listDocuments",
                 "parameters": [
                     {
@@ -821,7 +821,7 @@
                     "Documents"
                 ],
                 "summary": "Get Document Detail",
-                "description": "Mengambil detail dokumen berdasarkan ID",
+                "description": "Mengambil detail dokumen berdasarkan ID.\\n\\n**Catatan role:** SBAP hanya dapat melihat detail dokumen berstatus `terverifikasi` (403 untuk status lain).",
                 "operationId": "getDocument",
                 "parameters": [
                     {
@@ -1187,7 +1187,7 @@
                     "Statistics"
                 ],
                 "summary": "Get Document Statistics",
-                "description": "Mengambil statistik dokumen: total, verified, pending, rejected (Manager only)",
+                "description": "Mengambil statistik dokumen (Manager, QC & Uploader).\\n\\nSBAP mendapat **403** sampai ada keputusan bisnis berbeda (Fase-1).",
                 "operationId": "getDocumentStatistics",
                 "responses": {
                     "200": {

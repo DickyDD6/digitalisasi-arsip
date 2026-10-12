@@ -30,7 +30,7 @@ class DocumentController extends Controller
         path: '/api/documents',
         operationId: 'listDocuments',
         summary: 'List Documents',
-        description: 'Mengambil daftar dokumen',
+        description: 'Mengambil daftar dokumen.\n\n**Catatan role:**\n- **SBAP**: hanya melihat metadata dokumen berstatus `terverifikasi`; filter `status` dari request diabaikan (didominasi oleh aturan verified-only).',
         security: [['cookieAuth' => []]],
         tags: ['Documents'],
         parameters: [
@@ -56,10 +56,12 @@ class DocumentController extends Controller
         $perPage = min((int) $request->input('per_page', 15), 100);
 
         // Uploader only sees their own documents (API Contract requirement)
+        // SBAP only sees metadata of verified documents (Fase-1 decision)
         $user = auth()->user();
         $uploaderId = $user->hasRole('uploader') ? $user->id : null;
+        $sbapForcedStatus = $user->hasRole('sbap') ? DocumentStatus::VERIFIED->value : null;
 
-        $documents = $this->documentService->listDocuments($request->all(), $perPage, $uploaderId);
+        $documents = $this->documentService->listDocuments($request->all(), $perPage, $uploaderId, $sbapForcedStatus);
 
         return response()->json([
             'message' => 'Daftar dokumen berhasil diambil.',
@@ -141,7 +143,7 @@ class DocumentController extends Controller
         path: '/api/documents/{id}',
         operationId: 'getDocument',
         summary: 'Get Document Detail',
-        description: 'Mengambil detail dokumen berdasarkan ID',
+        description: 'Mengambil detail dokumen berdasarkan ID.\n\n**Catatan role:** SBAP hanya dapat melihat detail dokumen berstatus `terverifikasi` (403 untuk status lain).',
         security: [['cookieAuth' => []]],
         tags: ['Documents'],
         parameters: [
@@ -301,7 +303,7 @@ class DocumentController extends Controller
         path: '/api/documents/statistics',
         operationId: 'getDocumentStatistics',
         summary: 'Get Document Statistics',
-        description: 'Mengambil statistik dokumen: total, verified, pending, rejected (Manager only)',
+        description: 'Mengambil statistik dokumen (Manager, QC & Uploader).\n\nSBAP mendapat **403** sampai ada keputusan bisnis berbeda (Fase-1).',
         security: [['cookieAuth' => []]],
         tags: ['Statistics'],
         responses: [
@@ -312,7 +314,7 @@ class DocumentController extends Controller
     )]
     public function statistics(): JsonResponse
     {
-        $this->authorize('viewAny', Document::class);
+        $this->authorize('viewStatistics', Document::class);
 
         $stats = $this->documentService->getStatistics();
 

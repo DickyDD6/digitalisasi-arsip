@@ -569,7 +569,7 @@ X-XSRF-TOKEN: <nilai-dari-cookie-XSRF-TOKEN>
 
 #### `GET /api/documents`
 * **Deskripsi:** Mengambil daftar dokumen arsip dengan dukungan multi-kriteria filtering lengkap.
-* **Akses:** Authenticated (Manager/QC/SBAP melihat semua, Uploader hanya melihat dokumen miliknya).
+* **Akses:** Authenticated (Manager/QC melihat semua status, Uploader hanya melihat dokumen miliknya, **SBAP hanya melihat metadata dokumen berstatus `terverifikasi`** — filter `status` dari request diabaikan untuk SBAP).
 * **Query Params:**
   * `document_type`: `nilai` | `transkrip` | `ijazah` | `berita_acara_sidang`
   * `prodi`: Nama prodi (contoh: `Teknik Informatika`)
@@ -590,7 +590,7 @@ X-XSRF-TOKEN: <nilai-dari-cookie-XSRF-TOKEN>
 
 #### `GET /api/documents/statistics`
 * **Deskripsi:** Statistik dokumen total, terverifikasi, pending, ditolak, dan breakdown per tipe dokumen.
-* **Akses:** Authenticated
+* **Akses:** Manager, QC & Uploader (SBAP mendapat **403** sampai ada keputusan bisnis berbeda).
 * **Response 200 OK:**
 ```json
 {
@@ -624,7 +624,7 @@ X-XSRF-TOKEN: <nilai-dari-cookie-XSRF-TOKEN>
 
 #### `GET /api/documents/{id}`
 * **Deskripsi:** Mengambil detail satu dokumen beserta relasi uploader dan verifier.
-* **Akses:** Authenticated (policy `view`: Uploader hanya dokumen miliknya; QC/Manager/SBAP sesuai aturan).
+* **Akses:** Authenticated (policy `view`: Uploader hanya dokumen miliknya; Manager/QC semua status; **SBAP hanya dokumen berstatus `terverifikasi`** — 403 untuk status lain).
 * **Response 200 OK:**
 ```json
 {
