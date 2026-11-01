@@ -7,29 +7,31 @@ services:
     dockerfilePath: ./Dockerfile
     envVars:
       - key: APP_NAME
-        value: "Digitalisasi Arsip"
+        value: Digitalisasi Arsip
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
-        value: false
-      - key: APP_KEY
-        generateValue: true
+        value: "false"
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        fromDatabase: arsip-db
-        type: host
+        fromDatabase:
+          name: arsip-db
+          property: host
       - key: DB_PORT
         value: 3306
       - key: DB_DATABASE
-        fromDatabase: arsip-db
-        type: database
+        fromDatabase:
+          name: arsip-db
+          property: database
       - key: DB_USERNAME
-        fromDatabase: arsip-db
-        type: username
+        fromDatabase:
+          name: arsip-db
+          property: username
       - key: DB_PASSWORD
-        fromDatabase: arsip-db
-        type: password
+        fromDatabase:
+          name: arsip-db
+          property: password
       - key: R2_ACCESS_KEY_ID
         sync: false
       - key: R2_SECRET_ACCESS_KEY
@@ -40,8 +42,6 @@ services:
         value: https://08e44e04d01e29b617d800638417e785.r2.cloudflarestorage.com
       - key: R2_REGION
         value: auto
-      - key: R2_URL
-        value: https://08e44e04d01e29b617d800638417e785.r2.cloudflarestorage.com
       - key: FILESYSTEM_DISK
         value: r2
 
@@ -49,4 +49,3 @@ databases:
   - name: arsip-db
     plan: free
     databaseName: digitalisasi_arsip
-    ipAllowList: []
