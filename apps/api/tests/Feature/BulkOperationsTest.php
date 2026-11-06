@@ -20,7 +20,7 @@ class BulkOperationsTest extends TestCase
     {
         parent::setUp();
 
-        Storage::fake();
+        Storage::fake('r2');
 
         $this->manager = User::factory()->create(['role' => 'manager']);
         $this->uploader = User::factory()->create(['role' => 'uploader']);
@@ -58,8 +58,8 @@ class BulkOperationsTest extends TestCase
             'file_name' => 'doc2.pdf',
         ]);
 
-        Storage::put($doc1->file_path, 'Content Doc 1');
-        Storage::put($doc2->file_path, 'Content Doc 2');
+        Storage::disk('r2')->put($doc1->file_path, 'Content Doc 1');
+        Storage::disk('r2')->put($doc2->file_path, 'Content Doc 2');
 
         $response = $this->postJson('/api/documents/download-multiple', [
             'ids' => [$doc1->id, $doc2->id],

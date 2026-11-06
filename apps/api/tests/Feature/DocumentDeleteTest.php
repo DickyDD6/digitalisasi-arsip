@@ -24,7 +24,7 @@ class DocumentDeleteTest extends TestCase
         parent::setUp();
 
         // Fake storage
-        Storage::fake('local');
+        Storage::fake('r2');
 
         // Create test users
         $this->manager = User::factory()->create(['role' => 'manager']);
@@ -43,7 +43,7 @@ class DocumentDeleteTest extends TestCase
         ]);
 
         // Create fake file
-        Storage::put($document->file_path, 'fake file content');
+        Storage::disk('r2')->put($document->file_path, 'fake file content');
 
         $response = $this->deleteJson("/api/documents/{$document->id}");
 
@@ -58,7 +58,7 @@ class DocumentDeleteTest extends TestCase
         ]);
 
         // Verify file is preserved in storage during soft delete
-        Storage::assertExists($document->file_path);
+        Storage::disk('r2')->assertExists($document->file_path);
     }
 
     public function test_uploader_can_delete_own_rejected_document()
@@ -70,7 +70,7 @@ class DocumentDeleteTest extends TestCase
             'file_path' => 'archives/test.pdf',
         ]);
 
-        Storage::put($document->file_path, 'fake file content');
+        Storage::disk('r2')->put($document->file_path, 'fake file content');
 
         $response = $this->deleteJson("/api/documents/{$document->id}");
 
@@ -81,7 +81,7 @@ class DocumentDeleteTest extends TestCase
         ]);
 
         // Verify file is preserved in storage during soft delete
-        Storage::assertExists($document->file_path);
+        Storage::disk('r2')->assertExists($document->file_path);
     }
 
     public function test_uploader_can_reupload_document_after_deleting_rejected_document()
@@ -203,7 +203,7 @@ class DocumentDeleteTest extends TestCase
             'file_name' => 'test.pdf',
         ]);
 
-        Storage::put($document->file_path, 'fake file content');
+        Storage::disk('r2')->put($document->file_path, 'fake file content');
 
         $this->deleteJson("/api/documents/{$document->id}");
 
@@ -228,17 +228,17 @@ class DocumentDeleteTest extends TestCase
         ]);
 
         // Create fake file
-        Storage::put($document->file_path, 'PDF file content here');
-        Storage::assertExists($document->file_path);
+        Storage::disk('r2')->put($document->file_path, 'PDF file content here');
+        Storage::disk('r2')->assertExists($document->file_path);
 
         $this->deleteJson("/api/documents/{$document->id}");
 
         // File should still be preserved after soft delete
-        Storage::assertExists($document->file_path);
+        Storage::disk('r2')->assertExists($document->file_path);
 
         // Force delete via service removes physical file
         app(\App\Services\DocumentService::class)->forceDeleteDocument($document);
-        Storage::assertMissing($document->file_path);
+        Storage::disk('r2')->assertMissing($document->file_path);
     }
 
     public function test_unauthenticated_user_cannot_delete()

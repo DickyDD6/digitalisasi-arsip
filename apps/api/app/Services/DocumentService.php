@@ -20,6 +20,7 @@ use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class DocumentService
 {
+    private const DISK = 'r2';
     /**
      * Upload a new document with duplicate check.
      *
@@ -66,9 +67,9 @@ class DocumentService
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
 
-            // Delete file if database transaction fails
+            // Delete file from R2 if database transaction fails
             if (isset($filePath)) {
-                Storage::delete($filePath);
+                Storage::disk(self::DISK)->delete($filePath);
             }
 
             // Check if it's a duplicate key violation (MySQL error code 23000)
@@ -82,9 +83,9 @@ class DocumentService
         } catch (\Exception $e) {
             DB::rollBack();
 
-            // Delete file if database transaction fails
+            // Delete file from R2 if database transaction fails
             if (isset($filePath)) {
-                Storage::delete($filePath);
+                Storage::disk(self::DISK)->delete($filePath);
             }
 
             throw $e;
@@ -115,7 +116,7 @@ class DocumentService
      */
     protected function storeFile(UploadedFile $file, string $documentType): string
     {
-        // Store in archives/{document_type}/YYYY/MM/ directory structure
+        // Store in archives/{document_type}/YYYY/MM/ directory structure on R2
         $directory = sprintf(
             'archives/%s/%s/%s',
             $documentType,
@@ -123,8 +124,8 @@ class DocumentService
             now()->format('m')
         );
 
-        // Use Storage::putFile to auto-generate unique filename
-        return Storage::putFile($directory, $file);
+        // Use Storage::disk('r2')->putFile to auto-generate unique filename on R2
+        return Storage::disk(self::DISK)->putFile($directory, $file);
     }
 
     /**
@@ -215,8 +216,8 @@ class DocumentService
             $deleted = $document->forceDelete();
 
             if ($deleted) {
-                // Delete physical file from storage
-                Storage::delete($filePath);
+                // Delete physical file from R2
+                Storage::disk(self::DISK)->delete($filePath);
 
                 // Log permanent deletion
                 AuditLog::log(

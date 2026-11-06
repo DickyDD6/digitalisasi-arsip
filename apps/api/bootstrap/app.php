@@ -22,6 +22,11 @@ return Application::configure(basePath: dirname(__DIR__))
         // Do NOT add them again via api(prepend:) — that causes double execution.
         $middleware->statefulApi();
         // Register custom middleware aliases
+        // Tambahkan ini — exclude route test dari CSRF
+        $middleware->validateCsrfTokens(except: [
+            'api/upload-pdf',
+            'api/test-r2',
+        ]);
         $middleware->alias([
             'throttle.login.attempts' => \App\Http\Middleware\ThrottleLoginAttempts::class,
             'user.last_seen' => \App\Http\Middleware\UpdateUserLastSeen::class,

@@ -30,7 +30,7 @@ class DocumentSbapMetadataTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        Storage::fake();
+        Storage::fake('r2');
 
         $this->sbap = User::factory()->create(['role' => 'sbap']);
         $this->manager = User::factory()->create(['role' => 'manager']);

@@ -21,7 +21,7 @@ class DocumentRestoreTest extends TestCase
     {
         parent::setUp();
 
-        Storage::fake();
+        Storage::fake('r2');
 
         $this->manager = User::factory()->create(['role' => 'manager']);
         $this->uploader = User::factory()->create(['role' => 'uploader']);
@@ -99,8 +99,8 @@ class DocumentRestoreTest extends TestCase
             'file_path' => 'archives/permanently_deleted.pdf',
         ]);
 
-        Storage::put($document->file_path, 'PDF Secret Data');
-        Storage::assertExists($document->file_path);
+        Storage::disk('r2')->put($document->file_path, 'PDF Secret Data');
+        Storage::disk('r2')->assertExists($document->file_path);
 
         $document->delete(); // Soft delete first
 
@@ -113,7 +113,7 @@ class DocumentRestoreTest extends TestCase
         $this->assertDatabaseMissing('documents', ['id' => $document->id]);
 
         // Physical file removed
-        Storage::assertMissing($document->file_path);
+        Storage::disk('r2')->assertMissing($document->file_path);
     }
 
     public function test_non_manager_cannot_force_delete_document(): void

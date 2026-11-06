@@ -23,7 +23,7 @@ class DocumentRevokeVerificationTest extends TestCase
     {
         parent::setUp();
 
-        Storage::fake();
+        Storage::fake('r2');
 
         $this->manager = User::factory()->create(['role' => 'manager']);
         $this->uploader = User::factory()->create(['role' => 'uploader']);
@@ -47,7 +47,7 @@ class DocumentRevokeVerificationTest extends TestCase
             'file_path' => 'archives/revoked.pdf',
         ]);
 
-        Storage::put($document->file_path, 'PDF content');
+        Storage::disk('r2')->put($document->file_path, 'PDF content');
 
         $response = $this->postJson("/api/documents/{$document->id}/revoke-verification", [
             'reason' => 'QC salah verifikasi, perlu diperiksa ulang.',
@@ -72,7 +72,7 @@ class DocumentRevokeVerificationTest extends TestCase
         $this->assertDatabaseHas('documents', ['id' => $document->id]);
 
         // Physical file untouched
-        Storage::assertExists($document->file_path);
+        Storage::disk('r2')->assertExists($document->file_path);
 
         // Audit log recorded
         $auditLog = AuditLog::where('action', 'revoke_verification')->first();
@@ -294,14 +294,14 @@ class DocumentRevokeVerificationTest extends TestCase
         $document = Document::factory()->verified()->create([
             'file_path' => 'archives/active.pdf',
         ]);
-        Storage::put($document->file_path, 'PDF content');
+        Storage::disk('r2')->put($document->file_path, 'PDF content');
 
         $response = $this->deleteJson("/api/documents/{$document->id}/force-delete");
 
         $response->assertStatus(404);
 
         $this->assertDatabaseHas('documents', ['id' => $document->id]);
-        Storage::assertExists($document->file_path);
+        Storage::disk('r2')->assertExists($document->file_path);
     }
 
     /**

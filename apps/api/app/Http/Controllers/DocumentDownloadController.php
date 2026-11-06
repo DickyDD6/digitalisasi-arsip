@@ -13,6 +13,8 @@ use ZipArchive;
 
 class DocumentDownloadController extends Controller
 {
+    private const DISK = 'r2';
+
     /**
      * Download the specified document.
      */
@@ -37,7 +39,7 @@ class DocumentDownloadController extends Controller
     {
         $this->authorize('download', $document);
 
-        if (! Storage::exists($document->file_path)) {
+        if (! Storage::disk(self::DISK)->exists($document->file_path)) {
             abort(404, 'File tidak ditemukan.');
         }
 
@@ -54,7 +56,7 @@ class DocumentDownloadController extends Controller
             modelId: $document->id
         );
 
-        return Storage::download(
+        return Storage::disk(self::DISK)->download(
             $document->file_path,
             $document->file_name,
             ['Content-Type' => 'application/pdf']
@@ -105,9 +107,7 @@ class DocumentDownloadController extends Controller
         }
 
         foreach ($documents as $document) {
-            $filePath = Storage::path($document->file_path);
-
-            if (file_exists($filePath)) {
+            if (Storage::disk(self::DISK)->exists($document->file_path)) {
                 $fileName = $document->file_name;
                 $counter = 1;
 
@@ -117,7 +117,10 @@ class DocumentDownloadController extends Controller
                     $counter++;
                 }
 
-                $zip->addFile($filePath, $fileName);
+                $zip->addFromString(
+                    $fileName,
+                    Storage::disk(self::DISK)->get($document->file_path)
+                );
             }
         }
 
@@ -161,7 +164,7 @@ class DocumentDownloadController extends Controller
         // the same authorization rules as download.
         $this->authorize('download', $document);
 
-        if (! Storage::exists($document->file_path)) {
+        if (! Storage::disk(self::DISK)->exists($document->file_path)) {
             abort(404, 'File tidak ditemukan.');
         }
 
@@ -178,7 +181,7 @@ class DocumentDownloadController extends Controller
             modelId: $document->id
         );
 
-        return Storage::response(
+        return Storage::disk(self::DISK)->response(
             $document->file_path,
             $document->file_name,
             [

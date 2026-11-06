@@ -16,7 +16,7 @@ class RefactorVerificationTest extends TestCase
 
     public function test_upload_sets_pending_status_from_enum()
     {
-        Storage::fake();
+        Storage::fake('r2');
         $uploader = User::factory()->create(['role' => 'uploader']);
 
         $file = UploadedFile::fake()->createWithContent('test.pdf', '%PDF-1.4 dummy content');
@@ -39,7 +39,7 @@ class RefactorVerificationTest extends TestCase
 
     public function test_verify_sets_verified_status_from_enum()
     {
-        Storage::fake();
+        Storage::fake('r2');
         $manager = User::factory()->create(['role' => 'manager']);
         $uploader = User::factory()->create(['role' => 'uploader']);
 

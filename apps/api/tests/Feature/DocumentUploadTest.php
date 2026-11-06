@@ -25,7 +25,7 @@ class DocumentUploadTest extends TestCase
         parent::setUp();
 
         // Use fake storage for testing
-        Storage::fake();
+        Storage::fake('r2');
 
         // Create test users
         $this->manager = User::factory()->create(['role' => 'manager']);
@@ -85,7 +85,7 @@ class DocumentUploadTest extends TestCase
         ]);
 
         // Verify file stored in storage
-        Storage::assertExists($document->file_path);
+        Storage::disk('r2')->assertExists($document->file_path);
 
         // Verify audit log
         $this->assertDatabaseHas('audit_logs', [
@@ -447,7 +447,7 @@ class DocumentUploadTest extends TestCase
         $this->assertStringContainsString('archives/nilai/', $document->file_path);
 
         // Verify file exists in storage
-        Storage::assertExists($document->file_path);
+        Storage::disk('r2')->assertExists($document->file_path);
 
         // Verify file is not in public disk
         $this->assertStringNotContainsString('public/', $document->file_path);
