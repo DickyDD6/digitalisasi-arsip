@@ -27,7 +27,7 @@ class UploadDocumentRequest extends FormRequest
     {
         $rules = [
             'document_type' => ['required', Rule::enum(DocumentType::class)],
-            'file' => ['required', 'file', 'mimes:pdf', 'max:5120', new ValidPdfFile()],
+            'file' => ['required', 'file', 'mimes:pdf', 'min:1024', 'max:7168', new ValidPdfFile()],
             'prodi' => ['required', Rule::enum(Prodi::class)],
         ];
 
@@ -62,7 +62,8 @@ class UploadDocumentRequest extends FormRequest
             'file.required' => 'File dokumen wajib diunggah.',
             'file.file' => 'File yang diunggah tidak valid.',
             'file.mimes' => 'File harus berformat PDF.',
-            'file.max' => 'Ukuran file maksimal 5MB.',
+            'file.min' => 'Ukuran file minimal 1MB.',
+            'file.max' => 'Ukuran file maksimal 7MB.',
             'prodi.required' => 'Program studi wajib diisi.',
             'tahun_ajaran.required' => 'Tahun ajaran wajib diisi untuk dokumen nilai.',
             'mata_kuliah.required' => 'Mata kuliah wajib diisi untuk dokumen nilai.',

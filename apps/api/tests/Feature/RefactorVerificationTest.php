@@ -19,7 +19,7 @@ class RefactorVerificationTest extends TestCase
         Storage::fake('r2');
         $uploader = User::factory()->create(['role' => 'uploader']);
 
-        $file = UploadedFile::fake()->createWithContent('test.pdf', '%PDF-1.4 dummy content');
+        $file = UploadedFile::fake()->createWithContent('test.pdf', '%PDF-1.4 dummy content' . str_repeat(' ', 1024 * 1024));
 
         $response = $this->actingAs($uploader)->postJson('/api/documents', [
             'document_type' => 'nilai',

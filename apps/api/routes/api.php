@@ -13,27 +13,6 @@ use App\Http\Controllers\SystemSettingController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-//auth test
-
-
-// Route test R2 — di luar middleware auth
-Route::get('/test-r2', function () {
-    try {
-        $files = Storage::disk('r2')->files();
-        return response()->json(['status' => 'success', 'files' => $files]);
-    } catch (\Exception $e) {
-        return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
-    }
-});
-
-Route::post('/auth/login', [AuthController::class, 'login'])
-    ->middleware(['throttle:75,1', 'throttle.login.attempts'])
-    ->name('login');
-
-// ... rest of code
-
-
-
 // Authentication routes (public)
 Route::post('/auth/login', [AuthController::class, 'login'])
     ->middleware(['throttle:75,1', 'throttle.login.attempts'])

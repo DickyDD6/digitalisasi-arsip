@@ -107,7 +107,7 @@ class DocumentDeleteTest extends TestCase
         $deleteResponse->assertStatus(200);
 
         // 3. Re-upload a new file with the exact same metadata
-        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('nilai_fixed.pdf', '%PDF-1.4');
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('nilai_fixed.pdf', '%PDF-1.4' . str_repeat(' ', 1024 * 1024));
         $uploadResponse = $this->postJson('/api/documents', array_merge($data, [
             'file' => $file,
         ]));

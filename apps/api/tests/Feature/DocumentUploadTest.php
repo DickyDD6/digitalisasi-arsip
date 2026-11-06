@@ -39,7 +39,7 @@ class DocumentUploadTest extends TestCase
     {
         $this->actingAs($this->uploader);
 
-        $file = UploadedFile::fake()->createWithContent('nilai.pdf', '%PDF-1.4');
+        $file = UploadedFile::fake()->createWithContent('nilai.pdf', '%PDF-1.4' . str_repeat(' ', 1024 * 1024));
 
         $response = $this->postJson('/api/documents', [
             'document_type' => 'nilai',
@@ -102,7 +102,7 @@ class DocumentUploadTest extends TestCase
     {
         $this->actingAs($this->manager);
 
-        $file = UploadedFile::fake()->createWithContent('ijazah.pdf', '%PDF-1.4');
+        $file = UploadedFile::fake()->createWithContent('ijazah.pdf', '%PDF-1.4' . str_repeat(' ', 1024 * 1024));
 
         $response = $this->postJson('/api/documents', [
             'document_type' => 'ijazah',
@@ -119,7 +119,7 @@ class DocumentUploadTest extends TestCase
     {
         $this->actingAs($this->sbap);
 
-        $file = UploadedFile::fake()->createWithContent('transkrip.pdf', '%PDF-1.4');
+        $file = UploadedFile::fake()->createWithContent('transkrip.pdf', '%PDF-1.4' . str_repeat(' ', 1024 * 1024));
 
         $response = $this->postJson('/api/documents', [
             'document_type' => 'transkrip',
@@ -136,7 +136,7 @@ class DocumentUploadTest extends TestCase
     {
         $this->actingAs($this->qc);
 
-        $file = UploadedFile::fake()->createWithContent('nilai.pdf', '%PDF-1.4');
+        $file = UploadedFile::fake()->createWithContent('nilai.pdf', '%PDF-1.4' . str_repeat(' ', 1024 * 1024));
 
         $response = $this->postJson('/api/documents', [
             'document_type' => 'nilai',
@@ -155,7 +155,7 @@ class DocumentUploadTest extends TestCase
         $this->actingAs($this->uploader);
 
         // Upload first document
-        $file1 = UploadedFile::fake()->createWithContent('nilai1.pdf', '%PDF-1.4');
+        $file1 = UploadedFile::fake()->createWithContent('nilai1.pdf', '%PDF-1.4' . str_repeat(' ', 1024 * 1024));
         $this->postJson('/api/documents', [
             'document_type' => 'nilai',
             'file' => $file1,
@@ -166,7 +166,7 @@ class DocumentUploadTest extends TestCase
         ])->assertStatus(201);
 
         // Try to upload duplicate
-        $file2 = UploadedFile::fake()->createWithContent('nilai2.pdf', '%PDF-1.4');
+        $file2 = UploadedFile::fake()->createWithContent('nilai2.pdf', '%PDF-1.4' . str_repeat(' ', 1024 * 1024));
         $response = $this->postJson('/api/documents', [
             'document_type' => 'nilai',
             'file' => $file2,
@@ -190,7 +190,7 @@ class DocumentUploadTest extends TestCase
         $this->actingAs($this->manager);
 
         // Upload first ijazah
-        $file1 = UploadedFile::fake()->createWithContent('ijazah1.pdf', '%PDF-1.4');
+        $file1 = UploadedFile::fake()->createWithContent('ijazah1.pdf', '%PDF-1.4' . str_repeat(' ', 1024 * 1024));
         $this->postJson('/api/documents', [
             'document_type' => 'ijazah',
             'file' => $file1,
@@ -200,7 +200,7 @@ class DocumentUploadTest extends TestCase
         ])->assertStatus(201);
 
         // Try to upload duplicate ijazah
-        $file2 = UploadedFile::fake()->createWithContent('ijazah2.pdf', '%PDF-1.4');
+        $file2 = UploadedFile::fake()->createWithContent('ijazah2.pdf', '%PDF-1.4' . str_repeat(' ', 1024 * 1024));
         $response = $this->postJson('/api/documents', [
             'document_type' => 'ijazah',
             'file' => $file2,
@@ -351,11 +351,30 @@ class DocumentUploadTest extends TestCase
             ->assertJsonValidationErrors(['file']);
     }
 
-    public function test_file_size_must_not_exceed_5mb()
+    public function test_file_size_must_be_at_least_1mb()
     {
         $this->actingAs($this->uploader);
 
-        $file = UploadedFile::fake()->create('large.pdf', 6000, 'application/pdf'); // 6MB
+        $file = UploadedFile::fake()->createWithContent('small.pdf', '%PDF-1.4');
+
+        $response = $this->postJson('/api/documents', [
+            'document_type' => 'nilai',
+            'file' => $file,
+            'prodi' => 'Teknik Informatika',
+            'tahun_ajaran' => '2023/2024',
+            'mata_kuliah' => 'Web',
+            'kelas' => 'A',
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['file']);
+    }
+
+    public function test_file_size_must_not_exceed_7mb()
+    {
+        $this->actingAs($this->uploader);
+
+        $file = UploadedFile::fake()->create('large.pdf', 8000, 'application/pdf'); // 8MB
 
         $response = $this->postJson('/api/documents', [
             'document_type' => 'nilai',
@@ -374,7 +393,7 @@ class DocumentUploadTest extends TestCase
     {
         $this->actingAs($this->uploader);
 
-        $file = UploadedFile::fake()->createWithContent('nilai.pdf', '%PDF-1.4');
+        $file = UploadedFile::fake()->createWithContent('nilai.pdf', '%PDF-1.4' . str_repeat(' ', 1024 * 1024));
 
         $response = $this->postJson('/api/documents', [
             'document_type' => 'nilai',
@@ -391,7 +410,7 @@ class DocumentUploadTest extends TestCase
     {
         $this->actingAs($this->manager);
 
-        $file = UploadedFile::fake()->createWithContent('ijazah.pdf', '%PDF-1.4');
+        $file = UploadedFile::fake()->createWithContent('ijazah.pdf', '%PDF-1.4' . str_repeat(' ', 1024 * 1024));
 
         $response = $this->postJson('/api/documents', [
             'document_type' => 'ijazah',
@@ -430,7 +449,7 @@ class DocumentUploadTest extends TestCase
     {
         $this->actingAs($this->uploader);
 
-        $file = UploadedFile::fake()->createWithContent('test.pdf', '%PDF-1.4');
+        $file = UploadedFile::fake()->createWithContent('test.pdf', '%PDF-1.4' . str_repeat(' ', 1024 * 1024));
 
         $this->postJson('/api/documents', [
             'document_type' => 'nilai',
